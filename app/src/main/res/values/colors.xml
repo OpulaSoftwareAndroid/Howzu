@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="transparent">#00000000</color>
+
+    <color name="colorPrimary">#f72f64</color>
+    <color name="colorPrimaryDark">#b53a61</color>
+    <color name="colorAccent">#bdced5</color>
+    <color name="lightPrimary">#BBDEFB</color>
+    <color name="ripple_fill">#F8BBD0</color>
+    <color name="ripple_stroke">#c8ff3e7f</color>
+    <color name="primaryText">#55049f</color>
+    <color name="secondaryText">#888888</color>
+    <color name="dividerColor">#e1e8eb</color>
+    <color name="appbg">#e0e0e0</color>
+    <color name="green">#2de98a</color>
+    <color name="blue">#2ddee9</color>
+    <color name="sky_blue">#2DE0FE</color>
+    <color name="light_blue">#3FCBFF</color>
+    <color name="yellow">#f3cf5f</color>
+    <color name="onlineColor">#48c51d</color>
+    <color name="bg">#f5f9fa</color>
+    <color name="dark_transparent">#AD000000</color>
+
+
+    <color name="whiteopacity">#40ffffff</color>
+
+    <color name="colorLightGray">#f4f4f4</color>
+    <color name="colorGray">#768389</color>
+    <color name="colorMiddleGray">#CCDCE0</color>
+    <color name="colorPink">#f82f64</color>
+
+
+
+    <color name="black">#000000</color>
+    <color name="white">#ffffff</color>
+    <color name="red">#ff1408</color>
+    <color name="call_red">#fe063b</color>
+    <color name="call_green">#48cd68</color>
+    <color name="white_opacity">#42ffffff</color>
+    <color name="black_opacity">#D9000000</color>
+
+    <color name="blue_grey_900">#263238</color>
+    <color name="blue_grey_700">#37474F</color>
+    <color name="blue_grey_500">#607D8B</color>
+</resources>

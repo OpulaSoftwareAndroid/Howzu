@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_add_contact"
+        android:icon="@drawable/ic_like"
+        android:title="Delete"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_settings"
+        android:icon="@drawable/ic_like"
+        android:title="Comment"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_about_us"
+        android:icon="@drawable/ic_like"
+        android:title="Share"
+        app:showAsAction="never" />
+
+
+
+</menu>

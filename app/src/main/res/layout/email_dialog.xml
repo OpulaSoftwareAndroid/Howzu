@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/abc_popup_background_mtrl_mult">
+
+    <TextView
+        android:id="@+id/headerTxt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/dividerColor"
+        android:gravity="center"
+        android:padding="15dp"
+        android:text="@string/signinto"
+        android:textAppearance="@android:style/TextAppearance.Medium"
+        android:textColor="@color/white" />
+
+    <TextView
+        android:id="@+id/emailTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/headerTxt"
+        android:layout_marginTop="10dp"
+        android:padding="10dp"
+        android:text="E-mail"
+        android:textAppearance="@android:style/TextAppearance.Medium"
+        android:textColor="@color/primaryText" />
+
+    <EditText
+        android:id="@+id/email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/emailTxt"
+        android:layout_margin="10dp"
+        android:background="@drawable/secondary_text_rounded_border"
+        android:inputType="textEmailAddress"
+        android:padding="10dp"
+        android:textAppearance="@android:style/TextAppearance.Medium"
+        android:textColor="@color/white" />
+
+    <TextView
+        android:id="@+id/cont"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/email"
+        android:layout_margin="10dp"
+        android:background="@drawable/secondary_text_rounded_corner"
+        android:padding="10dp"
+        android:text="Continue"
+        android:textColor="@color/white" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:layout_below="@+id/cont" />
+
+
+</RelativeLayout>

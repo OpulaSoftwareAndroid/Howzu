@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_margin="8dp"-->
+    <!--android:orientation="vertical">-->
+
+    <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:orientation="horizontal">-->
+
+        <!--<LinearLayout-->
+            <!--android:layout_width="70dp"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_gravity="center"-->
+            <!--android:layout_marginRight="6dp"-->
+            <!--android:gravity="center"-->
+            <!--android:orientation="vertical">-->
+
+            <!--<com.hitasoft.app.customclass.RoundedImageView-->
+                <!--android:id="@+id/imageViewSenderProfileImage"-->
+                <!--android:layout_width="50dp"-->
+                <!--android:layout_height="50dp"-->
+                <!--android:layout_gravity="center"-->
+                <!--android:gravity="center"-->
+                <!--android:src="@drawable/user_placeholder"-->
+                <!--android:visibility="visible"-->
+                <!--app:corner_radius="100dip"-->
+                <!--app:round_background="true" />-->
+
+        <!--</LinearLayout>-->
+
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:orientation="vertical">-->
+
+            <!--<LinearLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:orientation="horizontal">-->
+
+                <!--<TextView-->
+                    <!--android:id="@+id/textViewNotificationSenderName"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:text="Angelina Jolly"-->
+                    <!--android:textColor="@color/colorPrimary"-->
+                    <!--android:textSize="20dp"-->
+                    <!--android:visibility="visible" />-->
+
+                <!--<TextView-->
+                    <!--android:id="@+id/textViewNotificationMessage"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:text=" wants to make your match maker "-->
+                    <!--android:textColor="@color/secondaryText"-->
+                    <!--android:textSize="16dp"-->
+                    <!--android:visibility="visible" />-->
+            <!--</LinearLayout>-->
+
+            <!--<LinearLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="0dp"-->
+                <!--android:layout_gravity="center"-->
+                <!--android:layout_weight="1"-->
+                <!--android:gravity="center|bottom"-->
+                <!--android:orientation="horizontal">-->
+
+                <!--<TextView-->
+                    <!--android:id="@+id/textViewNotificationTime"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:layout_weight="1"-->
+                    <!--android:gravity="center|left"-->
+                    <!--android:text="13 minutuea ago"-->
+                    <!--android:textColor="@color/secondaryText"-->
+                    <!--android:textSize="14dp"-->
+                    <!--android:visibility="visible" />-->
+
+                <!--<LinearLayout-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:id="@+id/linearLayoutAcceptDecline"-->
+                    <!--android:orientation="horizontal"-->
+                    <!--android:layout_height="wrap_content">-->
+                    <!--<ImageView-->
+                        <!--android:id="@+id/imageViewAcceptRequest"-->
+                        <!--android:layout_width="25dp"-->
+                        <!--android:layout_height="25dp"-->
+                        <!--android:layout_marginTop="4dp"-->
+                        <!--android:layout_marginEnd="4dp"-->
+                        <!--android:src="@drawable/ic_right" />-->
+
+                    <!--<ImageView-->
+                        <!--android:id="@+id/imageViewDeclineRequest"-->
+                        <!--android:layout_width="25dp"-->
+                        <!--android:layout_height="25dp"-->
+                        <!--android:layout_marginTop="4dp"-->
+                        <!--android:layout_marginEnd="4dp"-->
+                        <!--android:src="@drawable/ic_cross" />-->
+                <!--</LinearLayout>-->
+            <!--</LinearLayout>-->
+
+        <!--</LinearLayout>-->
+    <!--</LinearLayout>-->
+
+    <!--<View-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="0.5dip"-->
+        <!--android:layout_marginTop="10dp"-->
+        <!--android:background="@color/dividerColor" />-->
+<!--</LinearLayout>-->
+<!--<?xml version="1.0" encoding="utf-8"?>-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/item_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:paddingLeft="13dp"
+    android:paddingTop="8dp"
+    android:paddingRight="13dp"
+    android:paddingBottom="8dp">
+
+    <com.hitasoft.app.customclass.RoundedImageView
+        android:id="@+id/user_image"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_centerHorizontal="true"
+        android:adjustViewBounds="true"
+        android:background="@drawable/user_placeholder"
+        android:scaleType="centerCrop"
+        app:corner_radius="80dip"
+        app:round_background="true" />
+
+    <ImageView
+        android:id="@+id/online"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:layout_alignRight="@+id/user_image"
+        android:layout_alignBottom="@+id/user_image"
+        android:src="@drawable/online" />
+
+    <com.hitasoft.app.customclass.CustomTextView
+        android:id="@+id/user_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/user_image"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="7dp"
+        android:gravity="center"
+        android:maxLines="1"
+        android:text="User Name"
+        android:textColor="@color/primaryText"
+        android:textSize="14sp"
+        app:fonts="font_regular.ttf" />
+
+</RelativeLayout>

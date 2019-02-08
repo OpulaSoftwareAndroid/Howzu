@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/mainLay"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        android:src="@drawable/location_bg" />
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="260dp"
+        android:layout_height="10dp"
+        android:layout_centerHorizontal="true"
+        android:background="#00000000"
+        android:visibility="visible" />
+
+    <RelativeLayout
+        android:id="@+id/locationLay"
+        android:layout_width="260dp"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/join"
+        android:layout_centerHorizontal="true">
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/input_layout_location"
+            android:layout_width="260dp"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:textColorHint="#00000000"
+            app:hintTextAppearance="@style/MyHintText">
+
+            <AutoCompleteTextView
+                android:id="@+id/location"
+                android:layout_width="260dp"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:hint="@string/enter_your_location"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:maxLines="1"
+                android:padding="15dp"
+                android:popupBackground="@drawable/white_roundcorner"
+                android:singleLine="true"
+                android:textAppearance="@android:style/TextAppearance.Small"
+                android:textColor="@color/white"
+                android:textCursorDrawable="@drawable/cursor_drawable"
+                android:textSize="40sp"
+                android:theme="@style/MyEditText" />
+
+            <!--<com.hitasoft.app.customclass.CustomEditText
+                app:fonts="font_regular.ttf"
+                android:id="@+id/location"
+                android:layout_width="260dp"
+                android:layout_height="wrap_content"
+                android:hint="@string/enter_your_location"
+                android:singleLine="true"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:imeOptions="actionDone"
+                android:textCursorDrawable="@drawable/cursor_drawable"
+                android:textSize="40sp"
+                android:padding="15dp"
+                android:textColor="@color/white"
+                android:theme="@style/MyEditText" />-->
+
+        </android.support.design.widget.TextInputLayout>
+
+        <com.hitasoft.app.customclass.CustomTextView
+            android:id="@+id/locationTxt"
+            android:layout_width="260dp"
+            android:layout_height="wrap_content"
+            android:text="@string/enter_your_location"
+            android:textColor="@color/white"
+            android:textSize="56sp"
+            app:fonts="font_bold.ttf" />
+
+    </RelativeLayout>
+
+
+    <com.hitasoft.app.customclass.CustomTextView
+        android:id="@+id/join"
+        android:layout_width="260dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="40dp"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/primary_rounded_corner"
+        android:gravity="center"
+        android:padding="15dp"
+        android:text="@string/join_with"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:fonts="font_regular.ttf" />
+
+</RelativeLayout>

@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="15dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/white_dialog_round_corner">
+
+        <com.hitasoft.app.customclass.RoundedImageView
+            android:id="@+id/prebg"
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:adjustViewBounds="true"
+            android:background="@drawable/premium_success_bg"
+            android:scaleType="centerCrop"
+            app:corner_radius="15dip"
+            app:round_background="true" />
+
+        <com.hitasoft.app.customclass.CustomTextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="55dp"
+            android:gravity="center_horizontal"
+            android:paddingBottom="7dp"
+            android:paddingTop="10dp"
+            android:singleLine="true"
+            android:text="@string/congratulation"
+            android:textColor="@color/colorPrimary"
+            android:textSize="24sp"
+            app:fonts="font_bold.ttf" />
+
+        <com.hitasoft.app.customclass.CustomTextView
+            android:id="@+id/subtext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/title"
+            android:gravity="center_horizontal"
+            android:singleLine="true"
+            android:text="@string/whole_network_is_in_your_hand"
+            android:textColor="@color/primaryText"
+            android:textSize="22sp"
+            app:fonts="font_bold.ttf" />
+
+        <View
+            android:id="@+id/view"
+            android:layout_width="50dp"
+            android:layout_height="3dp"
+            android:layout_below="@+id/subtext"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="12dp"
+            android:background="@color/colorPrimary" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/continu"
+            android:layout_below="@+id/view"
+            android:layout_marginTop="10dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="15dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginRight="10dp"
+                        android:src="@drawable/tick" />
+
+                    <com.hitasoft.app.customclass.CustomTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal"
+                        android:singleLine="true"
+                        android:text="@string/unlimited_likes"
+                        android:textColor="@color/primaryText"
+                        android:textSize="20sp"
+                        app:fonts="font_regular.ttf" />
+                </LinearLayout>
+
+                <com.hitasoft.app.customclass.CustomTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="5dp"
+                    android:text="@string/unlimited_likes_des"
+                    android:textAppearance="@android:style/TextAppearance.Small"
+                    android:textColor="@color/secondaryText"
+                    app:fonts="font_regular.ttf" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginRight="10dp"
+                        android:src="@drawable/tick" />
+
+                    <com.hitasoft.app.customclass.CustomTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal"
+                        android:singleLine="true"
+                        android:text="@string/find_people_any_location"
+                        android:textColor="@color/primaryText"
+                        android:textSize="20sp"
+                        app:fonts="font_regular.ttf" />
+                </LinearLayout>
+
+                <com.hitasoft.app.customclass.CustomTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="5dp"
+                    android:text="@string/unlimited_likes_des"
+                    android:textAppearance="@android:style/TextAppearance.Small"
+                    android:textColor="@color/secondaryText"
+                    app:fonts="font_regular.ttf" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginRight="10dp"
+                        android:src="@drawable/tick" />
+
+                    <com.hitasoft.app.customclass.CustomTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal"
+                        android:singleLine="true"
+                        android:text="@string/you_are_invisible"
+                        android:textColor="@color/primaryText"
+                        android:textSize="20sp"
+                        app:fonts="font_regular.ttf" />
+                </LinearLayout>
+
+                <com.hitasoft.app.customclass.CustomTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="5dp"
+                    android:text="@string/unlimited_likes_des"
+                    android:textAppearance="@android:style/TextAppearance.Small"
+                    android:textColor="@color/secondaryText"
+                    app:fonts="font_regular.ttf" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginRight="10dp"
+                        android:src="@drawable/tick" />
+
+                    <com.hitasoft.app.customclass.CustomTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal"
+                        android:singleLine="true"
+                        android:text="@string/hide_your_age"
+                        android:textColor="@color/primaryText"
+                        android:textSize="20sp"
+                        app:fonts="font_regular.ttf" />
+                </LinearLayout>
+
+                <com.hitasoft.app.customclass.CustomTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="5dp"
+                    android:text="@string/unlimited_likes_des"
+                    android:textAppearance="@android:style/TextAppearance.Small"
+                    android:textColor="@color/secondaryText"
+                    app:fonts="font_regular.ttf" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginRight="10dp"
+                        android:src="@drawable/tick" />
+
+                    <com.hitasoft.app.customclass.CustomTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal"
+                        android:singleLine="true"
+                        android:text="@string/no_ads"
+                        android:textColor="@color/primaryText"
+                        android:textSize="20sp"
+                        app:fonts="font_regular.ttf" />
+                </LinearLayout>
+
+                <com.hitasoft.app.customclass.CustomTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="5dp"
+                    android:text="@string/unlimited_likes_des"
+                    android:textAppearance="@android:style/TextAppearance.Small"
+                    android:textColor="@color/secondaryText"
+                    app:fonts="font_regular.ttf" />
+            </LinearLayout>
+
+        </ScrollView>
+
+        <com.hitasoft.app.customclass.CustomTextView
+            android:id="@+id/continu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/white_dialog_round_corner"
+            android:gravity="center_horizontal"
+            android:padding="15dp"
+            android:singleLine="true"
+            android:text="@string/continu"
+            android:textColor="@color/colorPrimary"
+            android:textSize="20sp"
+            app:fonts="font_regular.ttf" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true">
+
+        <com.hitasoft.app.customclass.RoundedImageView
+            android:id="@+id/profile_pic"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center"
+            android:background="@color/lightPrimary"
+            android:scaleType="centerCrop"
+            app:corner_radius="100dip"
+            app:round_background="true" />
+
+        <ImageView
+            android:id="@+id/premium_batch"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_alignBottom="@+id/profile_pic"
+            android:layout_alignRight="@+id/profile_pic"
+            android:src="@drawable/batch" />
+    </RelativeLayout>
+
+</RelativeLayout>

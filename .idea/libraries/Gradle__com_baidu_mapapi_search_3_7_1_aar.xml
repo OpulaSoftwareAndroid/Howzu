@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="Gradle: com.baidu.mapapi:search:3.7.1@aar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/search-3.7.1.aar/5ccd8bc2adc1c98d5094561f3c68f940/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/search-3.7.1.aar/5ccd8bc2adc1c98d5094561f3c68f940/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.hitasoft.app.customclass.CustomTextView
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="@string/login_with_wechat"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:fonts="font_bold.ttf" />
+
+    <com.hitasoft.app.customclass.CustomTextView
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"
+        android:lineSpacingExtra="3dp"
+        android:padding="5dp"
+        android:text="@string/login_with_wechat"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        app:fonts="font_regular.ttf" />
+
+</LinearLayout>

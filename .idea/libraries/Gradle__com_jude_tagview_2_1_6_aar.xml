@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="Gradle: com.jude:tagview:2.1.6@aar">
+    <CLASSES>
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/tagview-2.1.6.aar/d2b53e2698ab606ba142496915532ae2/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/tagview-2.1.6.aar/d2b53e2698ab606ba142496915532ae2/jars/classes.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.jude/tagview/2.1.6/504c8a27892cf04f708b724062686f13177609c0/tagview-2.1.6-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

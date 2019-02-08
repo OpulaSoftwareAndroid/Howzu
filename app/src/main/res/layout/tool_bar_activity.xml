@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/actionBarSize"
+    android:background="@color/white"
+    android:minHeight="?attr/actionBarSize"
+    app:contentInsetLeft="0dp"
+    app:contentInsetStart="0dp"
+    app:popupTheme="@style/AppTheme">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize">
+
+        <ImageView
+            android:id="@+id/backbtn"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center_vertical"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="10dp"
+            android:src="@drawable/back"
+            android:visibility="gone" />
+
+        <com.hitasoft.app.customclass.CustomTextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_toLeftOf="@+id/buttonLayout"
+            android:layout_toRightOf="@+id/backbtn"
+            android:gravity="left|center_vertical"
+            android:padding="10dp"
+            android:singleLine="true"
+            android:text=""
+            android:textColor="@color/primaryText"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:fonts="font_regular.ttf" />
+
+        <RelativeLayout
+            android:id="@+id/chatUserLay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="10dp"
+            android:layout_marginLeft="5dp"
+            android:layout_toEndOf="@id/backbtn"
+            android:layout_toStartOf="@+id/buttonLayout"
+            android:visibility="gone">
+
+            <com.hitasoft.app.customclass.RoundedImageView
+                android:id="@+id/userImg"
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                android:layout_marginTop="10dp"
+                android:layout_centerVertical="true"
+                android:adjustViewBounds="true"
+                android:background="@color/colorAccent"
+                android:scaleType="centerCrop"
+                app:corner_radius="100dip"
+                app:round_background="true" />
+
+            <com.hitasoft.app.customclass.CustomTextView
+                android:id="@+id/userName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/userImg"
+                android:gravity="center_vertical"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:singleLine="true"
+                android:text="User name"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/primaryText"
+                android:textSize="18sp"
+                app:fonts="font_regular.ttf" />
+
+            <com.hitasoft.app.customclass.CustomTextView
+                android:id="@+id/online"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/userName"
+                android:layout_toRightOf="@+id/userImg"
+                android:gravity="center_vertical"
+                android:paddingLeft="10dp"
+                android:maxWidth="130dp"
+                android:ellipsize="marquee"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:singleLine="true"
+                android:text="Online"
+                android:textColor="@color/primaryText"
+                android:textSize="12sp"
+                app:fonts="font_regular.ttf" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/buttonLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true">
+
+            <ImageView
+                android:id="@+id/audioCallBtn"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/optionbtn"
+                android:layout_gravity="center_vertical"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:padding="10dp"
+                android:src="@drawable/audio"
+                android:visibility="gone"
+                />
+            <ImageView
+                android:id="@+id/videoCallBtn"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center_vertical"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:padding="10dp"
+                android:src="@drawable/video"
+                android:visibility="gone"
+                android:layout_toStartOf="@+id/audioCallBtn"
+                android:layout_toLeftOf="@+id/audioCallBtn" />
+
+
+            <com.hitasoft.app.customclass.CustomTextView
+                android:id="@+id/save"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginLeft="5dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:gravity="center_vertical"
+                android:padding="10dp"
+                android:singleLine="true"
+                android:text="@string/save"
+                android:textColor="@color/colorPrimary"
+                android:textSize="18sp"
+                android:visibility="gone"
+                app:fonts="font_bold.ttf" />
+
+            <ImageView
+                android:id="@+id/optionbtn"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center_vertical"
+                android:layout_alignParentRight="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:padding="10dp"
+                android:src="@drawable/option"
+                android:visibility="gone"
+                android:layout_alignParentEnd="true" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/dividerColor" />
+
+    </RelativeLayout>
+
+</android.support.v7.widget.Toolbar>

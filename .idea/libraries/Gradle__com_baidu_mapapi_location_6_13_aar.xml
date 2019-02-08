@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: com.baidu.mapapi:location:6.13@aar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/location-6.13.aar/770bbd48e355a18438a7e2397f8dc229/jars/libs/locSDK_6.13.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/location-6.13.aar/770bbd48e355a18438a7e2397f8dc229/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/location-6.13.aar/770bbd48e355a18438a7e2397f8dc229/jars/classes.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

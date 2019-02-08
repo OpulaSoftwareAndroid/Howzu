@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/abc_popup_background_mtrl_mult">
+
+    <TextView
+        android:id="@+id/headerTxt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/dividerColor"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="Alert"
+        android:textAppearance="@android:style/TextAppearance.Medium"
+        android:textColor="@color/white" />
+
+    <TextView
+        android:id="@+id/subTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/headerTxt"
+        android:layout_marginTop="10dp"
+        android:padding="10dp"
+        android:text="@string/match_unselect"
+        android:textAppearance="@android:style/TextAppearance.Medium"
+        android:textColor="@color/primaryText" />
+
+    <CheckBox
+        android:id="@+id/check"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/subTxt"
+        android:layout_marginLeft="5dp"
+        android:text="Do not show again" />
+
+    <TextView
+        android:id="@+id/no"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/check"
+        android:layout_margin="10dp"
+        android:layout_toLeftOf="@+id/yes"
+        android:background="@drawable/secondary_text_rounded_corner"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="Cancel"
+        android:textColor="@color/white"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/yes"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/check"
+        android:layout_margin="10dp"
+        android:background="@drawable/secondary_text_rounded_corner"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="Ok"
+        android:textColor="@color/white" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:layout_below="@+id/yes" />
+
+
+</RelativeLayout>

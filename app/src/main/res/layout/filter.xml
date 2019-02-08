@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/mainLay"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg">
+
+    <include
+        android:id="@+id/actionbar"
+        layout="@layout/tool_bar_activity"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/actionbar">
+
+        <LinearLayout
+            android:id="@+id/main"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:orientation="vertical">
+
+            <com.hitasoft.app.customclass.CustomTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="15dp"
+                android:paddingLeft="15dp"
+                android:paddingTop="20dp"
+                android:text="@string/with_who"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                app:fonts="font_bold.ttf" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:orientation="horizontal">
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:padding="15dp">
+
+                    <RelativeLayout
+                        android:id="@+id/guy_img_lay"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true">
+
+                        <ImageView
+                            android:id="@+id/guy_bg"
+                            android:layout_width="70dp"
+                            android:layout_height="70dp"
+                            android:layout_centerInParent="true"
+                            android:src="@drawable/filter_bg_selector" />
+
+                        <ImageView
+                            android:id="@+id/guy"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_centerInParent="true"
+                            android:src="@drawable/guy" />
+                    </RelativeLayout>
+
+                    <com.hitasoft.app.customclass.CustomTextView
+                        android:id="@+id/guy_txt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/guy_img_lay"
+                        android:layout_centerHorizontal="true"
+                        android:paddingTop="10dp"
+                        android:text="@string/with_guy"
+                        android:textColor="@color/secondaryText"
+                        android:textSize="16sp"
+                        app:fonts="font_regular.ttf" />
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="0.5dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="15dp"
+                    android:layout_marginTop="15dp"
+                    android:background="@color/dividerColor" />
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:padding="15dp">
+
+                    <RelativeLayout
+                        android:id="@+id/girl_img_lay"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true">
+
+                        <ImageView
+                            android:id="@+id/girl_bg"
+                            android:layout_width="70dp"
+                            android:layout_height="70dp"
+                            android:layout_centerInParent="true"
+                            android:src="@drawable/filter_bg_selector" />
+
+                        <ImageView
+                            android:id="@+id/girl"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_centerInParent="true"
+                            android:src="@drawable/girl" />
+                    </RelativeLayout>
+
+                    <com.hitasoft.app.customclass.CustomTextView
+                        android:id="@+id/girl_txt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/girl_img_lay"
+                        android:layout_centerHorizontal="true"
+                        android:paddingTop="10dp"
+                        android:text="@string/with_girl"
+                        android:textColor="@color/secondaryText"
+                        android:textSize="16sp"
+                        app:fonts="font_regular.ttf" />
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <com.hitasoft.app.customclass.CustomTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="15dp"
+                android:paddingLeft="15dp"
+                android:paddingTop="20dp"
+                android:text="@string/people_from"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                app:fonts="font_bold.ttf" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:orientation="vertical">
+
+                <com.hitasoft.app.customclass.ExpandableHeightGridView
+                    android:id="@+id/people_grid"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:background="@color/dividerColor"
+                    android:horizontalSpacing="1dp"
+                    android:numColumns="3"
+                    android:stretchMode="columnWidth"
+                    android:verticalSpacing="1dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/locationLay"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@color/white"
+                android:orientation="vertical">
+
+                <com.hitasoft.app.customclass.CustomTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="15dp"
+                    android:paddingTop="15dp"
+                    android:text="@string/change_location"
+                    android:textColor="@color/primaryText"
+                    android:textSize="16sp"
+                    app:fonts="font_bold.ttf" />
+
+                <AutoCompleteTextView
+                    android:id="@+id/location"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:ellipsize="end"
+                    android:hint="@string/enter_search_location"
+                    android:imeOptions="actionDone"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:padding="15dp"
+                    android:popupBackground="@drawable/white_roundcorner"
+                    android:singleLine="true"
+                    android:textAppearance="@android:style/TextAppearance.Small"
+                    android:textColor="@color/primaryText"
+                    android:textColorHint="@color/dividerColor"
+                    android:textCursorDrawable="@drawable/cursor_drawable"
+                    android:theme="@style/MyEditText" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@color/white"
+                android:orientation="horizontal">
+
+                <com.hitasoft.app.customclass.CustomTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:paddingBottom="15dp"
+                    android:paddingLeft="15dp"
+                    android:paddingTop="15dp"
+                    android:text="@string/show_age"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    app:fonts="font_bold.ttf" />
+
+                <com.hitasoft.app.customclass.CustomTextView
+                    android:id="@+id/age_txt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="right|center_vertical"
+                    android:paddingBottom="15dp"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="15dp"
+                    android:paddingTop="15dp"
+                    android:text="18 - 55+"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    app:fonts="font_bold.ttf" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/age_lay"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:paddingBottom="15dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp">
+
+                <LinearLayout
+                    android:id="@+id/ageSeekLay"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:orientation="vertical">
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@color/white"
+                android:orientation="horizontal">
+
+                <com.hitasoft.app.customclass.CustomTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:paddingBottom="15dp"
+                    android:paddingLeft="15dp"
+                    android:paddingTop="15dp"
+                    android:text="@string/search_distance"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    app:fonts="font_bold.ttf" />
+
+                <com.hitasoft.app.customclass.CustomTextView
+                    android:id="@+id/distance"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="right|center_vertical"
+                    android:paddingBottom="15dp"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="15dp"
+                    android:paddingTop="15dp"
+                    android:text="18 - 100km."
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    app:fonts="font_bold.ttf" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/distance_lay"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:orientation="vertical"
+                android:background="@color/white"
+                android:paddingBottom="15dp">
+
+                <LinearLayout
+                    android:id="@+id/distanceSeekLay"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:orientation="vertical">
+
+                </LinearLayout>
+
+                <SeekBar
+                    android:id="@+id/distance_bar"
+                    style="@android:style/Widget.Holo.SeekBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:layout_marginTop="10dp"
+                    android:max="100"
+                    android:maxHeight="2dip"
+                    android:minHeight="2dip"
+                    android:progressDrawable="@drawable/thumb_selector"
+                    android:thumb="@drawable/seek_thumb_normal"
+                    android:visibility="gone" />
+            </LinearLayout>
+        </LinearLayout>
+
+    </ScrollView>
+
+    <com.hitasoft.app.customclass.ProgressWheel xmlns:wheel="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/progress"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        wheel:matProg_barColor="@color/colorPrimary"
+        wheel:matProg_progressIndeterminate="true" />
+
+    <com.hitasoft.app.customclass.CustomTextView
+        android:id="@+id/nullText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="Error occured, Please try after sometimes"
+        android:textAppearance="@android:style/TextAppearance.Medium"
+        android:textColor="@color/secondaryText"
+        android:visibility="gone"
+        app:fonts="font_regular.ttf" />
+
+</RelativeLayout>

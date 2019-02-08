@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/white_roundcorner">
+
+    <com.hitasoft.app.customclass.CustomTextView
+        android:id="@+id/headerTxt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/dividerColor"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="Logout"
+        android:textAppearance="@android:style/TextAppearance.Medium"
+        android:textColor="@color/white"
+        android:visibility="gone"
+        app:fonts="font_regular.ttf" />
+
+    <com.hitasoft.app.customclass.CustomTextView
+        android:id="@+id/subTxt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/headerTxt"
+        android:layout_marginBottom="10dp"
+        android:padding="20dp"
+        android:text="@string/reallySignOut"
+        android:textAppearance="@android:style/TextAppearance.Medium"
+        android:textColor="@color/primaryText"
+        app:fonts="font_regular.ttf" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:layout_gravity="end"
+        android:orientation="horizontal">
+
+        <com.hitasoft.app.customclass.CustomTextView
+            android:id="@+id/yes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="Yes"
+            android:textAppearance="@android:style/TextAppearance.Medium"
+            android:textColor="@color/colorPrimary"
+            app:fonts="font_regular.ttf" />
+
+
+        <com.hitasoft.app.customclass.CustomTextView
+            android:id="@+id/no"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="No"
+            android:textAppearance="@android:style/TextAppearance.Medium"
+            android:textColor="@color/primaryText"
+            app:fonts="font_regular.ttf" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        />
+
+
+</LinearLayout>

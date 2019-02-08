@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="Gradle: com.jaredlam.bubbleview:library:0.1.1@aar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/library-0.1.1.aar/7ad0561214ae06ee9e7414e44261e557/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/library-0.1.1.aar/7ad0561214ae06ee9e7414e44261e557/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.jaredlam.bubbleview/library/0.1.1/195cab36bdc2d069be61678bf6971637f324aa6a/library-0.1.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

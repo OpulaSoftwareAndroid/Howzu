@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mainLay"
+    android:background="@android:color/transparent"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="25dp">
+
+            <LinearLayout
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:orientation="vertical"
+                android:background="@drawable/white_rounded_stroke_corner_withoutpedding"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <EditText
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:id="@+id/email"
+                    android:gravity="center_vertical"
+                    android:hint="@string/email_id"
+                    android:fontFamily="@font/font_regular"
+                    android:textColorHint="@color/white"
+                    android:inputType="textEmailAddress"
+                    android:background="@android:color/transparent"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    tools:ignore="Autofill" />
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginTop="14dp"
+                    android:orientation="vertical"
+                    android:background="@drawable/white_rounded_stroke_corner_withoutpedding"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <EditText
+                        android:layout_marginRight="20dp"
+                        android:layout_marginLeft="20dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:id="@+id/password"
+                        android:gravity="center_vertical"
+                        android:hint="@string/password"
+                        android:fontFamily="@font/font_regular"
+                        android:textColorHint="@color/white"
+                        android:inputType="textPassword"
+                        android:background="@android:color/transparent"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        tools:ignore="Autofill" />
+                </LinearLayout>
+
+                <com.hitasoft.app.customclass.CustomTextView
+                    android:id="@+id/txtShowPassword"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:gravity="center_vertical"
+                    android:text="@string/show"
+                    android:textColor="@color/colorPrimary"
+                    android:visibility="gone"
+                    android:padding="10dp"
+                    android:background="?attr/selectableItemBackground"
+                    app:fonts="font_regular.ttf" />
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:orientation="vertical">
+
+                <com.hitasoft.app.customclass.CustomTextView
+                    android:id="@+id/signin"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:text="@string/login"
+                    android:clickable="true"
+                    app:textAllCaps="true"
+                    android:focusable="true"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/white_full_corner"
+                    android:gravity="center"
+                    android:textColor="@color/primaryText"
+                    android:textSize="18sp"
+                    app:fonts="font_regular.ttf"/>
+
+            </LinearLayout>
+
+
+
+            <com.hitasoft.app.customclass.CustomTextView
+                android:id="@+id/forgotPassword"
+                android:layout_width="match_parent"
+                android:layout_marginRight="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center"
+                android:padding="15dp"
+                android:text="Forgot Password?"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                app:fonts="font_regular.ttf" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "667028933441",
+    "firebase_url": "https://howzu-a2840.firebaseio.com",
+    "project_id": "howzu-a2840",
+    "storage_bucket": "howzu-a2840.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:667028933441:android:286bd027f46c29b7",
+        "android_client_info": {
+          "package_name": "com.hitasoft.app.howzu"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "667028933441-103f62j4ee9s133mdu151vqe9gu0fcti.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyABVCVka49-dmvb7MccXSPFNxaXR3HHuKE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

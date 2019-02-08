@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:keepScreenOn="true"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:id="@+id/videoCallView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <org.webrtc.SurfaceViewRenderer
+            android:id="@+id/remote_video_view"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:visibility="gone"
+            android:layout_height="match_parent" />
+
+        <org.webrtc.SurfaceViewRenderer
+            android:id="@+id/local_video_view"
+            android:layout_width="match_parent"
+            android:layout_gravity="bottom|end"
+            android:layout_height="match_parent" />
+
+    </FrameLayout>
+
+<RelativeLayout
+    android:id="@+id/parentLay"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/bgImg"
+        android:scaleType="centerCrop"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/callView">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="50dp"
+        android:orientation="vertical">
+
+    <com.hitasoft.app.customclass.RoundedImageView
+        android:id="@+id/userImage"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:adjustViewBounds="true"
+        android:background="@drawable/user_placeholder"
+        android:scaleType="centerCrop"
+        app:corner_radius="80dip"
+        app:round_background="true" />
+
+    <com.hitasoft.app.customclass.CustomTextView
+        android:id="@+id/userName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="7dp"
+        android:maxLines="1"
+        android:text="User Name"
+        android:textColor="@color/white"
+        android:textSize="25sp"
+        app:fonts="font_regular.ttf" />
+
+    <com.hitasoft.app.customclass.CustomTextView
+        android:id="@+id/callType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="7dp"
+        android:text="@string/ringing"
+        android:textColor="@color/call_green"
+        android:textSize="14sp"
+        app:fonts="font_regular.ttf" />
+
+        <com.hitasoft.app.customclass.CustomTextView
+            android:id="@+id/callTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginTop="7dp"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:visibility="gone"
+            app:fonts="font_regular.ttf" />
+
+
+    </LinearLayout>
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/declineLay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/dLay"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:orientation="horizontal"
+            android:layout_alignParentBottom="true"
+            android:weightSum="3">
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="60dp"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/muteCall"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:background="@drawable/white_round_opacity"
+                    android:padding="22dp"
+                    android:src="@drawable/mute" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/declineBtn"
+                android:layout_width="0dp"
+                android:layout_marginTop="60dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal">
+
+                <ImageView
+                android:id="@+id/declineCall"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:background="@drawable/call_red_round_background"
+                android:padding="22dp"
+                android:src="@drawable/call_cancel" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="60dp"
+                android:layout_weight="1"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/speakerCall"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:background="@drawable/white_round_opacity"
+                    android:padding="22dp" />
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/arrow"
+            android:layout_width="400dp"
+            android:layout_height="400dp"
+            android:layout_alignParentBottom="true"
+            android:paddingBottom="75dp"
+            android:layout_centerHorizontal="true"
+            app:lottie_autoPlay="true"
+            app:lottie_fileName="data.json"
+            app:lottie_loop="true"
+            android:visibility="gone"/>
+    </RelativeLayout>
+
+
+    <LinearLayout
+        android:id="@+id/acceptLay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone"
+        >
+        <com.hitasoft.app.customclass.CustomTextView
+            android:id="@+id/swipeUp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:maxLines="1"
+            android:text="@string/swipe_up_to_accept"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            app:fonts="font_regular.ttf" />
+
+        <ImageView
+            android:id="@+id/callImage"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:padding="22dp"
+            android:background="@drawable/call_green_round_background" />
+
+        <com.hitasoft.app.customclass.CustomTextView
+            android:id="@+id/swipeDown"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:paddingBottom="50dp"
+            android:gravity="center"
+            android:maxLines="1"
+            android:text="@string/swipe_down_to_decline"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            app:fonts="font_regular.ttf" />
+    </LinearLayout>
+
+
+</RelativeLayout>
+
+
+</FrameLayout>

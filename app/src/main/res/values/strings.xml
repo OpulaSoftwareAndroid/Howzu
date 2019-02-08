@@ -1,0 +1,248 @@
+<resources>
+    <string name="app_name">Howzu</string>
+    <string name="drawer_open">open</string>
+    <string name="drawer_close">close</string>
+    <string name="view_profile">View Profile</string>
+    <string name="discovery_preferences">Discovery Preferences</string>
+    <string name="app_settings">App Settings</string>
+    <string name="need_help">Need Help?</string>
+    <string name="share">Share</string>
+    <string name="discovery_des">Change who you see or hide yourself</string>
+    <string name="setting_des">Notifications, account and more</string>
+    <string name="help_des">FAQ, contact and more</string>
+    <string name="share_des">Sharing is caring</string>
+    <string name="reallySignOut">Do you really want to logout\u003F</string>
+    <string name="search">Search</string>
+    <string name="unmatch">Unmatch</string>
+    <string name="match_unselect">If you unselect means request from your friends will not shown in notification page</string>
+    <string name="location_note">Note: Please choose your location from dropdown</string>
+    <string name="location_verified">Your location is verified</string>
+    <string name="location_empty">Location should not be empty</string>
+    <string name="signinto">Sign in to Howzu</string>
+    <string name="search_null">Matches you search is not found</string>
+    <string name="match_null">You have no matches yet</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="ok">Ok</string>
+    <string name="cancel">Cancel</string>
+    <string name="alert">Alert</string>
+    <string name="decline_alert">If you decline means this person will not come back to your suggestions</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="rta_dialog_title">Rate this app</string>
+    <string name="rta_dialog_message">If you enjoy using this app, would you mind taking a moment to rate it? It won\'t take more than a minute. Thank you for your support!</string>
+    <string name="rta_dialog_ok">Rate now</string>
+    <string name="rta_dialog_cancel">Later</string>
+    <string name="rta_dialog_no">No, thanks</string>
+
+    <string name="people_near_by">People near by</string>
+    <string name="find_new_people">Find new people</string>
+    <string name="visitors">Visitors</string>
+    <string name="message">Message</string>
+    <string name="friends">Friends</string>
+    <string name="liked">Liked</string>
+    <string name="matchmaker_feature">Matchmaker Feature</string>
+    <string name="menu_item_notification">Notification</string>
+
+    <string name="friend_request">Friend Requests</string>
+    <string name="become_premium_member">Become a Premium Member</string>
+    <string name="help">Help More</string>
+    <string name="save">Save</string>
+    <string name="with_who">With who?</string>
+    <string name="with_guy">With a guy</string>
+    <string name="with_girl">With a girl</string>
+    <string name="people_from">People from?</string>
+    <string name="make_new_friend">Make a new friend</string>
+    <string name="timepass">Time pass</string>
+    <string name="date">Date</string>
+    <string name="sex">Sex</string>
+    <string name="change_location">Change location</string>
+    <string name="enter_search_location">Enter search location</string>
+    <string name="show_age">Show age</string>
+    <string name="search_distance">Search distance</string>
+    <string name="filter">Filter</string>
+    <string name="find_unlimited_people">Find a unlimited people</string>
+    <string name="get_unlimited_likes">Get unlimited likes</string>
+    <string name="app_of_day">App of the day</string>
+    <string name="checkout_app_of_day">Hey, check out our app of the
+        day!</string>
+    <string name="download_the_app">Download the app</string>
+    <string name="all_message">All message</string>
+    <string name="online">Online</string>
+    <string name="unread">Unread</string>
+    <string name="favorite">Favorite</string>
+    <string name="all_friends">All friends</string>
+    <string name="join_premium">Join premium</string>
+    <string name="change_your_location">Change your location</string>
+    <string name="change_loc_des">Discover new and interesting people around the world</string>
+    <string name="send_more_likes">Send more likes</string>
+    <string name="send_likes_des">Expose your interest by sending unlimited likes</string>
+    <string name="rewind_lastswipe">Rewind your last swipe</string>
+    <string name="rewind_swipe_des">Never miss the people you liked or unliked by rewinding your swipe</string>
+    <string name="continu">Continue</string>
+    <string name="congratulation">Congratulation!</string>
+    <string name="whole_network_is_in_your_hand">Whole network is in your hand.</string>
+    <string name="unlimited_likes">Unlimited likes</string>
+    <string name="unlimited_likes_des">Reference site about lorem ipsum, giving information on its origins, as well</string>
+    <string name="find_people_any_location">Find people any location</string>
+    <string name="you_are_invisible">You are in invisible</string>
+    <string name="hide_your_age">Hide your age</string>
+    <string name="no_ads">No ads</string>
+    <string name="send_a_message">Send a message</string>
+    <string name="im_here_to">I am here to</string>
+    <string name="control_your_profile">Control your profile</string>
+    <string name="dont_show_my_age">Dont show my age</string>
+    <string name="make_my_distance_invisible">Make my distance invisible</string>
+    <string name="make_me_invisible">Make me invisible</string>
+    <string name="hide_ads">Hide ads</string>
+    <string name="notification_setting">Notification setting?</string>
+    <string name="new_messages">New messages</string>
+    <string name="likes">Likes</string>
+    <string name="logout">Logout</string>
+    <string name="deactivate_account">Deactivate account</string>
+    <string name="setting">Setting</string>
+    <string name="go_to_setting">Go to setting</string>
+    <string name="report_user">Report user</string>
+    <string name="undo_report">Undo Report</string>
+    <string name="login_with_wechat">Login with wechat</string>
+    <string name="find_people_near_you">Find people near you</string>
+    <string name="swipe_find_matches">Swipe to find a matches</string>
+    <string name="chat_with_your_matches">Chat with your matches</string>
+    <string name="enter_your_location"><p>Enter your</p>
+<p>location</p></string>
+    <string name="join_with">Join with Howzu</string>
+    <string name="please_enter_your_location">Please enter your location</string>
+    <string name="really_deactivate_account">Do you really want to deactivate this account\u003F</string>
+    <string name="add_more_photo">Add more photo</string>
+    <string name="default_photo">Default photo</string>
+    <string name="delete">Delete</string>
+    <string name="delete_image">Do you really want to delete this image\u003F</string>
+    <string name="default_image">Do you really want to change this image as default\u003F</string>
+    <string name="please_wait">Please wait..</string>
+    <string name="pick_image_intent_text">Choose an image</string>
+    <string name="url_invalid">Url is invalid</string>
+    <string name="really_report">Do you really want to report this user\u003F</string>
+    <string name="really_undo_report">Do you really want to undo your report\u003F</string>
+    <string name="network_failure">Sorry! Not connected to internet</string>
+    <string name="response_failure">Sorry! Server not responding,try again</string>
+
+    <string name="block">Block</string>
+    <string name="unblock">UnBlock</string>
+    <string name="something_went_wrong">Sorry!! Something went to be wrong</string>
+    <string name="really_block">Do you really want to block this user\u003F</string>
+    <string name="really_unblock">Do you really want to unblock this user\u003F</string>
+    <string name="account_deactivated">account is currently deactivated</string>
+    <string name="you_blocked">You have blocked this user, Click Unblock to start chatting</string>
+    <string name="no_conversation">No Conversation</string>
+    <string name="start_your_conversation">Start your conversation now!</string>
+    <string name="no_friends">No Friends</string>
+    <string name="start_making_friends">Start making friends now!</string>
+    <string name="no_request">No Request</string>
+    <string name="update_your_profile">Update your profile!</string>
+    <string name="no_visitors">No Visitors</string>
+    <string name="no_notification">No Notification</string>
+    <string name="no_people">No people in your location</string>
+    <string name="really_exit">Do you really want to exit\u003F</string>
+    <string name="sorry_media_file_doesnt_exit">Sorry, this media file doesn\'t exist on your internal storage</string>
+    <string name="user_deactivated">This user deactivated his account!! You can\'t contact until his account activated!!</string>
+    <string name="signing_agree_tos">By using our Services. you are agreeing to these terms. <u>Terms &amp; Conditions</u></string>
+    <string name="terms_conditions">Terms and conditions</string>
+    <string name="no_favorite">No favorited people</string>
+    <string name="no_online">No online people</string>
+    <string name="other_blocked">has blocked this conversation!! You can\'t contact until unblock again!!</string>
+
+
+    <string name="cam_txt">&#xf030;</string>
+
+    <string name="cheese_ipsum">Jarlsberg lancashire edam. Dolcelatte hard cheese brie st. agur blue
+    cheese caerphilly.</string>
+    <string name="lorem_ipsum">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever</string>
+    <string name="gps_settings">GPS Settings</string>
+    <string name="gps_notenabled">GPS is not enabled. Do you want to enable GPS? Go to Settings menu?</string>
+    <string name="settings">Settings</string>
+    <string name="permission_rationale">Location permission is needed for core functionality</string>
+    <string name="permission_denied_explanation">Permission was denied, but is needed for core
+        functionality.</string>
+    <string name="signup">Signup</string>
+    <string name="signin">Signin</string>
+
+    <string name="Passwordfilter">abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ.$@#%-*:?!_,&amp;</string>
+    <string name="Emailfilter">abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ.@-_</string>
+    <string name="fullnamefilter">abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ .@-_</string>
+    <string name="clear_chat">Clear Chat</string>
+    <string name="clear_confirmation_msg">Are you sure to clear messages?</string>
+    <string name="unfriend_user">UnFriend</string>
+    <string name="really_unfriend">Are you sure to unfriend this user?</string>
+    <string name="permission_denied">Permisssion Denied</string>
+    <string name="valid_location">Location not found</string>
+    <string name="swipe_up_to_accept">Swipe up to accept</string>
+    <string name="swipe_down_to_decline">Swipe down to decline</string>
+    <string name="ringing">Ringing...</string>
+    <string name="audio_calling">Audio Calling</string>
+    <string name="video_calling">Video Calling</string>
+
+    <string name="pref_speakerphone_key">speakerphone_preference</string>
+    <string name="pref_speakerphone_title">Speakerphone.</string>
+    <string name="pref_speakerphone_dlg">Speakerphone.</string>
+    <string name="pref_speakerphone_default">auto</string>
+    <string name="forgot_password">Forgot password</string>
+    <string name="password">Password</string>
+    <string name="email">Email</string>
+    <string name="reset">Reset</string>
+    <string name="please_verify_mail">Please verify the mail id</string>
+    <string name="change_password">Change Password</string>
+    <string name="old_password">Old password</string>
+    <string name="new_password">New Password</string>
+    <string name="re_enter_password">Re-enter Password</string>
+
+    <string name="fb_appId">718268961615879</string>
+    <string name="baidu_api_key_id">qX4HqCTKQcWWrRGqniCuxxHr1QrtHxqG</string>
+
+    <string name="file_provider_authority" translatable="false">com.hitasoft.app.customclass.ImagePicker</string>
+    <string name="show">Show</string>
+    <string name="add_photos_and_get_more_like">Add Photos and\nget more like</string>
+    <string name="skip">Skip</string>
+    <string name="add_photo">Add Photo</string>
+    <string name="my_interest">My Interest</string>
+    <string name="finish">Finish</string>
+    <string name="howzu_premium">Howzu Premium</string>
+    <string name="basic_info">Basic Info</string>
+    <string name="search_your_interest">Search your Interest</string>
+    <string name="location">Location</string>
+    <string name="profile">Profile</string>
+    <string name="name">Name</string>
+    <string name="age">Age</string>
+    <string name="gender">Gender:</string>
+    <string name="about_you">About you</string>
+    <string name="what_makes_you_stand_out">What makes you stand out?</string>
+    <string name="enter_name">Enter Name</string>
+    <string name="enter_age">Enter Age</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="your_premium_end_on">Your Premium end on</string>
+    <string name="update_description">Update: Please update app to new version</string>
+    <string name="okay">Okay</string>
+    <string name="nope">Nope</string>
+    <string name="location_permission_description">This app requires location permission. Please turn on</string>
+    <string name="permission_description">This app requires some permissions to access the features. Please turn on</string>
+    <string name="grant">Grant</string>
+    <string name="hide">Hide</string>
+    <string name="login">Login</string>
+    <string name="email_id">Email ID</string>
+    <string name="register">Register</string>
+    <string name="radio_male">Male</string>
+    <string name="radio_female">Female</string>
+    <string name="prompt">Select Country</string>
+
+    <string name="resend_code"><u>Resend Code</u></string>
+    <string name="without_matchmaker_member">Without Matchmaker Member</string>
+    <string name="subcription_plans">Subcription Plans</string>
+
+
+    <string name="network_time_out_error">Something went wrong, Please try again later!!!</string>
+    <string name="network_error">No internet connection. Make sure Wi-Fi or cellular data is turned on, then try again.</string>
+    <string name="notification">Notification</string>
+
+</resources>
+

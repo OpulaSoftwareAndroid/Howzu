@@ -1,0 +1,16 @@
+<resources>
+
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <!-- Default Parallax ImageView Height  -->
+    <dimen name="size_default_height">400dp</dimen>
+
+    <dimen name="rippleStrokeWidth">2dp</dimen>
+    <dimen name="rippleRadius">64dp</dimen>
+
+    <dimen name="ic_clear_margin">16dp</dimen>
+
+    <dimen name="grid_space">20dp</dimen>
+</resources>
