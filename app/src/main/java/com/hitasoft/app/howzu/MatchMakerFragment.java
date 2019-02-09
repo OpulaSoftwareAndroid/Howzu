@@ -43,17 +43,25 @@ import com.hitasoft.app.model.MatchMackerDetailModel;
 import com.hitasoft.app.model.MyMembersModel;
 import com.hitasoft.app.utils.CommonFunctions;
 import com.hitasoft.app.utils.Constants;
+import com.hitasoft.app.utils.DefensiveClass;
 import com.hitasoft.app.utils.GetSet;
 import com.hitasoft.app.webservice.RestClient;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
+
+import static com.hitasoft.app.utils.Constants.TAG_IMAGE;
 
 public class MatchMakerFragment extends Fragment implements View.OnClickListener {
     String TAG = "MatchMakerFragment";
@@ -71,13 +79,15 @@ public class MatchMakerFragment extends Fragment implements View.OnClickListener
     MyMemberAdapter myMemberAdapter;
     NotMatchMakerMemberAdapter matchmakerMemberAdapter;
     ViewPagerAdapter viewPagerAdapter;
+    HashMap<String, String> haspMapProfileDetails = new HashMap<String, String>();
+
     CustomTextView help_more;
     TextView txtDinner, txtVideo, txtAsk, txtname, txtStudy, txtAddress;
     ImageView imgAsk, imgVideo, imgDinner,imageViewMatchMakerProfile;
     BottomSheetDialog dialogMenu;
     String selectedPosition = "";
     GridView grid_view;
-
+    String strFriendID,strUserID;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.i(TAG, "onCreateView");
@@ -85,6 +95,17 @@ public class MatchMakerFragment extends Fragment implements View.OnClickListener
 
         initViews(view);
 
+
+        if(getArguments()!=null) {
+           strFriendID = getArguments().getString(Constants.TAG_FRIEND_ID);
+           strUserID = getArguments().getString(Constants.TAG_REGISTERED_ID);
+        }
+
+        strUserID=GetSet.getUserId();
+        strFriendID=GetSet.getFriendId();
+
+        System.out.println("jigar the friend id when enter to matchmaker fragment "+strFriendID);
+        System.out.println("jigar the user id when enter to matchmaker fragment "+strUserID);
 
         //Interests
         interestsAry.add("gaming");
@@ -115,6 +136,7 @@ public class MatchMakerFragment extends Fragment implements View.OnClickListener
 
         LinearLayoutManager horizontalLayoutManagaer1 = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         recycler_without_matchmaker.setLayoutManager(horizontalLayoutManagaer1);
+
 
         getMatchMakerDetails();
 
@@ -169,8 +191,9 @@ public class MatchMakerFragment extends Fragment implements View.OnClickListener
         if (CommonFunctions.isNetwork(Objects.requireNonNull(getActivity()))) {
             CommonFunctions.showProgressDialog(getContext());
             System.out.println("jigar the received fragment friend id  is "+GetSet.getFriendId());
-            RequestBody registerId = RequestBody.create(MediaType.parse("text/plain"), GetSet.getUserId());
-            RequestBody friendID = RequestBody.create(MediaType.parse("text/plain"), "46346028");
+            RequestBody registerId = RequestBody.create(MediaType.parse("text/plain"), strUserID);
+            RequestBody friendID = RequestBody.create(MediaType.parse("text/plain"),strFriendID);
+
             new RestClient(getContext()).getInstance().get().getgirlprofiledetail(registerId, friendID).enqueue(new Callback<MatchMackerDetailModel>() {
                 @Override
                 public void onResponse(Call<MatchMackerDetailModel> call, retrofit2.Response<MatchMackerDetailModel> response) {
@@ -212,7 +235,11 @@ public class MatchMakerFragment extends Fragment implements View.OnClickListener
                     try {
                         CommonFunctions.hideProgressDialog(getContext());
                         Toast.makeText(getContext(), getString(R.string.network_error), Toast.LENGTH_SHORT).show();
+                        System.out.println("jigar the error on failure fragment friend id  is "+t.getMessage());
+
                     } catch (Exception e) {
+                        System.out.println("jigar the error exception on failure fragment friend id  is "+t.getMessage());
+
                         e.printStackTrace();
                     }
                 }
@@ -220,6 +247,127 @@ public class MatchMakerFragment extends Fragment implements View.OnClickListener
         } else {
             Toast.makeText(getContext(), getString(R.string.network_error), Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void getMatchMakerProfile() {
+        if (CommonFunctions.isNetwork(Objects.requireNonNull(getContext()))) {
+            CommonFunctions.showProgressDialog(getContext());
+
+            StringRequest req = new StringRequest(Request.Method.POST, Constants.API_NEW_VIEW_PROFILE_DETAIL,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String res) {
+                            try {
+                                Log.v(TAG, "getProfileRes=" + res);
+                                System.out.println("jigar the response on view profile is " + res);
+                                JSONObject json = new JSONObject(res);
+                                String strStatus = DefensiveClass.optString(json, Constants.TAG_STATUS);
+                                if (strStatus.equals("1")) {
+                                    JSONObject jsonObjectMainInfo = json.getJSONObject(Constants.TAG_INFO);
+                                    JSONObject jsonObjectMainUserInfo = jsonObjectMainInfo.getJSONObject(Constants.TAG_USER_INFO);
+
+                                    //    sendMatch = DefensiveClass.optString(jsonObject, Constants.TAG_SEND_MATCH);
+
+                                    haspMapProfileDetails.put(Constants.TAG_REGISTERED_ID, jsonObjectMainUserInfo.getString(Constants.TAG_REGISTERED_ID));
+                                    haspMapProfileDetails.put(Constants.TAG_NEW_USERNAME, jsonObjectMainUserInfo.getString(Constants.TAG_NEW_USERNAME));
+                                    //          haspMapProfileDetails.put(Constants.TAG_GENDER, DefensiveClass.optString(jsonObject, Constants.TAG_GENDER));
+                                    haspMapProfileDetails.put(Constants.TAG_AGE, jsonObjectMainUserInfo.getString(Constants.TAG_AGE));
+                                    haspMapProfileDetails.put(Constants.TAG_BIO, jsonObjectMainUserInfo.getString(Constants.TAG_BIO));
+                                    haspMapProfileDetails.put(Constants.TAG_LATITUDE, jsonObjectMainUserInfo.getString(Constants.TAG_LATITUDE));
+                                    haspMapProfileDetails.put(Constants.TAG_LONGITUDE, jsonObjectMainUserInfo.getString(Constants.TAG_LONGITUDE));
+                                    haspMapProfileDetails.put(Constants.TAG_ONLINE_STATUS, jsonObjectMainUserInfo.getString(Constants.TAG_ONLINE_STATUS));
+                                    haspMapProfileDetails.put(Constants.TAG_LOCATION, jsonObjectMainUserInfo.getString(Constants.TAG_LOCATION));
+                                    haspMapProfileDetails.put(Constants.TAG_INFO, jsonObjectMainUserInfo.getString(Constants.TAG_INFO));
+                                    haspMapProfileDetails.put(Constants.TAG_INTEREST, jsonObjectMainUserInfo.getString(Constants.TAG_INTEREST));
+                                    haspMapProfileDetails.put(Constants.TAG_INTEREST_PLAN, jsonObjectMainUserInfo.getString(Constants.TAG_INTEREST_PLAN));
+                                    haspMapProfileDetails.put(Constants.TAG_PROFILE_IMAGE, jsonObjectMainUserInfo.getString(Constants.TAG_PROFILE_IMAGE));
+                                    haspMapProfileDetails.put(Constants.TAG_IMAGES, jsonObjectMainUserInfo.getString(Constants.TAG_IMAGES));
+                                    haspMapProfileDetails.put(Constants.TAG_AGE_STATUS, jsonObjectMainUserInfo.getString(Constants.TAG_AGE_STATUS));
+                                    haspMapProfileDetails.put(Constants.TAG_DISTANCE_STATUS, jsonObjectMainUserInfo.getString(Constants.TAG_DISTANCE_STATUS));
+                                    haspMapProfileDetails.put(Constants.TAG_INVISIBLE_STATUS, jsonObjectMainUserInfo.getString(Constants.TAG_INVISIBLE_STATUS));
+                                    //  haspMapProfileDetails.put(Constants.TAG_REPORT, DefensiveClass.optString(jsonObject, Constants.TAG_REPORT));
+                                    haspMapProfileDetails.put(Constants.TAG_PREMIUM_FROM, jsonObjectMainUserInfo.getString(Constants.TAG_PREMIUM_FROM));
+                                    //   haspMapProfileDetails.put(Constants.TAG_MEMBERSHIP_VALID, DefensiveClass.optString(jsonObject, Constants.TAG_MEMBERSHIP_VALID));
+                                    //    haspMapProfileDetails.put(Constants.TAG_SEND_MATCH, sendMatch);
+                                    haspMapProfileDetails.put(TAG_IMAGE, jsonObjectMainUserInfo.getString(TAG_IMAGE));
+
+                                    CommonFunctions.hideProgressDialog(getContext());
+
+                                    System.out.println("jigar the response on images we have view profile is " + haspMapProfileDetails.get(TAG_IMAGE));
+
+//                                    checkUser();
+//                                    setProfile();
+
+                                } else if (strStatus.equals("0")) {
+                                    System.out.println("jigar the error in status json response on view profile is " + json.getString(Constants.TAG_MSG));
+
+                                    CommonFunctions.disabledialog(getContext(), "Error", json.getString("message"));
+                                }
+                            } catch (JSONException e) {
+                                System.out.println("jigar the error in json response on view profile is " + e);
+                                e.printStackTrace();
+                            }
+                            //                        catch (NullPointerException e) {
+                            //                            System.out.println("jigar the error in null pointeron view profile is "+e);
+                            //
+                            //                            e.printStackTrace();
+                            //                        }
+                            catch (Exception e) {
+                                System.out.println("jigar the error main exception view profile is " + e);
+                                e.printStackTrace();
+                            }
+                        }
+                    }, new Response.ErrorListener() {
+
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    VolleyLog.d(TAG, "Error: " + error.getMessage());
+                    System.out.println("jigar the error in volley response view profile is " + error.getMessage());
+                    Toast.makeText(getContext(),R.string.something_went_wrong,Toast.LENGTH_LONG).show();
+                    CommonFunctions.hideProgressDialog(getContext());
+
+                }
+
+            }) {
+
+                //            @Override
+                //            public Map<String, String> getHeaders() throws AuthFailureError {
+                //                Map<String, String> map = new HashMap<String, String>();
+                //                map.put(Constants.TAG_AUTHORIZATION, pref.getString(Constants.TAG_AUTHORIZATION, ""));
+                //                return map;
+                //            }
+
+                @Override
+                protected Map<String, String> getParams() {
+                    Map<String, String> map = new HashMap<String, String>();
+                    //if (GetSet.getUserId().equals(strFriendID))
+                    {
+
+                        //                    GetSet.setUserId("96519710");
+                        //                    map.put(Constants.TAG_REGISTERED_ID,"96519710");
+                        map.put(Constants.TAG_REGISTERED_ID, GetSet.getUserId());
+
+                        map.put(Constants.TAG_FRIEND_ID, strFriendID);
+                    }
+                    // else
+                    //                    {
+                    //                    map.put(Constants.TAG_REGISTERED_ID, GetSet.getUserId());
+                    //                    map.put(Constants.TAG_FRIEND_ID, strFriendID);
+                    //                }
+                    // map.put(Constants.TAG_TIMESTAMP, String.valueOf(System.currentTimeMillis() / 1000L));
+                    Log.v("params", "getProfileParams=" + map);
+                    return map;
+                }
+
+            };
+            HowzuApplication.getInstance().addToRequestQueue(req, TAG);
+        }else {
+            CommonFunctions.hideProgressDialog(getContext());
+
+            Toast.makeText(getContext(), getString(R.string.network_error), Toast.LENGTH_SHORT).show();
+        }
+
+
     }
 
     @Override

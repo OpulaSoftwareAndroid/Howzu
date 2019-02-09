@@ -394,19 +394,24 @@ public class MainScreenActivity extends AppCompatActivity implements View.OnClic
         // If the criteria is satisfied, "Rate this app" dialog will be shown
         RateThisApp.showRateDialogIfNeeded(this);
 
-        ImageView imageViewMatchMakerProfile=findViewById(R.id.imageViewMatchMakerProfile);
-
-        imageViewMatchMakerProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                switchContent(new MatchMakerFragment());
-                Bundle bundle=new Bundle();
-                bundle.putString(Constants.TAG_FRIEND_ID, "From Activity");
-                MatchMakerFragment matchMakerFragment=new MatchMakerFragment();
-                matchMakerFragment.setArguments(bundle);
-
-            }
-        });
+//        ImageView imageViewMatchMakerProfile=findViewById(R.id.imageViewMatchMakerProfile);
+//
+//        imageViewMatchMakerProfile.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                switchContent(new MatchMakerFragment());
+//                GetSet.setFriendId("96639683");
+//                Bundle bundle=new Bundle();
+//// STATIC UNTIL USER BY DETAIL RESPONSE DOES NOT HAVE MATCH MAKER ID
+//                bundle.putString(Constants.TAG_FRIEND_ID, "96639683");  //match maker id
+//                bundle.putString(Constants.TAG_REGISTERED_ID, GetSet.getUserId());  // register id
+//
+////                bundle.putString(Constants.TAG_FRIEND_ID, "96639683");
+//                MatchMakerFragment matchMakerFragment=new MatchMakerFragment();
+//                matchMakerFragment.setArguments(bundle);
+//
+//            }
+//        });
 
 //
 //        ImageView imageViewLikeMatchMaker=findViewById(R.id.imageViewLikeMatchMaker);
@@ -827,6 +832,15 @@ public class MainScreenActivity extends AppCompatActivity implements View.OnClic
                 mDrawerLayout.closeDrawers();
                 if (!currentFragment.equals("Matchmaker Feature")) {
                     switchContent(new MatchMakerFragment());
+  //                  strUserID=GetSet.getUserId();
+                    GetSet.setFriendId("96639683");
+                    Bundle bundle=new Bundle();
+// STATIC UNTIL USER BY DETAIL RESPONSE DOES NOT HAVE MATCH MAKER ID
+                    bundle.putString(Constants.TAG_FRIEND_ID, "96639683");  //match maker id
+                    bundle.putString(Constants.TAG_REGISTERED_ID, GetSet.getUserId());  // register id
+
+//                    strFriendID=GetSet.getFriendId();
+
                 }
                 break;
             case R.id.filterbtn:

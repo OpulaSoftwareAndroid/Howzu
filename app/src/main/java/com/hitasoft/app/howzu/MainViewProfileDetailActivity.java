@@ -86,7 +86,8 @@ import static com.hitasoft.app.utils.Constants.TAG_IMAGE;
  */
 
 public class MainViewProfileDetailActivity extends AppCompatActivity implements View.OnClickListener
-        , NetworkReceiver.ConnectivityReceiverListener {
+        , NetworkReceiver.ConnectivityReceiverListener
+{
     String TAG = "MainViewProfileDetailActivity";
 
     FloatingActionButton fab, fab2, batch;
@@ -231,7 +232,7 @@ public class MainViewProfileDetailActivity extends AppCompatActivity implements 
         editor = pref.edit();
 
         getProfile();
-
+        visitProfile();
         // register connection status listener
         HowzuApplication.getInstance().setConnectivityListener(this);
 
@@ -903,12 +904,13 @@ public class MainViewProfileDetailActivity extends AppCompatActivity implements 
     }
 
     private void visitProfile() {
-        StringRequest req = new StringRequest(Request.Method.POST, Constants.API_VISIT_PROFILE,
+        StringRequest req = new StringRequest(Request.Method.POST, Constants.API_NEW_VISIT_PROFILE,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String res) {
                         try {
                             Log.v(TAG, "visitProfileRes=" + res);
+                            System.out.println("jigar the response in visitor is "+ res);
                             JSONObject json = new JSONObject(res);
                             if (DefensiveClass.optString(json, Constants.TAG_STATUS).equalsIgnoreCase("true")) {
 
@@ -928,22 +930,28 @@ public class MainViewProfileDetailActivity extends AppCompatActivity implements 
             @Override
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
+                System.out.println("jigar the volley error in response  is "+ error.getMessage());
+
             }
 
         }) {
 
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> map = new HashMap<String, String>();
-                map.put(Constants.TAG_AUTHORIZATION, pref.getString(Constants.TAG_AUTHORIZATION, ""));
-                return map;
-            }
+//            @Override
+//            public Map<String, String> getHeaders() throws AuthFailureError {
+//                Map<String, String> map = new HashMap<String, String>();
+//                map.put(Constants.TAG_AUTHORIZATION, pref.getString(Constants.TAG_AUTHORIZATION, ""));
+//                return map;
+//            }
 
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> map = new HashMap<String, String>();
-                map.put(Constants.TAG_USERID, GetSet.getUserId());
-                map.put(Constants.TAG_VISIT_USER_ID, strFriendID);
+                map.put(Constants.TAG_NEW_USERID, strFriendID);
+//                map.put(Constants.TAG_VISIT_USER_ID, strFriendID);
+                map.put(Constants.TAG_NEW_VISIT_USER_ID, GetSet.getUserId());
+
+                System.out.println("jigar the visitor is "+ map);
+
                 Log.v(TAG, "visitProfileParams=" + map);
                 return map;
             }

@@ -7,8 +7,8 @@ android {
         applicationId "com.hitasoft.app.howzu"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 20
-        versionName "3.2.3"
+        versionCode 21
+        versionName "3.2.4"
         renderscriptTargetApi 27
         renderscriptSupportModeEnabled true
         multiDexEnabled true
@@ -116,7 +116,6 @@ dependencies {
     implementation files('libs/autobanh.jar')
     implementation files('libs/base_java.jar')
     implementation files('libs/libjingle_peerconnection.jar')
-
     //    implementation files('libs/BaiduLBS_Android.jar')
 
     //    implementation files('libs/BaiduLBS_Android.jar')
@@ -165,5 +164,4 @@ dependencies {
     //    implementation 'com.github.car2go.AnyMaps:anymaps-baidu:x.y.z'
     implementation 'com.baidu.mapapi:location:6.13'
 }
-
 apply plugin: 'com.google.gms.google-services'

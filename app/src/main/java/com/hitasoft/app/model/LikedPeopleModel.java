@@ -79,7 +79,7 @@ public class LikedPeopleModel {
         private String status;
         @SerializedName("matchMaker")
         @Expose
-        private String matchMaker;
+        private double matchMaker;
 
         public Integer getNotificationId() {
             return notificationId;
@@ -104,11 +104,11 @@ public class LikedPeopleModel {
         public void setFriendId(String friendId) {
             this.friendId = friendId;
         }
-        public String getMatchMaker() {
+        public double getMatchMaker() {
             return matchMaker;
         }
 
-        public void setMatchMaker(String matchMaker) {
+        public void setMatchMaker(double matchMaker) {
             this.matchMaker = matchMaker;
         }
 

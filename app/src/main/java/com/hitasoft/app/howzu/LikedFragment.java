@@ -160,9 +160,8 @@ public class LikedFragment extends Fragment implements DiscreteScrollView.OnItem
             }
             System.out.println("jigar the friend id is "+data.get(position).getMatchMaker());
 
-            if(data.get(position).getMatchMaker().equals("0"))
-//                if(data.get(position).getMatchMaker()==0))
-
+          //  if(data.get(position).getMatchMaker().equals("0"))
+                if(data.get(position).getMatchMaker()==0.0)
             {
                 holder.imageViewLikeMatchMaker.setVisibility(View.GONE);
             }else
@@ -177,6 +176,7 @@ public class LikedFragment extends Fragment implements DiscreteScrollView.OnItem
                 public void onClick(View view) {
                     System.out.println("jigar the friend id is "+data.get(position).getMatchMaker());
                     GetSet.setFriendId(String.valueOf(data.get(position).getMatchMaker()));
+
                     switchContent(new MatchMakerFragment());
                 }
             });

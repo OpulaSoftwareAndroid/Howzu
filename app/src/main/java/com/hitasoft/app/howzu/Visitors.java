@@ -58,7 +58,7 @@ public class Visitors extends Fragment implements View.OnClickListener {
     ProgressWheel progress;
     TextView becomePremium;
     RecyclerView recyclerView;
-
+    String strUserID;
     public static Context context;
     CustomStaggeredGridLayoutManager mStagLayoutManager;
     GridLayoutManager mLayoutManager;
@@ -81,6 +81,7 @@ public class Visitors extends Fragment implements View.OnClickListener {
         premiumLay = view.findViewById(R.id.premium_lay);
         premiumView = view.findViewById(R.id.view);
         becomePremium = view.findViewById(R.id.become_premium);
+        strUserID="84c515a0-1b01-11e9-9b55-6b6474cbadea";
         return view;
     }
 
@@ -377,31 +378,37 @@ public class Visitors extends Fragment implements View.OnClickListener {
                     @Override
                     public void onResponse(String res) {
                         Log.d(TAG, "getVisitorRes=" + res);
+                        Log.d(TAG, "jigar the response in null pointer exception  is : " + res);
+
                         try {
                             JSONObject response = new JSONObject(res);
-                            String status = DefensiveClass.optString(response, Constants.TAG_STATUS);
-                            if (status.equalsIgnoreCase("true")) {
-                                JSONArray peoples = response.optJSONArray(Constants.TAG_PEOPLES);
-                                for (int i = 0; i < peoples.length(); i++) {
-                                    JSONObject values = peoples.optJSONObject(i);
-                                    HashMap<String, String> map = new HashMap<String, String>();
-                                    map.put(Constants.TAG_USERID, DefensiveClass.optInt(values, Constants.TAG_USERID));
-                                    map.put(Constants.TAG_USERNAME, DefensiveClass.optString(values, Constants.TAG_USERNAME));
-                                    map.put(Constants.TAG_SEND_MATCH, DefensiveClass.optString(values, Constants.TAG_SEND_MATCH));
-                                    map.put(Constants.TAG_AGE, DefensiveClass.optString(values, Constants.TAG_AGE));
-                                    map.put(Constants.TAG_BIO, DefensiveClass.optString(values, Constants.TAG_BIO));
-                                    map.put(Constants.TAG_LAT, DefensiveClass.optString(values, Constants.TAG_LAT));
-                                    map.put(Constants.TAG_LON, DefensiveClass.optString(values, Constants.TAG_LON));
-                                    map.put(Constants.TAG_USERIMAGE, DefensiveClass.optString(values, Constants.TAG_USERIMAGE));
-                                    map.put(Constants.TAG_ONLINE, DefensiveClass.optInt(values, Constants.TAG_ONLINE));
-                                    peoplesAry.add(map);
-                                }
+//                            String status = DefensiveClass.optString(response, Constants.TAG_STATUS);
 
-                            } else if (status.equalsIgnoreCase("error")) {
-                                CommonFunctions.disabledialog(getActivity(), "Error", response.getString("message"));
-                            } else {
+                            String strStatus=response.getString(Constants.TAG_STATUS);
+                            String strMessage=response.getString(Constants.TAG_MESSAGE);
 
-                            }
+//                            if (status.equalsIgnoreCase("true")) {
+//                                JSONArray peoples = response.optJSONArray(Constants.TAG_PEOPLES);
+//                                for (int i = 0; i < peoples.length(); i++) {
+//                                    JSONObject values = peoples.optJSONObject(i);
+//                                    HashMap<String, String> map = new HashMap<String, String>();
+//                                    map.put(Constants.TAG_USERID, DefensiveClass.optInt(values, Constants.TAG_USERID));
+//                                    map.put(Constants.TAG_USERNAME, DefensiveClass.optString(values, Constants.TAG_USERNAME));
+//                                    map.put(Constants.TAG_SEND_MATCH, DefensiveClass.optString(values, Constants.TAG_SEND_MATCH));
+//                                    map.put(Constants.TAG_AGE, DefensiveClass.optString(values, Constants.TAG_AGE));
+//                                    map.put(Constants.TAG_BIO, DefensiveClass.optString(values, Constants.TAG_BIO));
+//                                    map.put(Constants.TAG_LAT, DefensiveClass.optString(values, Constants.TAG_LAT));
+//                                    map.put(Constants.TAG_LON, DefensiveClass.optString(values, Constants.TAG_LON));
+//                                    map.put(Constants.TAG_USERIMAGE, DefensiveClass.optString(values, Constants.TAG_USERIMAGE));
+//                                    map.put(Constants.TAG_ONLINE, DefensiveClass.optInt(values, Constants.TAG_ONLINE));
+//                                    peoplesAry.add(map);
+//                                }
+//
+//                            } else if (status.equalsIgnoreCase("error")) {
+//                                CommonFunctions.disabledialog(getActivity(), "Error", response.getString("message"));
+//                            } else {
+//
+//                            }
 
                             if (peoplesAry.size() >= 20) {
                                 loadmore = true;
@@ -428,10 +435,16 @@ public class Visitors extends Fragment implements View.OnClickListener {
                             itemAdapter.notifyDataSetChanged();
 
                         } catch (JSONException e) {
+                            Log.d(TAG, "jigar the error in json is : " + e);
+
                             e.printStackTrace();
                         } catch (NullPointerException e) {
+                            Log.d(TAG, "jigar the error in null pointer exception  is : " + e);
+
                             e.printStackTrace();
                         } catch (Exception e) {
+                            Log.d(TAG, "jigar the error in exception  is : " + e);
+
                             e.printStackTrace();
                         }
                     }
@@ -440,6 +453,8 @@ public class Visitors extends Fragment implements View.OnClickListener {
             @Override
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
+                VolleyLog.d(TAG, "jigar the error in volley is : " + error.getMessage());
+
                 progress.setVisibility(View.GONE);
                 progress.stopSpinning();
                 itemAdapter.showLoading(false);
@@ -461,22 +476,23 @@ public class Visitors extends Fragment implements View.OnClickListener {
             }
         }) {
 
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> map = new HashMap<String, String>();
-//                map.put(Constants.TAG_AUTHORIZATION, pref.getString(Constants.TAG_AUTHORIZATION, ""));
-                map.put(Constants.TAG_AUTHORIZATION, "84c515a0-1b01-11e9-bfc0-177318cdc83d");
-                return map;
-            }
+            //
+//            @Override
+//            public Map<String, String> getHeaders() throws AuthFailureError {
+//                Map<String, String> map = new HashMap<String, String>();
+////                map.put(Constants.TAG_AUTHORIZATION, pref.getString(Constants.TAG_AUTHORIZATION, ""));
+//                map.put(Constants.TAG_AUTHORIZATION, "84c515a0-1b01-11e9-bfc0-177318cdc83d");
+//                return map;
+//            }
 
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
 //                params.put(Constants.TAG_USERID, GetSet.getUserId());
-                params.put(Constants.TAG_USERID, "84c515a0-1b01-11e9-9b55-6b6474cbadea");
-                params.put(Constants.TAG_OFFSET, String.valueOf(currentPage * 20));
-                params.put(Constants.TAG_LIMIT, "20");
-                params.put(Constants.TAG_TIMESTAMP, String.valueOf(System.currentTimeMillis() / 1000L));
+                params.put(Constants.TAG_NEW_USERID, strUserID);
+//                params.put(Constants.TAG_OFFSET, String.valueOf(currentPage * 20));
+//                params.put(Constants.TAG_LIMIT, "20");
+//                params.put(Constants.TAG_TIMESTAMP, String.valueOf(System.currentTimeMillis() / 1000L));
                 Log.v(TAG, "getVisitorParams=" + params);
                 return params;
             }

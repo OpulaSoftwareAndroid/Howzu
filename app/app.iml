@@ -262,8 +262,5 @@
     <orderEntry type="module" module-name="anymaps-baidu" />
     <orderEntry type="module" module-name="anymaps-base" />
     <orderEntry type="module" module-name="library" />
-    <orderEntry type="module" module-name="anymaps-baidu" />
-    <orderEntry type="module" module-name="anymaps-base" />
-    <orderEntry type="module" module-name="library" />
   </component>
 </module>

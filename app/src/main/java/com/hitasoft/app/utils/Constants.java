@@ -36,6 +36,7 @@ public class Constants {
      * Api function names
      **/
 
+
     public static final String API_GET_PEOPLE = URL + "api/" + "getpeople";
     public static final String API_GET_PROFILE = URL + "api/" + "getprofile";
     public static final String API_GET_PROFILE_COMMENTS = URL + "api/" + "girlprofilecommentlist";
@@ -65,6 +66,8 @@ public class Constants {
     public static final String API_PAY_PREMIUM = URL + "api/" + "paypremium";
     public static final String API_VISITORS = URL + "api/" + "visitors";
     public static final String API_VISIT_PROFILE = URL + "api/" + "visitprofile";
+    public static final String API_NEW_VISIT_PROFILE = URL + "api/" + "visitor";
+
     public static final String API_FRIEND_REQUEST = URL + "api/" + "friendrequests";
     public static final String API_NEW_FRIEND_REQUEST = URL + "api/" + "friendrequestlist";
     public static final String API_FRIEND_LIST = URL + "api/" + "friendslist";
@@ -133,6 +136,8 @@ public class Constants {
     // common key
     public static final String TAG_PEOPLES = "peoples";
     public static final String TAG_USERID = "user_id";
+    public static final String TAG_NEW_USERID = "userid";
+
     public static final String TAG_AVAILABILITY = "availability";
     public static final String TAG_HASH = "hash";
     public static final String TAG_ANDROID_VERSION = "android_version";
@@ -299,6 +304,7 @@ public class Constants {
     public static final String TAG_FAVOURITE_USER_ID = "favorite_user_id";
     public static final String TAG_FRIEND_ID = "friend_id";
     public static final String TAG_VISIT_USER_ID = "visit_user_id";
+    public static final String TAG_NEW_VISIT_USER_ID = "visitorid";
     public static final String TAG_REPORT_USER_ID = "report_user_id";
     public static final String TAG_PREMIUM_ID = "premium_id";
     public static final String TAG_CURRENCY_CODE = "currency_code";
