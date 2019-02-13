@@ -184,7 +184,7 @@ public class MatchMakerFragment extends Fragment implements View.OnClickListener
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        MainScreenActivity.setToolBar(getActivity(), "matchmaker_feature");
+        MainScreenActivity.setToolBar(getActivity(), "menuItemMatchMaker");
     }
 
     public void getMatchMakerDetails() {

@@ -21,8 +21,8 @@
 
             <com.hitasoft.app.customclass.RoundedImageView
                 android:id="@+id/imageViewSenderProfileImage"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:src="@drawable/user_placeholder"

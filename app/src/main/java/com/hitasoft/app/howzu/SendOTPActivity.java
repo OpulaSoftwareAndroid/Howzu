@@ -35,7 +35,7 @@ public class SendOTPActivity extends AppCompatActivity implements View.OnClickLi
     ImageView back;
   //  ProgressWheel progressWheel;
     static String TAG = "SendOTPActivity";
-    String strServerOTP,strCountryCode,strMobileNumber,strName,strDateOfBirth,strLocation,strLatitude,strLongitude;
+    String strServerOTP,strCountryCode,strMobileNumber,strName,strDateOfBirth,strLocation,strLatitude,strLongitude,strGender;
     EditText editTextVerificationCode;
     CustomTextView customTextViewResendCode,customTextViewPhoneNumber;
     @Override
@@ -61,6 +61,8 @@ public class SendOTPActivity extends AppCompatActivity implements View.OnClickLi
             strLatitude = extras.getString(Constants.TAG_LOGIN_INTENT_DETAIL_LATITUDE);
             strLongitude = extras.getString(Constants.TAG_LOGIN_INTENT_DETAIL_LONGITUDE);
             strLocation = extras.getString(Constants.TAG_LOGIN_INTENT_DETAIL_LOCATION);
+            strGender = extras.getString(Constants.TAG_LOGIN_INTENT_GENDER);
+            System.out.println("jigar the selected gender is " + strGender);
 
             System.out.println("jigar the lat is "+strLatitude);
         }
@@ -111,7 +113,7 @@ public class SendOTPActivity extends AppCompatActivity implements View.OnClickLi
                         intent.putExtra(Constants.TAG_LOGIN_INTENT_DETAIL_LATITUDE, strLatitude);
                         intent.putExtra(Constants.TAG_LOGIN_INTENT_DETAIL_LONGITUDE, strLongitude);
                         intent.putExtra(Constants.TAG_LOGIN_INTENT_DETAIL_LOCATION, strLocation);
-
+                        intent.putExtra(Constants.TAG_LOGIN_INTENT_GENDER, strGender);
                         startActivity(intent);
                     }
                     else

@@ -1,7 +1,6 @@
 package com.hitasoft.app.howzu;
 
 import android.app.Dialog;
-import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -20,7 +19,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.NavUtils;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.util.Pair;
 import android.support.v4.view.PagerAdapter;
@@ -37,7 +35,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
@@ -56,7 +53,6 @@ import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.StringRequest;
 import com.hitasoft.app.customclass.FontCache;
 import com.hitasoft.app.customclass.LaybelLayout;
-import com.hitasoft.app.customclass.ProgressWheel;
 import com.hitasoft.app.helper.NetworkReceiver;
 import com.hitasoft.app.utils.CommonFunctions;
 import com.hitasoft.app.utils.Constants;
@@ -111,7 +107,7 @@ public class MainViewProfileDetailActivity extends AppCompatActivity implements 
     ArrayList<String> arrayListInterestStatic;
     public static AppCompatActivity activity;
     boolean collapsed = false, showFab = false;
-    String from = "", strFriendID = "", scrollState = "expanded", sendMatch = "", userImage = "";
+    String from = "", strFriendID = "", strVisitorFriendID = "", scrollState = "expanded", sendMatch = "", userImage = "";
     HashMap<String, String> haspMapProfileDetails = new HashMap<String, String>();
     ArrayList<String> interestsAry = new ArrayList<>(), imagesAry = new ArrayList<String>();
     SharedPreferences pref;
@@ -163,7 +159,7 @@ public class MainViewProfileDetailActivity extends AppCompatActivity implements 
         batch = findViewById(R.id.batch);
         optionbtn = findViewById(R.id.optionbtn);
         userName = findViewById(R.id.userName);
-        bio = findViewById(R.id.bio);
+        bio = findViewById(R.id.textViewProfileLocation);
         info = findViewById(R.id.info);
         location = findViewById(R.id.location);
         interest = findViewById(R.id.interest);
@@ -196,16 +192,29 @@ public class MainViewProfileDetailActivity extends AppCompatActivity implements 
         pageIndicator.setStrokeColor(0);
 
         // FOR TESTING Disable INTENT---------------------------------------------------------------------------------
-        from = getIntent().getExtras().getString(Constants.TAG_INTENT_FROM);
-        strFriendID = getIntent().getExtras().getString(Constants.TAG_FRIEND_ID);
-        //userImage = getIntent().getExtras().getString("userImage");
-        System.out.println("jigar the intent strfriend id is "+strFriendID);
+//        from = getIntent().getExtras().getString(Constants.TAG_INTENT_FROM);
+//        strFriendID = getIntent().getExtras().getString(Constants.TAG_FRIEND_ID);
+//        p.putExtra(Constants.TAG_FRIEND_ID, GetSet.getUseridLikeToken());
+//        p.putExtra(Constants.TAG_PROFILE_VISITOR_ID, peoplesAry.get(itemPosition).get(Constants.TAG_ID));
+        // here friend id means user own id
+        // and register id means friend id whos profile we are visiting
+        from = getIntent().getExtras().getString(Constants.TAG_PROFILE_VISITOR_ID_LIKE_TOKEN);
+        strVisitorFriendID = getIntent().getExtras().getString(Constants.TAG_FRIEND_ID);
+        strFriendID = getIntent().getExtras().getString(Constants.TAG_REGISTERED_ID);
 
-        if(strFriendID==null)
-        {
-           strFriendID=GetSet.getUserId();
-        }
-        System.out.println("jigar the intent user id is "+GetSet.getUserId());
+//        p.putExtra(Constants.TAG_FRIEND_ID, GetSet.getUseridLikeToken());
+//        p.putExtra(Constants.TAG_PROFILE_VISITOR_ID, peoplesAry.get(itemPosition).get(Constants.TAG_ID));
+
+        //userImage = getIntent().getExtras().getString("userImage");
+        System.out.println("jigar the intent strfriend id is "+strVisitorFriendID);
+        System.out.println("jigar the intent visitor who visit id is "+from);
+
+//        if(strFriendID==null)
+//        {
+//           strFriendID=GetSet.getUserId();
+//        }
+
+        //System.out.println("jigar the intent user id is "+GetSet.getUserId());
 
 //        strFriendID="18327071";
 //        GetSet.setUserId("96519710");
@@ -878,9 +887,11 @@ public class MainViewProfileDetailActivity extends AppCompatActivity implements 
 
                         //                    GetSet.setUserId("96519710");
                         //                    map.put(Constants.TAG_REGISTERED_ID,"96519710");
-                        map.put(Constants.TAG_REGISTERED_ID, GetSet.getUserId());
-
+//                        map.put(Constants.TAG_REGISTERED_ID, strFriendID);
+//                        map.put(Constants.TAG_FRIEND_ID, pref.getString(Constants.TAG_USERID,""));
                         map.put(Constants.TAG_FRIEND_ID, strFriendID);
+                        map.put(Constants.TAG_REGISTERED_ID, pref.getString(Constants.TAG_USERID,""));
+
                     }
                     // else
                     //                    {
@@ -888,7 +899,7 @@ public class MainViewProfileDetailActivity extends AppCompatActivity implements 
                     //                    map.put(Constants.TAG_FRIEND_ID, strFriendID);
                     //                }
                     // map.put(Constants.TAG_TIMESTAMP, String.valueOf(System.currentTimeMillis() / 1000L));
-                    Log.v("params", "getProfileParams=" + map);
+                    Log.v(TAG, "jigar the profile visitor params =" + map);
                     return map;
                 }
 
@@ -931,7 +942,6 @@ public class MainViewProfileDetailActivity extends AppCompatActivity implements 
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
                 System.out.println("jigar the volley error in response  is "+ error.getMessage());
-
             }
 
         }) {
@@ -946,9 +956,9 @@ public class MainViewProfileDetailActivity extends AppCompatActivity implements 
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> map = new HashMap<String, String>();
-                map.put(Constants.TAG_NEW_USERID, strFriendID);
+                map.put(Constants.TAG_NEW_USERID, strVisitorFriendID);
 //                map.put(Constants.TAG_VISIT_USER_ID, strFriendID);
-                map.put(Constants.TAG_NEW_VISIT_USER_ID, GetSet.getUserId());
+                map.put(Constants.TAG_NEW_VISIT_USER_ID, from);
 
                 System.out.println("jigar the visitor is "+ map);
 
@@ -1055,6 +1065,7 @@ public class MainViewProfileDetailActivity extends AppCompatActivity implements 
         };
         dialog.show();
         HowzuApplication.getInstance().addToRequestQueue(sendmatch, "");
+
     }
 
     private void reportUser() {

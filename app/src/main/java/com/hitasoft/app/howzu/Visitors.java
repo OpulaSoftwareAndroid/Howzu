@@ -74,6 +74,9 @@ public class Visitors extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.visitors, container, false);
         Log.i(TAG, "Visitors: onCreateView");
+        pref = getActivity().getApplicationContext().getSharedPreferences("ChatPref",
+                MODE_PRIVATE);
+        editor = pref.edit();
 
         recyclerView = view.findViewById(R.id.recyclerView);
         nullLay = view.findViewById(R.id.nullLay);
@@ -81,7 +84,9 @@ public class Visitors extends Fragment implements View.OnClickListener {
         premiumLay = view.findViewById(R.id.premium_lay);
         premiumView = view.findViewById(R.id.view);
         becomePremium = view.findViewById(R.id.become_premium);
-        strUserID="84c515a0-1b01-11e9-9b55-6b6474cbadea";
+
+        strUserID=pref.getString(Constants.TAG_TOKEN_LIKE_USER_ID,"");
+        Log.d(TAG,"jigar the user is we have is "+strUserID);
         return view;
     }
 
@@ -97,9 +102,6 @@ public class Visitors extends Fragment implements View.OnClickListener {
         previousTotal = 0;
         peoplesAry.clear();
 
-        pref = getActivity().getApplicationContext().getSharedPreferences("ChatPref",
-                MODE_PRIVATE);
-        editor = pref.edit();
 
         setAdapter();
 

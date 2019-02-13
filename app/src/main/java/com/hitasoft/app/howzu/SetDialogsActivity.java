@@ -119,7 +119,7 @@ public class SetDialogsActivity extends AppCompatActivity {
     private static final int PERMISSION_ACCESS_COARSE_LOCATION = 100;
     SharedPreferences pref;
     ArrayList arrayListInterestName, arrayListInterestID;
-    String strCountryCode, strMobileNumber, strName, strDateOfBirth, strPassword,strLatitude,strLongitude,strLocation;
+    String strCountryCode, strMobileNumber, strName, strDateOfBirth, strPassword,strLatitude,strLongitude,strLocation,strGender;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,6 +143,7 @@ public class SetDialogsActivity extends AppCompatActivity {
             strLatitude = extras.getString(Constants.TAG_LOGIN_INTENT_DETAIL_LATITUDE);
             strLongitude = extras.getString(Constants.TAG_LOGIN_INTENT_DETAIL_LONGITUDE);
             strLocation = extras.getString(Constants.TAG_LOGIN_INTENT_DETAIL_LOCATION);
+            strGender = extras.getString(Constants.TAG_LOGIN_INTENT_GENDER);
 
         }
 //        strCountryCode = "+91";
@@ -1018,7 +1019,7 @@ public class SetDialogsActivity extends AppCompatActivity {
             params.put(Constants.TAG_PASSWORD, strPassword);
             params.put(Constants.TAG_NAME, strName);
             params.put(Constants.TAG_REQUEST_USERNAME, strName);
-            params.put(Constants.TAG_GENDER, "male");
+            params.put(Constants.TAG_GENDER, strGender);
             params.put(Constants.TAG_BIO, "male");
             params.put(Constants.TAG_PURPOSE_PLAN, peopleForId);
             params.put(Constants.TAG_INTEREST_PLAN, strSelectedInterest);

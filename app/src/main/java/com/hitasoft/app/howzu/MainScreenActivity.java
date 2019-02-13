@@ -1,6 +1,7 @@
 package com.hitasoft.app.howzu;// Created by Hitasoft on 2/17/2015.
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,7 +9,6 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
@@ -21,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -29,6 +30,7 @@ import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
+import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
@@ -37,6 +39,7 @@ import com.android.volley.toolbox.StringRequest;
 //import com.baidu.location.BDLocationListener;
 //import com.baidu.location.LocationClient;
 //import com.baidu.location.LocationClientOption;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
@@ -50,19 +53,14 @@ import com.hitasoft.app.utils.DefensiveClass;
 import com.hitasoft.app.utils.GetSet;
 import com.hitasoft.app.utils.SharedPrefManager;
 import com.squareup.picasso.Picasso;
+import com.victor.loading.rotate.RotateLoading;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-
-import okhttp3.Headers;
-import okhttp3.MultipartBody;
-import okhttp3.OkHttpClient;
-import okhttp3.RequestBody;
 
 public class MainScreenActivity extends AppCompatActivity implements View.OnClickListener
         , NetworkReceiver.ConnectivityReceiverListener
@@ -70,15 +68,15 @@ public class MainScreenActivity extends AppCompatActivity implements View.OnClic
 {
     String TAG = "MainScreenActivity";
 
-    public static ImageView userImage, menubtn, filterbtn, logo, searchbtn, setting, batch, visitorsCount, requestCount, messageCount;
+    public static ImageView userImage, menubtn, filterbtn, logo, searchbtn, setting, batch, visitorsCount, requestCount,
+            messageCount,friendCount;
     public static TextView title, spinText, profileName, viewProfile;
     public static RelativeLayout spinLay, bannerLay, searchLay, profileLay, emptyLay;
     public static SharedPreferences pref;
     public static SharedPreferences.Editor editor;
-  //  LocationClient mLocationClient ;
-
-    LinearLayout peopleNear, findPeople, visitors, message, friends, request, liked, matchmaker_feature,linearLayoutMenuItemNotification;
-    BadgeView chatBadge, visitBadge, requestBadge;
+    Dialog dialog;
+    LinearLayout peopleNear, findPeople, visitors, message, friends, request, liked, menuItemMatchMaker,linearLayoutMenuItemNotification;
+    BadgeView chatBadge, visitBadge, requestBadge,friendsBadge;
     AdView mAdView;
     Fragment mContent;
     DrawerLayout mDrawerLayout;
@@ -120,12 +118,36 @@ public class MainScreenActivity extends AppCompatActivity implements View.OnClic
         HowzuApplication.getInstance().setConnectivityListener(this);
         pref.getString(Constants.TAG_USERID,null);
         strUserID=pref.getString(Constants.TAG_USERID,null);
+        dialog = new Dialog(this);
+        dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        dialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.WHITE));
+        dialog.setCancelable(false);
 
-        GetSet.setUserId(strUserID);
+        dialog.setContentView(R.layout.dialog_progress);
+
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        Window window = dialog.getWindow();
+
+        lp.copyFrom(window.getAttributes());
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.MATCH_PARENT;
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        window.setAttributes(lp);
+
+        RotateLoading pDialog = (RotateLoading) dialog.findViewById(R.id.progressBar_Dialog);
+        pDialog.start();
+        dialog.show();
+       // CommonFunctions.showProgressDialog(MainScreenActivity.this);
+//        if (CommonFunctions.isNetwork(Objects.requireNonNull(this))) {
+//            CommonFunctions.showProgressDialog(this);
+//        }
+            GetSet.setUserId(strUserID);
         if(strUserID!=null)
         {
             getUserDetailByID();
         }
+//        getUserDetailByID();
 
         System.out.println("jigar the main screen user id is "+strUserID);
 
@@ -178,7 +200,7 @@ public class MainScreenActivity extends AppCompatActivity implements View.OnClic
         friends = findViewById(R.id.friends);
         request = findViewById(R.id.request);
         liked = findViewById(R.id.liked);
-        matchmaker_feature = findViewById(R.id.matchmaker_feature);
+        menuItemMatchMaker = findViewById(R.id.menuItemMatchmakerFeature);
         filterbtn = findViewById(R.id.filterbtn);
         searchbtn = findViewById(R.id.searchbtn);
         logo = findViewById(R.id.logo);
@@ -192,6 +214,8 @@ public class MainScreenActivity extends AppCompatActivity implements View.OnClic
         batch = findViewById(R.id.premium_batch);
         requestCount = findViewById(R.id.request_count);
         messageCount = findViewById(R.id.message_count);
+        friendCount = findViewById(R.id.friends_count);
+
         visitorsCount = findViewById(R.id.visitors_count);
         bannerLay = findViewById(R.id.banner_lay);
         searchLay = findViewById(R.id.search_lay);
@@ -231,7 +255,7 @@ public class MainScreenActivity extends AppCompatActivity implements View.OnClic
         friends.setOnClickListener(this);
         request.setOnClickListener(this);
         liked.setOnClickListener(this);
-        matchmaker_feature.setOnClickListener(this);
+        menuItemMatchMaker.setOnClickListener(this);
 //        becomePremium.setOnClickListener(this);
         setting.setOnClickListener(this);
         linearLayoutMenuItemNotification.setOnClickListener(this);
@@ -254,8 +278,17 @@ public class MainScreenActivity extends AppCompatActivity implements View.OnClic
         }
         if (mContent == null) {
             switchContent(new HomeFragment());
+            //getUserDetailByID();
+
         }
 //        switchContent(new DemoFragment());
+
+        friendsBadge = new BadgeView(MainScreenActivity.this, friendCount);
+        friendsBadge.setBadgePosition(BadgeView.POSITION_CENTER);
+        friendsBadge.setBadgeMargin(7);
+        friendsBadge.setTextSize(13);
+        friendsBadge.setBackgroundDrawable(getResources().getDrawable(R.drawable.request_bg));
+        friendsBadge.setGravity(Gravity.CENTER);
 
         chatBadge = new BadgeView(MainScreenActivity.this, messageCount);
         chatBadge.setBadgePosition(BadgeView.POSITION_CENTER);
@@ -263,6 +296,7 @@ public class MainScreenActivity extends AppCompatActivity implements View.OnClic
         chatBadge.setTextSize(13);
         chatBadge.setBackgroundDrawable(getResources().getDrawable(R.drawable.message_bg));
         chatBadge.setGravity(Gravity.CENTER);
+
 
         visitBadge = new BadgeView(MainScreenActivity.this, visitorsCount);
         visitBadge.setBadgePosition(BadgeView.POSITION_CENTER);
@@ -344,7 +378,7 @@ public class MainScreenActivity extends AppCompatActivity implements View.OnClic
     protected void onResume() {
         premiumClicked = false;
         if (GetSet.isLogged()) {
-            getCounts();
+//            getCounts();
         }
         if (resumeHome) {
             resumeHome = false;
@@ -531,7 +565,7 @@ public class MainScreenActivity extends AppCompatActivity implements View.OnClic
                 currentFragment = "Liked";
                 searchLay.setVisibility(View.GONE);
                 break;
-            case "matchmaker_feature":
+            case "menuItemMatchMaker":
                 logo.setVisibility(View.GONE);
                 filterbtn.setVisibility(View.GONE);
                 searchbtn.setVisibility(View.GONE);
@@ -559,7 +593,7 @@ public class MainScreenActivity extends AppCompatActivity implements View.OnClic
             public void onDrawerOpened(View drawerView) {
                 Log.d(TAG, "Drawer Opened");
                 if (GetSet.isLogged()) {
-                    getCounts();
+      //              getCounts();
                 }
                 super.onDrawerOpened(drawerView);
             }
@@ -637,53 +671,124 @@ public class MainScreenActivity extends AppCompatActivity implements View.OnClic
     /*API Implementation*/
 
     private void getCounts() {
-        final String deviceId = android.provider.Settings.Secure.getString(getApplicationContext().getContentResolver(),
-                android.provider.Settings.Secure.ANDROID_ID);
+//        final String deviceId = android.provider.Settings.Secure.getString(getApplicationContext().getContentResolver(),
+//                android.provider.Settings.Secure.ANDROID_ID);
         StringRequest req = new StringRequest(Request.Method.POST, Constants.API_GET_COUNTS,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String res) {
                         try {
                             Log.v(TAG, "getCountsRes=" + res);
-                            JSONObject json = new JSONObject(res);
-                            if (DefensiveClass.optString(json, Constants.TAG_STATUS).equalsIgnoreCase("true")) {
-                                JSONObject result = json.getJSONObject(Constants.TAG_RESULT);
-                                messageCount.setVisibility(View.GONE);
-                                visitorsCount.setVisibility(View.GONE);
-                                requestCount.setVisibility(View.GONE);
-                                if (GetSet.isLogged() && !DefensiveClass.optInt(result, Constants.TAG_MESSAGE).equals("0") && !DefensiveClass.optInt(result, Constants.TAG_MESSAGE).equals("")) {
-                                    chatBadge.setText(DefensiveClass.optInt(result, Constants.TAG_MESSAGE));
-                                    chatBadge.show();
-                                } else {
-                                    chatBadge.hide();
-                                }
+                            Log.v(TAG, "jigar the getCountsRes=" + res);
 
-                                if (GetSet.isLogged() && !DefensiveClass.optInt(result, Constants.TAG_VISITORS).equals("0") && !DefensiveClass.optInt(result, Constants.TAG_VISITORS).equals("")) {
-                                    visitBadge.setText(DefensiveClass.optInt(result, Constants.TAG_VISITORS));
+                            JSONObject jsonObjectResponseMain = new JSONObject(res);
+                            String strStatus = jsonObjectResponseMain.getString(Constants.TAG_STATUS);
+                        //    String strMsg = jsonObjectResponseMain.getString(Constants.TAG_MSG);
+
+                            if (strStatus.equals("true")) {
+
+                                JSONObject jsonObjectResult=jsonObjectResponseMain.getJSONObject(Constants.TAG_RESULT);
+                                String strVisitor=jsonObjectResult.getString(Constants.TAG_VISITORS);
+                                String strFriendRequestCount=jsonObjectResult.getString(Constants.TAG_FRIEND_REQUEST);
+                                String strMessageCount=jsonObjectResult.getString(Constants.TAG_MESSAGE);
+                                String strFriends=jsonObjectResult.getString(Constants.TAG_FRIENDS);
+                                strVisitor="1";
+                                strFriends="20";
+                                strMessageCount="4";
+
+//                                messageCount.setVisibility(View.GONE);
+//                                visitorsCount.setVisibility(View.GONE);
+//                                requestCount.setVisibility(View.GONE);
+
+                                if(!strVisitor.equals("0"))
+                                {
+                                    visitBadge.setText(strVisitor);
                                     visitBadge.show();
                                 } else {
                                     visitBadge.hide();
                                 }
 
-                                if (GetSet.isLogged() && !DefensiveClass.optInt(result, Constants.TAG_FRIEND_REQUEST).equals("0") && !DefensiveClass.optInt(result, Constants.TAG_FRIEND_REQUEST).equals("")) {
-                                    requestBadge.setText(DefensiveClass.optInt(result, Constants.TAG_FRIEND_REQUEST));
+                                if(!strFriendRequestCount.equals("0"))
+                                {
+                                    requestBadge.setText(strFriendRequestCount);
                                     requestBadge.show();
                                 } else {
                                     requestBadge.hide();
                                 }
+                                if(!strFriends.equals("0"))
+                                {
+                                    friendsBadge.setText(strFriends);
+                                    friendsBadge.show();
+                                } else {
+                                    friendsBadge.hide();
+                                }
+
+                                if(!strMessageCount.equals("0"))
+                                {
+                                    chatBadge.setText(strMessageCount);
+                                    chatBadge.show();
+                                } else {
+                                    chatBadge.hide();
+                                }
+
+                            }
+
+
+//                                if(!strMessageCount.equals("0"))
+//                                {
+//                                    message.setText(strVisitor);
+//                                    messageCount.show();
+//                                } else {
+//                                    messageCount.hide();
+//                                }
+//                            if (DefensiveClass.optString(jsonObjectResponseMain, Constants.TAG_STATUS).equalsIgnoreCase("true")) {
+//                                JSONObject result = jsonObjectResponseMain.getJSONObject(Constants.TAG_RESULT);
+//                                messageCount.setVisibility(View.GONE);
+//                                visitorsCount.setVisibility(View.GONE);
+//                                requestCount.setVisibility(View.GONE);
+//
+//
+//
+//                                if (GetSet.isLogged() && !DefensiveClass.optInt(result, Constants.TAG_MESSAGE).equals("0") && !DefensiveClass.optInt(result, Constants.TAG_MESSAGE).equals("")) {
+//                                    chatBadge.setText(DefensiveClass.optInt(result, Constants.TAG_MESSAGE));
+//                                    chatBadge.show();
+//                                } else {
+//                                    chatBadge.hide();
+//                                }
+//
+//                                if (GetSet.isLogged() && !DefensiveClass.optInt(result, Constants.TAG_VISITORS).equals("0") && !DefensiveClass.optInt(result, Constants.TAG_VISITORS).equals("")) {
+//                                    visitBadge.setText(DefensiveClass.optInt(result, Constants.TAG_VISITORS));
+//                                    visitBadge.show();
+//                                } else {
+//                                    visitBadge.hide();
+//                                }
+//
+//                                if (GetSet.isLogged() && !DefensiveClass.optInt(result, Constants.TAG_FRIEND_REQUEST).equals("0") && !DefensiveClass.optInt(result, Constants.TAG_FRIEND_REQUEST).equals("")) {
+//                                    requestBadge.setText(DefensiveClass.optInt(result, Constants.TAG_FRIEND_REQUEST));
+//                                    requestBadge.show();
+//                                } else {
+//                                    requestBadge.hide();
+//                                }
 
                                 /*if (DefensiveClass.optInt(result, Constants.TAG_DEVICE_REGISTERED).equals("false")) {
                                     addDeviceId();
                                 }*/
+//
+//                            } else if (DefensiveClass.optString(jsonObjectResponseMain, Constants.TAG_STATUS).equalsIgnoreCase("error")) {
+//                                CommonFunctions.disabledialog(MainScreenActivity.this, "Error", jsonObjectResponseMain.getString(Constants.TAG_MESSAGE));
+//                            }
 
-                            } else if (DefensiveClass.optString(json, Constants.TAG_STATUS).equalsIgnoreCase("error")) {
-                                CommonFunctions.disabledialog(MainScreenActivity.this, "Error", json.getString(Constants.TAG_MESSAGE));
-                            }
+
                         } catch (JSONException e) {
+                            Log.d(TAG,"jigar the error in count badge json is "+e);
                             e.printStackTrace();
                         } catch (NullPointerException e) {
+                            Log.d(TAG,"jigar the error in null pointer count badge is "+e);
+
                             e.printStackTrace();
                         } catch (Exception e) {
+                            Log.d(TAG,"jigar the error in main exception is  count badge is "+e);
+
                             e.printStackTrace();
                         }
                     }
@@ -691,24 +796,25 @@ public class MainScreenActivity extends AppCompatActivity implements View.OnClic
 
             @Override
             public void onErrorResponse(VolleyError error) {
-                VolleyLog.d(TAG, "Error: " + error.getMessage());
+                VolleyLog.d(TAG, "jigar the get count Error: " + error.getMessage());
             }
 
         }) {
 
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> map = new HashMap<String, String>();
-                map.put(Constants.TAG_AUTHORIZATION, pref.getString(Constants.TAG_AUTHORIZATION, ""));
-                return map;
-            }
+//            @Override
+//            public Map<String, String> getHeaders() throws AuthFailureError {
+//                Map<String, String> map = new HashMap<String, String>();
+//                map.put(Constants.TAG_AUTHORIZATION, pref.getString(Constants.TAG_AUTHORIZATION, ""));
+//                return map;
+//            }
 
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> map = new HashMap<String, String>();
-                map.put(Constants.TAG_USERID, GetSet.getUserId());
-                map.put(Constants.TAG_DEVICE_ID, deviceId);
-                Log.v(TAG, "getCountsParams=" + map);
+                String strTokenLikeUserID=GetSet.getUseridLikeToken();
+                map.put(Constants.TAG_USERID, strTokenLikeUserID);
+        //        map.put(Constants.TAG_DEVICE_ID, deviceId);
+                Log.v(TAG, "jigar the params in getCountsParams=" + map);
                 return map;
             }
         };
@@ -828,16 +934,16 @@ public class MainScreenActivity extends AppCompatActivity implements View.OnClic
                     switchContent(new LikedFragment());
                 }
                 break;
-            case R.id.matchmaker_feature:
+            case R.id.menuItemMatchmakerFeature:
                 mDrawerLayout.closeDrawers();
                 if (!currentFragment.equals("Matchmaker Feature")) {
-                    switchContent(new MatchMakerFragment());
-  //                  strUserID=GetSet.getUserId();
-                    GetSet.setFriendId("96639683");
                     Bundle bundle=new Bundle();
-// STATIC UNTIL USER BY DETAIL RESPONSE DOES NOT HAVE MATCH MAKER ID
-                    bundle.putString(Constants.TAG_FRIEND_ID, "96639683");  //match maker id
+                    // STATIC UNTIL USER BY DETAIL RESPONSE DOES NOT HAVE MATCH MAKER ID
+                    bundle.putString(Constants.TAG_FRIEND_ID, pref.getString(Constants.TAG_LOGGED_USER_SPONSOR_ID,""));  //match maker id
                     bundle.putString(Constants.TAG_REGISTERED_ID, GetSet.getUserId());  // register id
+                    switchContent(new MatchMakerFragment());
+//                    GetSet.setFriendId("96639683");
+//                    GetSet.setFriendId("96639683");
 
 //                    strFriendID=GetSet.getFriendId();
 
@@ -872,95 +978,134 @@ public class MainScreenActivity extends AppCompatActivity implements View.OnClic
 
     private void getUserDetailByID() {
 
+        try {
+            RequestQueue queue = Volley.newRequestQueue(this);
+            if (CommonFunctions.isNetwork((MainScreenActivity.this))) {
 
-        if (CommonFunctions.isNetwork(Objects.requireNonNull(MainScreenActivity.this))) {
+                CommonFunctions.showProgressDialog(MainScreenActivity.this);
 
-            CommonFunctions.showProgressDialog(this);
+                StringRequest requestGetUserDetails = new StringRequest(Request.Method.POST, Constants.API_GET_USER_DETAILS_BY_ID,
+                        new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String res) {
+                                try {
+                                    System.out.println("jigar the user details response we have by id is " + res);
 
-            StringRequest req = new StringRequest(Request.Method.POST, Constants.API_GET_USER_DETAILS_BY_ID,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String res) {
-                            try {
-                                JSONObject results = new JSONObject(res);
+                                    JSONObject results = new JSONObject(res);
 
-                                String strStatus = results.getString(Constants.TAG_STATUS);
-                                String strMsg = results.getString(Constants.TAG_MSG);
-                                JSONObject jsonObjectInfo = results.getJSONObject(Constants.TAG_INFO);
+                                    String strStatus = results.getString(Constants.TAG_STATUS);
+                                    String strMsg = results.getString(Constants.TAG_MSG);
+                                    JSONObject jsonObjectInfo = results.getJSONObject(Constants.TAG_INFO);
 
-                                Log.e(TAG, "getAccessTokenResult: " + results);
-                                System.out.println("jigar the response on user by id is " + res);
-                                if (strMsg.equals(Constants.TAG_SUCCESS)
-                                        && strStatus.equals("1")) {
+                                    Log.e(TAG, "getAccessTokenResult: " + results);
+                                    //     System.out.println("jigar the response on user by id is " + res);
+                                    if (strMsg.equals(Constants.TAG_SUCCESS)
+                                            && strStatus.equals("1")) {
 
-                                    String strAccessToken = jsonObjectInfo.getString(Constants.TAG_ACCESS_TOKEN_NEW);
-                                    editor.putString(Constants.TAG_AUTHORIZATION, strAccessToken);
-                                    editor.commit();
+                                        String strAccessToken = jsonObjectInfo.getString(Constants.TAG_ACCESS_TOKEN_NEW);
+                                        String strUserLikeTokenID = jsonObjectInfo.getString(Constants.TAG_ID);
+                                        String strSponsorMatchMakerID = jsonObjectInfo.getString(Constants.TAG_SPONSOR_ID);
 
-                                    GetSet.setLogged(true);
-                                    GetSet.setUserId(pref.getString(Constants.TAG_USERID, null));
-                                    GetSet.setUserName(pref.getString(Constants.TAG_USERNAME, null));
-                                    GetSet.setImageUrl(pref.getString(Constants.TAG_USERIMAGE, null));
-                                    if (pref.getBoolean(Constants.TAG_PREMIUM_MEMBER, false)) {
-                                        GetSet.setPremium(true);
-                                    } else {
-                                        GetSet.setPremium(false);
+                                        editor.putString(Constants.TAG_AUTHORIZATION, strAccessToken);
+                                        editor.commit();
+                                        if(strSponsorMatchMakerID.equals(0))
+                                        {
+                                            strSponsorMatchMakerID="96302890";
+                                        }
+                                        editor.putString(Constants.TAG_LOGGED_USER_SPONSOR_ID, strSponsorMatchMakerID);
+                                        editor.commit();
+
+                                        editor.putString(Constants.TAG_TOKEN_LIKE_USER_ID, strUserLikeTokenID);
+                                        editor.commit();
+
+                                        GetSet.setLogged(true);
+                                        GetSet.setUserId(pref.getString(Constants.TAG_USERID, null));
+                                        GetSet.setUserName(pref.getString(Constants.TAG_USERNAME, null));
+                                        GetSet.setImageUrl(pref.getString(Constants.TAG_USERIMAGE, null));
+                                        GetSet.setUseridLikeToken(pref.getString(Constants.TAG_TOKEN_LIKE_USER_ID, null));
+                                        if (pref.getBoolean(Constants.TAG_PREMIUM_MEMBER, false)) {
+                                            GetSet.setPremium(true);
+                                        } else {
+                                            GetSet.setPremium(false);
+                                        }
+
+                                        if (!pref.getString(Constants.TAG_LOGGED_USER_SPONSOR_ID, "").equals("0")) {
+                                            menuItemMatchMaker.setVisibility(View.VISIBLE);
+
+                                        } else {
+                                            menuItemMatchMaker.setVisibility(View.GONE);
+
+                                        }
+                                        GetSet.setLocation(pref.getString(Constants.TAG_LOCATION, ""));
+                                        Log.v(TAG, "show home");
                                     }
-                                    GetSet.setLocation(pref.getString(Constants.TAG_LOCATION, ""));
-                                    Log.v(TAG, "show home");
-                                }
 //                                overridePendingTransition(R.anim.fade_in,
 //                                        R.anim.fade_out);
 //                                //switchContent(new FindPeople());
-                                //switchContent(new FindPeople());
+                                    //switchContent(new FindPeople());
+                                    dialog.dismiss();
 
-                                switchContent(new HomeFragment());
+                                    getCounts();
+                                    switchContent(new HomeFragment());
 
-                                CommonFunctions.hideProgressDialog(MainScreenActivity.this);
+                                    CommonFunctions.hideProgressDialog(MainScreenActivity.this);
 
-                            } catch (JSONException e) {
-                                CommonFunctions.hideProgressDialog(MainScreenActivity.this);
+                                } catch (JSONException e) {
+                                    CommonFunctions.hideProgressDialog(MainScreenActivity.this);
 
-                                System.out.println("jigar the error json response on user by id is " + e);
-                                e.printStackTrace();
-                            } catch (NullPointerException e) {
-                                System.out.println("jigar the error null pointer response on user by id is " + e);
-                                CommonFunctions.hideProgressDialog(MainScreenActivity.this);
+                                    System.out.println("jigar the error user details json response on user by id is " + e);
+                                    e.printStackTrace();
+                                } catch (NullPointerException e) {
+                                    System.out.println("jigar the error user details null pointer response on user by id is " + e);
+                                    CommonFunctions.hideProgressDialog(MainScreenActivity.this);
 
-                                e.printStackTrace();
-                            } catch (Exception e) {
-                                System.out.println("jigar the error exception main  on user by id is " + e);
-                                CommonFunctions.hideProgressDialog(MainScreenActivity.this);
+                                    e.printStackTrace();
+                                } catch (Exception e) {
+                                    System.out.println("jigar the error user details exception main  on user by id is " + e);
+                                    CommonFunctions.hideProgressDialog(MainScreenActivity.this);
 
-                                e.printStackTrace();
+                                    e.printStackTrace();
+                                }
+
                             }
+                        }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        System.out.println("jigar the user details volley error response on user by id is " + error);
+                        CommonFunctions.hideProgressDialog(MainScreenActivity.this);
+                        VolleyLog.d(TAG, "Error: " + error.getMessage());
+                        dialog.dismiss();
+                    }
+                }) {
 
-                        }
-                    }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    System.out.println("jigar the error response on user by id is " + error);
-                    CommonFunctions.hideProgressDialog(MainScreenActivity.this);
-                    VolleyLog.d(TAG, "Error: " + error.getMessage());
-                }
-            }) {
+                    @Override
+                    protected Map<String, String> getParams() {
+                        Map<String, String> map = new HashMap<String, String>();
+                        map.put(Constants.TAG_REGISTERED_ID, strUserID);
+                        Log.v(TAG, "jigar the getAccessTokenParams=" + map);
+                        return map;
+                    }
+                };
+                queue.add(requestGetUserDetails);
+//            HowzuApplication.getInstance().addToRequestQueue(req, TAG);
+                //}
+            }else
+            {
+                Toast.makeText(this, getString(R.string.network_error), Toast.LENGTH_SHORT).show();
+                CommonFunctions.hideProgressDialog(MainScreenActivity.this);
 
-                @Override
-                protected Map<String, String> getParams() {
-                    Map<String, String> map = new HashMap<String, String>();
-                    map.put(Constants.TAG_REGISTERED_ID, strUserID);
-                    Log.v(TAG, "jigar the getAccessTokenParams=" + map);
-                    return map;
-                }
-            };
-            HowzuApplication.getInstance().addToRequestQueue(req, TAG);
-        }else
-        {
-            Toast.makeText(this, getString(R.string.network_error), Toast.LENGTH_SHORT).show();
-            CommonFunctions.hideProgressDialog(MainScreenActivity.this);
 
-        }
-        CommonFunctions.hideProgressDialog(this);
+            }
+            }catch(Exception e)
+            {
+                dialog.dismiss();
+
+                Log.d(TAG, "jigar the error in main exception is " + e);
+            }
+        //    dialog.dismiss();
+
+
+//        CommonFunctions.hideProgressDialog(this);
 
     }
 

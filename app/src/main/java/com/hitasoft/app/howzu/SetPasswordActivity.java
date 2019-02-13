@@ -15,7 +15,7 @@ import com.hitasoft.app.utils.Constants;
 public class SetPasswordActivity extends AppCompatActivity implements View.OnClickListener {
     CustomTextView btnSetPassword;
     ImageView back;
-    String strCountryCode,strMobileNumber,strName,strDateOfBirth,strLatitude,strLongitude,strLocation;
+    String strCountryCode,strMobileNumber,strName,strDateOfBirth,strLatitude,strLongitude,strLocation,strGender;
     EditText editTextPassword,editTextConfirmPassword;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +35,7 @@ public class SetPasswordActivity extends AppCompatActivity implements View.OnCli
         strLatitude = extras.getString(Constants.TAG_LOGIN_INTENT_DETAIL_LATITUDE);
         strLongitude = extras.getString(Constants.TAG_LOGIN_INTENT_DETAIL_LONGITUDE);
         strLocation = extras.getString(Constants.TAG_LOGIN_INTENT_DETAIL_LOCATION);
+        strGender = extras.getString(Constants.TAG_LOGIN_INTENT_GENDER);
 
         initViews();
         btnSetPassword.setOnClickListener(this);
@@ -72,6 +73,7 @@ public class SetPasswordActivity extends AppCompatActivity implements View.OnCli
                         intent.putExtra(Constants.TAG_LOGIN_INTENT_DETAIL_LATITUDE, strLatitude);
                         intent.putExtra(Constants.TAG_LOGIN_INTENT_DETAIL_LONGITUDE, strLongitude);
                         intent.putExtra(Constants.TAG_LOGIN_INTENT_DETAIL_LOCATION, strLocation);
+                        intent.putExtra(Constants.TAG_LOGIN_INTENT_GENDER, strGender);
 
 
                         startActivity(intent);

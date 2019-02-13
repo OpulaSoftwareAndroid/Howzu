@@ -211,7 +211,6 @@ public class NotificationActivity extends AppCompatActivity {
 
             CommonFunctions.showProgressDialog(this);
 
-
             StringRequest getNotificationList = new StringRequest(Request.Method.POST, Constants.API_NEW_ACCEPT_FRIEND_REQUEST,
                     new Response.Listener<String>() {
                         @Override

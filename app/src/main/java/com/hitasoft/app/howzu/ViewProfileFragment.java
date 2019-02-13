@@ -274,10 +274,10 @@ public class ViewProfileFragment extends Fragment {
 //        }
 //
 //        if (haspMapProfileDetails.get(Constants.TAG_BIO).equals("")) {
-//            bio.setVisibility(View.GONE);
+//            textViewProfileLocation.setVisibility(View.GONE);
 //        } else {
 //            String strBio = haspMapProfileDetails.get(Constants.TAG_BIO).substring(0,1).toUpperCase() + haspMapProfileDetails.get(Constants.TAG_BIO).substring(1);
-//            bio.setText(Html.fromHtml(strBio));
+//            textViewProfileLocation.setText(Html.fromHtml(strBio));
 //        }
 //
 //        if (!haspMapProfileDetails.get(Constants.TAG_REGISTERED_ID).equals(GetSet.getUserId())) {

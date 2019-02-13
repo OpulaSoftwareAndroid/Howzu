@@ -237,10 +237,10 @@ public class MatchMackerDetailModel {
         private String location;
         @SerializedName("latitude")
         @Expose
-        private Integer latitude;
+        private String latitude;
         @SerializedName("longitude")
         @Expose
-        private Integer longitude;
+        private String longitude;
         @SerializedName("purpose_plan")
         @Expose
         private Integer purposePlan;
@@ -473,19 +473,19 @@ public class MatchMackerDetailModel {
             this.location = location;
         }
 
-        public Integer getLatitude() {
+        public String getLatitude() {
             return latitude;
         }
 
-        public void setLatitude(Integer latitude) {
+        public void setLatitude(String latitude) {
             this.latitude = latitude;
         }
 
-        public Integer getLongitude() {
+        public String getLongitude() {
             return longitude;
         }
 
-        public void setLongitude(Integer longitude) {
+        public void setLongitude(String longitude) {
             this.longitude = longitude;
         }
 

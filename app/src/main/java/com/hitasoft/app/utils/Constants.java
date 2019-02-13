@@ -18,36 +18,28 @@ public class Constants {
      **/
 //    public static final String URL = "http://howzuapp.com/";
     public static final String URL = "http://www.ilovemisskey.com/";
-
 //    public static final String URL = "http://howzuapp.com/beta/";
 //    public static final String URL = "http://192.168.1.29/howzu/";
     /**
      * Socket Url
      **/
     public static final String SOCKET_URL = "http://howzuapp.com:8085";
-
     /**
      * Stun Server
      * */
     public static final String STUN_SERVER = "stun:139.59.77.194:3478";
-
-
     /**
      * Api function names
      **/
-
-
     public static final String API_GET_PEOPLE = URL + "api/" + "getpeople";
     public static final String API_GET_PROFILE = URL + "api/" + "getprofile";
     public static final String API_GET_PROFILE_COMMENTS = URL + "api/" + "girlprofilecommentlist";
     public static final String API_GET_USER_NOTIFICATION = URL + "api/" + "notification";
-
     public static final String API_MATCH = URL + "api/" + "match";
     public static final String API_NEW_MATCH_AND_FRIEND_REQUEST = URL + "api/" + "sentfriendrequest";
     public static final String API_NEW_ACCEPT_FRIEND_REQUEST = URL + "api/" + "friendrequeststatus";
     public static final String API_NEW_ACCEPT_DECLINE_VIDEO_CHAT_REQUEST = URL + "api/" + "videochatrequeststatus";
     public static final String API_NEW_ACCEPT_DECLINE_INVITATION_REQUEST = URL + "api/" + "matchmakerrequeststatus";
-
     public static final String API_UNMATCH = URL + "api/" + "unmatch";
     public static final String API_NEW_UNMATCH = URL + "api/" + "dislikeprofile";
 
@@ -66,11 +58,12 @@ public class Constants {
     public static final String API_PAY_PREMIUM = URL + "api/" + "paypremium";
     public static final String API_VISITORS = URL + "api/" + "visitors";
     public static final String API_VISIT_PROFILE = URL + "api/" + "visitprofile";
-    public static final String API_NEW_VISIT_PROFILE = URL + "api/" + "visitor";
+    public static final String API_NEW_VISIT_PROFILE = URL + "api/" + "visitprofile";
 
     public static final String API_FRIEND_REQUEST = URL + "api/" + "friendrequests";
     public static final String API_NEW_FRIEND_REQUEST = URL + "api/" + "friendrequestlist";
     public static final String API_FRIEND_LIST = URL + "api/" + "friendslist";
+    public static final String API_NEW_FRIEND_LIST = URL + "api/" + "userfriendlist";
     public static final String API_GET_CHAT = URL + "api/" + "getchat";
     public static final String API_REPORT = URL + "api/" + "report";
     public static final String API_GET_COUNTS = URL + "api/" + "getcounts";
@@ -239,6 +232,8 @@ public class Constants {
     public static final String TAG_PEOPLEFOR = "peoplefor";
     public static final String TAG_ID = "id";
     public static final String TAG_REGISTERED_ID = "register_id";
+    public static final String TAG_TOKEN_LIKE_USER_ID = "user_id_like_token";
+    public static final String TAG_LOGGED_USER_SPONSOR_ID = "logged_user_sponsor_id";
 
     public static final String TAG_NAME = "name";
 
@@ -296,13 +291,19 @@ public class Constants {
     public static final String TAG_EMAIL = "email";
     public static final String TAG_PASSWORD = "password";
     public static final String TAG_VISITORS = "visitors";
+    public static final String TAG_VISITOR = "visitor";
+
     public static final String TAG_FRIEND_REQUEST = "friend_request";
+    public static final String TAG_FRIENDS = "friends";
+
     public static final String TAG_DEVICE_REGISTERED = "device_registered";
     public static final String TAG_FOLLOW_ID = "follow_id";
     public static final String TAG_SORT = "sort";
     public static final String TAG_SEARCH_KEY = "search_key";
     public static final String TAG_FAVOURITE_USER_ID = "favorite_user_id";
     public static final String TAG_FRIEND_ID = "friend_id";
+    public static final String TAG_PROFILE_VISITOR_ID_LIKE_TOKEN = "profile_visitor_id";
+
     public static final String TAG_VISIT_USER_ID = "visit_user_id";
     public static final String TAG_NEW_VISIT_USER_ID = "visitorid";
     public static final String TAG_REPORT_USER_ID = "report_user_id";
@@ -341,6 +342,7 @@ public class Constants {
     public static final String TAG_LOGIN_INTENT_DETAIL_LATITUDE = "lat";
     public static final String TAG_LOGIN_INTENT_DETAIL_LONGITUDE = "lon";
     public static final String TAG_LOGIN_INTENT_DETAIL_LOCATION = "location";
+    public static final String TAG_LOGIN_INTENT_GENDER = "gender";
     public static final String TAG_LOGIN_INTENT_DETAIL_PASSWORD = "password";
 
 }

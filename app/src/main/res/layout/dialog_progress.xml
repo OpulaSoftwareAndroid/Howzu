@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:gravity="center"
     android:orientation="horizontal">
 
@@ -16,7 +17,7 @@
             android:id="@+id/progressBar_Dialog"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:loading_color="@color/white"
+            app:loading_color="@color/colorPrimary"
             app:loading_speed="10"
             app:loading_width="5dp" />
 
