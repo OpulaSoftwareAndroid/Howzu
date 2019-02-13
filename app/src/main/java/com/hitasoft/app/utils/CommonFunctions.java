@@ -78,7 +78,7 @@ public class CommonFunctions {
                     dialog = new Dialog(context);
                     dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
                     dialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
-                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.WHITE));
                     dialog.setCancelable(false);
 
                     dialog.setContentView(R.layout.dialog_progress);

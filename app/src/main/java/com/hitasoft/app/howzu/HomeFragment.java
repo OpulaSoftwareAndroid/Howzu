@@ -13,6 +13,8 @@ import android.os.Handler;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -30,7 +32,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
-import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -53,17 +54,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-
-import okhttp3.Headers;
-import okhttp3.MultipartBody;
-import okhttp3.OkHttpClient;
-import okhttp3.RequestBody;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -167,16 +163,17 @@ public class HomeFragment extends Fragment implements View.OnClickListener
             @Override
             public void onClick(View view) {
                 arrayListComments.clear();
-                    getProfileCommentList();
+                    //getProfileCommentList();
 
             }
         });
 
-
+//        LocalBroadcastManager.getInstance(getContext()).registerReceiver(mMessageReceiver,
+//                new IntentFilter("custom-message"));
         match = getView().findViewById(R.id.match);
         unmatch = getView().findViewById(R.id.unmatch);
         reload = getView().findViewById(R.id.reload);
-        customer_care = getView().findViewById(R.id.imageViewMatchMakerProfile);
+        //customer_care = getView().findViewById(R.id.imageViewMatchMakerProfile);
         comments = getView().findViewById(R.id.comments);
         nullLay = getView().findViewById(R.id.nullLay);
         changeLocation = getView().findViewById(R.id.change_location);
@@ -376,14 +373,30 @@ public class HomeFragment extends Fragment implements View.OnClickListener
             public void onItemClicked(int itemPosition, Object dataObject) {
                 Intent p = new Intent(getActivity(), MainViewProfileDetailActivity.class);
                 p.putExtra("from", "home");
-                p.putExtra(Constants.TAG_FRIEND_ID, peoplesAry.get(itemPosition).get(Constants.TAG_REGISTERED_ID));
+                // here friend id means user own id
+                // and register id means friend id whos profile we are visiting
+
+                p.putExtra(Constants.TAG_FRIEND_ID, GetSet.getUseridLikeToken());
+                p.putExtra(Constants.TAG_PROFILE_VISITOR_ID_LIKE_TOKEN, peoplesAry.get(itemPosition).get(Constants.TAG_ID));
+                p.putExtra(Constants.TAG_REGISTERED_ID, peoplesAry.get(itemPosition).get(Constants.TAG_REGISTERED_ID));
+
+                Log.d(TAG,"jigar the profile whom we visited is "+peoplesAry.get(itemPosition).get(Constants.TAG_ID));
+                Log.d(TAG,"jigar the  our user id in visitor is "+GetSet.getUseridLikeToken());
 
                 startActivity(p);
             }
         });
     }
 
-
+//    public BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//            // Get extra data included in the Intent
+//            String ItemName = intent.getStringExtra("item");
+//            String qty = intent.getStringExtra("quantity");
+//            Toast.makeText(getContext(),ItemName +" "+qty ,Toast.LENGTH_SHORT).show();
+//        }
+//    };
     public void undoSwipe() {
         peoplesAry.add(0, lastSwipedUser);
         peopleAdapter.notifyDataSetChanged();
@@ -513,9 +526,11 @@ public class HomeFragment extends Fragment implements View.OnClickListener
                 holder = new ViewHolder();
 
                 holder.imageViewPeopleProfile = convertView.findViewById(R.id.imageViewPeopleProfile);
+                holder.imageViewMatchMakerProfile = convertView.findViewById(R.id.imageViewMatchMakerProfile);
+
                 holder.main = convertView.findViewById(R.id.main);
                 holder.userName = convertView.findViewById(R.id.user_name);
-                holder.bio = convertView.findViewById(R.id.bio);
+                holder.textViewProfileLocation = convertView.findViewById(R.id.textViewProfileLocation);
 
                 //    holder.main.getLayoutParams().height = screenHeight;
                 //    holder.main.getLayoutParams().width = screenWidth;
@@ -528,6 +543,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener
                 final HashMap<String, String> tempMap = peoples.get(position);
 
                 //    Log.v("image", "image" + tempMap.get(Constants.TAG_USERIMAGE));
+                System.out.println("jigar the comment in bind is member name is "+tempMap.get(Constants.TAG_COMMENT));
 
                 System.out.println("jigar the image src of user is "+tempMap.get(Constants.TAG_IMAGE));
                 Picasso.with(getActivity())
@@ -544,20 +560,56 @@ public class HomeFragment extends Fragment implements View.OnClickListener
 //
 //                else
                     {
-                    holder.userName.setText(tempMap.get(Constants.TAG_NAME) + ", " + tempMap.get(Constants.TAG_AGE));
-                }
+                        holder.textViewProfileLocation.setText(tempMap.get(Constants.TAG_LOCATION));
+                        holder.userName.setText(tempMap.get(Constants.TAG_NAME) + ", " + tempMap.get(Constants.TAG_AGE));
+                    }
 
                 //if (tempMap.get(Constants.TAG_SHOW_LOCATION).equals("true") && !tempMap.get(Constants.TAG_USERID).equals(GetSet.getUserId()))
                 {
 //
-//                    holder.bio.setVisibility(View.INVISIBLE);
-//                    holder.bio.setText("");
+//                    holder.textViewProfileLocation.setVisibility(View.INVISIBLE);
+//                    holder.textViewProfileLocation.setText("");
 //                }
 //                //else
 //                    {
-//                    holder.bio.setVisibility(View.VISIBLE);
-//                    holder.bio.setText(tempMap.get(Constants.TAG_LOCATION));
+//                    holder.textViewProfileLocation.setVisibility(View.VISIBLE);
+//                    holder.textViewProfileLocation.setText(tempMap.get(Constants.TAG_LOCATION));
+
+                    String ItemName = tempMap.get(Constants.TAG_SPONSOR_ID);
+                    String qty = tempMap.get(Constants.TAG_COMMENT);
+                    Intent intent = new Intent("custom-message");
+                    //            intent.putExtra("quantity",Integer.parseInt(quantity.getText().toString()));
+                    intent.putExtra("quantity",qty);
+                    intent.putExtra("item",ItemName);
+                    LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
                 }
+
+                holder.imageViewMatchMakerProfile.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Toast.makeText(getContext(),"user "+tempMap.get(Constants.TAG_REGISTERED_ID)
+                                +"The sponsor id is "+tempMap.get(Constants.TAG_SPONSOR_ID),Toast.LENGTH_LONG ).show();
+
+                        if(!tempMap.get(Constants.TAG_SPONSOR_ID).equals("0"))
+                        {
+                            GetSet.setUserId(tempMap.get(Constants.TAG_REGISTERED_ID));
+                            GetSet.setFriendId(tempMap.get(Constants.TAG_SPONSOR_ID));
+
+                            final FragmentTransaction ft = getFragmentManager().beginTransaction();
+                            ft.replace(R.id.content_frame, new MatchMakerFragment(), "MatchMakerFragment");
+                            ft.commit();
+
+                            //                            FragmentManager fm = getFragmentManager();
+//                            MatchMakerFragment fragm = (MatchMakerFragment) fm.findFragmentById(R.id.menuItemMatchMaker);
+//                            fragm.getTargetFragment();
+
+                        }else
+                        {
+                            Toast.makeText(getContext(),"Profile Doesn't Have Match Maker",Toast.LENGTH_LONG ).show();
+
+                        }
+                    }
+                });
 
             } catch (NullPointerException e) {
                 e.printStackTrace();
@@ -573,8 +625,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener
         }
 
         class ViewHolder {
-            ImageView imageViewPeopleProfile;
-            TextView userName, bio;
+            ImageView imageViewPeopleProfile,imageViewMatchMakerProfile;
+            TextView userName, textViewProfileLocation;
             RelativeLayout main;
         }
     }
@@ -868,10 +920,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener
                     startActivity(m);
                 }
                 break;
-            case  R.id.imageViewMatchMakerProfile:
+
+                case  R.id.imageViewMatchMakerProfile:
                 FragmentManager fm = getFragmentManager();
-                MatchMakerFragment fragm = (MatchMakerFragment) fm.findFragmentById(R.id.matchmaker_feature);
+                MatchMakerFragment fragm = (MatchMakerFragment) fm.findFragmentById(R.id.menuItemMatchmakerFeature);
                 fragm.getTargetFragment();
+
             case R.id.change_location:
                 if (GetSet.isPremium()) {
                     HashMap<String, String> fbdata = new HashMap<>();
@@ -1029,73 +1083,153 @@ public class HomeFragment extends Fragment implements View.OnClickListener
                 CommonFunctions.hideProgressDialog(getActivity());
             }
     }
+
+
+
+
+//    public void getPeopleList()
+//    {
+//
+//        if (CommonFunctions.isNetwork(Objects.requireNonNull(getActivity()))) {
+//
+//            CommonFunctions.showProgressDialog(getActivity());
+//
+//            OkHttpClient client = new OkHttpClient();
+//
+//            System.out.println("jigar the before response user id is " + GetSet.getUserId());
+//            //   System.out.println("jigar the before response token is " + pref.getString(Constants.TAG_AUTHORIZATION, ""));
+//
+//
+//            RequestBody requestBody = new MultipartBody.Builder()
+//                    .setType(MultipartBody.FORM)
+//                    .addFormDataPart(Constants.TAG_REGISTERED_ID, GetSet.getUserId())
+//                    .build();
+//            okhttp3.Request request = new okhttp3.Request.Builder()
+//                    //.header("Authorization", pref.getString(Constants.TAG_AUTHORIZATION, ""))
+//                    .post(requestBody)
+//                    .url(Constants.API_GET_PROFILE)
+//                    .build();
+//
+//
+//            // Response response = client.newCall(request).execute();
+//            client.newCall(request).enqueue(new okhttp3.Callback() {
+//                @Override
+//                public void onFailure(okhttp3.Call call, IOException e) {
+//
+//                    System.out.println("jigar the error failure in response we have is " + e);
+//                    getActivity().runOnUiThread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                           // CommonFunctions.hideProgressDialog(getActivity());
+//                            System.out.println("jigar the error response we have is " + e);
+//                            Toast.makeText(getActivity(), getString(R.string.network_time_out_error), Toast.LENGTH_SHORT).show();
+//
+//
+//                        }
+//                    });
+//                }
+//
+//
+//                @Override
+//                public void onResponse(okhttp3.Call call, okhttp3.Response response) throws IOException {
+//                    final String responseData = response.body().string();
+//                    Headers responseHeaders = response.headers();
+//                    for (int i = 0; i < responseHeaders.size(); i++) {
+//                        Log.d("DEBUG", responseHeaders.name(i) + ": " + responseHeaders.value(i));
+//                    }
+//                    if (!response.isSuccessful()) {
+//                        throw new IOException("jigar Unexpected code " + response);
+////                        System.out.println("jigar the response we have is " + response.body().toString());
+//                    }
+//                    getActivity().runOnUiThread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            CommonFunctions.hideProgressDialog(getActivity());
+//                            System.out.println("jigar the response we have is " + responseData);
+//                            setFindPeoplePageData(responseData);
+//
+//
+//                        }
+//                    });
+//                }
+//            });
+//        }else {
+//            Toast.makeText(getActivity(), getString(R.string.network_error), Toast.LENGTH_SHORT).show();
+//        }
+//        CommonFunctions.hideProgressDialog(getActivity());
+//    }
+
+
     public void getPeopleList()
     {
 
         if (CommonFunctions.isNetwork(Objects.requireNonNull(getActivity()))) {
 
             CommonFunctions.showProgressDialog(getActivity());
+//            String strFriendId = peoplesAry.get(0).get(Constants.TAG_REGISTERED_ID);
 
-            OkHttpClient client = new OkHttpClient();
-
-
-            System.out.println("jigar the before response user id is " + GetSet.getUserId());
-            //   System.out.println("jigar the before response token is " + pref.getString(Constants.TAG_AUTHORIZATION, ""));
-
-
-            RequestBody requestBody = new MultipartBody.Builder()
-                    .setType(MultipartBody.FORM)
-                    .addFormDataPart(Constants.TAG_REGISTERED_ID, GetSet.getUserId())
-                    .build();
-            okhttp3.Request request = new okhttp3.Request.Builder()
-                    //.header("Authorization", pref.getString(Constants.TAG_AUTHORIZATION, ""))
-                    .post(requestBody)
-                    .url(Constants.API_GET_PROFILE)
-                    .build();
-
-
-            // Response response = client.newCall(request).execute();
-            client.newCall(request).enqueue(new okhttp3.Callback() {
-                @Override
-                public void onFailure(okhttp3.Call call, IOException e) {
-
-                    System.out.println("jigar the error failure in response we have is " + e);
-                    getActivity().runOnUiThread(new Runnable() {
+            StringRequest getProfileList = new StringRequest(Request.Method.POST, Constants.API_GET_PROFILE,
+                    new Response.Listener<String>() {
                         @Override
-                        public void run() {
-                           // CommonFunctions.hideProgressDialog(getActivity());
-                            System.out.println("jigar the error response we have is " + e);
-                            Toast.makeText(getActivity(), getString(R.string.network_time_out_error), Toast.LENGTH_SHORT).show();
+                        public void onResponse(String res) {
+                            Log.d(TAG, "commentParams=" + res);
 
+                            try {
+                                JSONObject json = new JSONObject(res);
+                                String strStatus = json.getString(Constants.TAG_STATUS);
+                                if (strStatus.equals("1")) {
+                                    setFindPeoplePageData(res);
+                                    CommonFunctions.hideProgressDialog(getActivity());
+                                } else {
+                                    String StrMessage = json.getString(Constants.TAG_MSG);
+                                    Toast.makeText(getActivity(), StrMessage, Toast.LENGTH_LONG).show();
+                                    tags.setVisibility(View.GONE);
+                                    close.performClick();
+                                    CommonFunctions.hideProgressDialog(getActivity());
+                                }
+                            } catch (JSONException e) {
+                                System.out.println("jigar the error in json is " + e);
+                                e.printStackTrace();
+                            } catch (NullPointerException e) {
+                                System.out.println("jigar the error in null is " + e);
 
+                                e.printStackTrace();
+                            } catch (Exception e) {
+                                System.out.println("jigar the error main exception in json is " + e);
+
+                                e.printStackTrace();
+                            }
                         }
-                    });
-                }
-
+                    }, new Response.ErrorListener() {
 
                 @Override
-                public void onResponse(okhttp3.Call call, okhttp3.Response response) throws IOException {
-                    final String responseData = response.body().string();
-                    Headers responseHeaders = response.headers();
-                    for (int i = 0; i < responseHeaders.size(); i++) {
-                        Log.d("DEBUG", responseHeaders.name(i) + ": " + responseHeaders.value(i));
-                    }
-                    if (!response.isSuccessful()) {
-                        throw new IOException("jigar Unexpected code " + response);
-//                        System.out.println("jigar the response we have is " + response.body().toString());
-                    }
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            CommonFunctions.hideProgressDialog(getActivity());
-                            System.out.println("jigar the response we have is " + responseData);
-                            setFindPeoplePageData(responseData);
+                public void onErrorResponse(VolleyError error) {
+                    VolleyLog.d(TAG, "commentParams Error: " + error.getMessage());
+                    CommonFunctions.hideProgressDialog(getActivity());
+                    System.out.println("jigar the error volley in json is " + error.getMessage());
 
-
-                        }
-                    });
                 }
-            });
+            }) {
+
+                //            @Override
+//            public Map<String, String> getHeaders() throws AuthFailureError {
+//                Map<String, String> map = new HashMap<String, String>();
+//                map.put(Constants.TAG_AUTHORIZATION, pref.getString(Constants.TAG_AUTHORIZATION, ""));
+//                return map;
+//            }
+
+                @Override
+                protected Map<String, String> getParams() {
+                    Map<String, String> params = new HashMap<String, String>();
+//                params.put(Constants.TAG_FRIEND_ID, strFriendId);
+                    params.put(Constants.TAG_REGISTERED_ID, GetSet.getUserId());
+                    Log.v(TAG, "jigar the profileParams=" + params);
+                    return params;
+                }
+            };
+
+            HowzuApplication.getInstance().addToRequestQueue(getProfileList, "");
+
         }else {
             Toast.makeText(getActivity(), getString(R.string.network_error), Toast.LENGTH_SHORT).show();
         }
@@ -1105,6 +1239,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener
     public void setUserCommentsData(String strResponse) {
         try {
             JSONObject jsonObject = new JSONObject(strResponse);
+       //     JSONObject jsonObject = new JSONObject(strResponse);
+
             String strStatus = jsonObject.getString(Constants.TAG_STATUS);
             String strMessage = jsonObject.getString(Constants.TAG_MSG);
             System.out.println("jigar the commenter response is " + strResponse);
@@ -1192,11 +1328,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener
     public void setFindPeoplePageData(String strResponse)
     {
         try {
+            Log.d(TAG,"jigar the response we profile list have is "+strResponse);
             JSONObject jsonObject=new JSONObject(strResponse);
             String strStatus=jsonObject.getString(Constants.TAG_STATUS);
             String strMessage=jsonObject.getString(Constants.TAG_MSG);
 
-            if(strStatus.equals("1") || strMessage.equals(Constants.TAG_STATUS)) {
+            if(strStatus.equals("1") || strMessage.equals(Constants.TAG_SUCCESS)) {
 
 
                 JSONArray jsonArrayProfileInfo=jsonObject.getJSONArray(Constants.TAG_INFO);
@@ -1212,13 +1349,74 @@ public class HomeFragment extends Fragment implements View.OnClickListener
                     String strMemberRegisterID =jsonObjectMemberMainInfo.getString(Constants.TAG_REGISTERED_ID);
                     String strMemberAge =jsonObjectMemberMainInfo.getString(Constants.TAG_AGE);
                     String strMemberImage =jsonObjectMemberMainInfo.getString(Constants.TAG_IMAGE);
+                    String strMatchMakerID =jsonObjectMemberMainInfo.getString(Constants.TAG_SPONSOR_ID);
                     String strMemberLocation =jsonObjectMemberMainInfo.getString(Constants.TAG_LOCATION);
+                    String strFriendIDLikeToken =jsonObjectMemberMainInfo.getString(Constants.TAG_ID);
+
+//                    JSONObject jsonObjectCommentlist=jsonObjectMemberMainInfo.getJSONObject(Constants.TAG_COMMENT);
+//                    JSONArray jsonArrayCommentList = null;
+//                    if(jsonObjectCommentlist!=null) {
+                    JSONArray  jsonArrayCommentList = jsonObjectMemberMainInfo.getJSONArray(Constants.TAG_COMMENT);
+                    System.out.println("jigar the member size comment list name is "+jsonArrayCommentList.length());
+                    System.out.println("jigar the member comment list name is "+jsonArrayCommentList.toString());
+//
+//                    }
+
+//                    if(jsonArrayCommentList!=null)
+//                    {
+//
+//                    }
+                    if(jsonArrayCommentList.length()>0)
+                    {
+                        for(int j=0;j<jsonArrayCommentList.length();j++)
+                        {
+//                            JSONObject jsonObject = new JSONObject(strResponse);
+//
+//                            String strStatus = jsonObject.getString(Constants.TAG_STATUS);
+//                            String strMessage = jsonObject.getString(Constants.TAG_MSG);
+//                            System.out.println("jigar the commenter response is " + strResponse);
+//
+//                            if (strStatus.equals("1") && strMessage.equals(Constants.TAG_SUCCESS)) {
+//
+//
+//                                JSONArray jsonArrayProfileInfo = jsonObject.getJSONArray(Constants.TAG_INFO);
+//                                //     JSONObject jsonObjectMember=jsonObjectInfo.getJSONObject(Constants.TAG_MEMBER);
+//
+//
+//                                arrayListComments.clear();
+//                                for (int i = 0; i < jsonArrayProfileInfo.length(); i++) {
+//                                    HashMap<String, String> map = new HashMap<String, String>();
+
+                                    JSONObject jsonObjectCommentMainInfo = jsonArrayCommentList.getJSONObject(j);
+
+                                    String strCommentUserName = jsonObjectCommentMainInfo.getString(Constants.TAG_COMMENT_USER_NAME);
+                                    String strCommentID = jsonObjectCommentMainInfo.getString(Constants.TAG_COMMENT_ID);
+                                    String strCommentUserImage = jsonObjectCommentMainInfo.getString(Constants.TAG_COMMENT_USER_IMAGE);
+                                    String strUserComment = jsonObjectCommentMainInfo.getString(Constants.TAG_COMMENT);
+                                    arrayListComments.add(new Item(i, strUserComment));
+                                    System.out.println("jigar the commenter name is " + strCommentUserName);
+
+                                    //       peoplesAry.add(map);
+         //                       }
+                                System.out.println("jigar the commenter list have is " + arrayListComments.toString());
+                                System.out.println("jigar the commenter list size is " + arrayListComments.size());
+           //                 }
+
+                        //    setUserCommentsData(jsonArrayCommentList.toString());
+                        }
+                        map.put(Constants.TAG_COMMENT, Arrays.toString(arrayListComments.toArray()));
+                    }
 
                     System.out.println("jigar the member name is "+strMemberName);
+
                     map.put(Constants.TAG_REGISTERED_ID, strMemberRegisterID);
+                    map.put(Constants.TAG_ID, strFriendIDLikeToken);
                     map.put(Constants.TAG_NAME, strMemberName);
                     map.put(Constants.TAG_AGE, strMemberAge);
                     map.put(Constants.TAG_IMAGE, strMemberImage);
+                    map.put(Constants.TAG_SPONSOR_ID, strMatchMakerID);
+                    map.put(Constants.TAG_LOCATION, strMemberLocation);
+
                     peoplesAry.add(map);
                 }
             }
@@ -1253,7 +1451,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener
  //           getProfileNotificationList();
         }catch (JSONException ex)
         {
-            System.out.println("jigar the error in json is "+ex);
+            System.out.println("jigar the error in profile list json is "+ex);
         }
 
     }

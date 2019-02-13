@@ -786,7 +786,7 @@ public class LoginActivity extends AppCompatActivity implements
                                                 // getting strFriendID of the user
                                                 String userId = DefensiveClass.optString(profile, "id");
 
-//                                                String bio = DefensiveClass.optString(profile, "about");
+//                                                String textViewProfileLocation = DefensiveClass.optString(profile, "about");
 //                                                String age = DefensiveClass.optString(profile, "birthday");
 //
 //                                                getFBInterest(profile.optJSONObject("likes"));
@@ -834,7 +834,7 @@ public class LoginActivity extends AppCompatActivity implements
                                                 fbdata.put(Constants.TAG_ID, userId);
                                                 fbdata.put(Constants.TAG_USERNAME, name);
                                                 fbdata.put(Constants.TAG_EMAIL, email);
-//                                                fbdata.put(Constants.TAG_BIO, bio);
+//                                                fbdata.put(Constants.TAG_BIO, textViewProfileLocation);
 //                                                fbdata.put(Constants.TAG_AGE, age);
 //                                                fbdata.put(Constants.TAG_GENDER, DefensiveClass.optString(profile, "gender"));
                                                 fbdata.put(Constants.TAG_DEVICE_ID, Settings.Secure.getString(getContentResolver(),

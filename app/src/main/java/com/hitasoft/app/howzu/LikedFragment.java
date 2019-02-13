@@ -228,7 +228,7 @@ public class LikedFragment extends Fragment implements DiscreteScrollView.OnItem
                 super(itemView);
                 imageViewProfileImage = itemView.findViewById(R.id.imageViewProfileImage);
                 user_name = itemView.findViewById(R.id.user_name);
-                bio = itemView.findViewById(R.id.bio);
+                bio = itemView.findViewById(R.id.textViewProfileLocation);
                 imageViewLikeMatchMaker=itemView.findViewById(R.id.imageViewLikeMatchMaker);
 
             }

@@ -14,6 +14,8 @@ package com.hitasoft.app.utils;
 public class GetSet {
     private static boolean isLogged = false;
     private static String userId = null;
+    private static String userIdLikeToken = null;
+
     private static String friendID = null;
     private static String userName = null;
     private static String Email = null;
@@ -53,6 +55,14 @@ public class GetSet {
 
     public static void setUserId(String userId) {
         GetSet.userId = userId;
+    }
+
+    public static String getUseridLikeToken() {
+        return userIdLikeToken;
+    }
+
+    public static void setUseridLikeToken(String userIdLikeToken) {
+        GetSet.userIdLikeToken = userIdLikeToken;
     }
     public static String getFriendId() {
         return friendID;

@@ -162,7 +162,7 @@ public class ProfileActivity extends AppCompatActivity implements NetworkReceive
         detailLay = (RelativeLayout) findViewById(R.id.detail_lay);
         photoLay = (RelativeLayout) findViewById(R.id.photoLay);
         info = (CustomTextView) findViewById(R.id.info);
-        bio = (CustomTextView) findViewById(R.id.bio);
+        bio = (CustomTextView) findViewById(R.id.textViewProfileLocation);
         location = (CustomTextView) findViewById(R.id.location);
         premiumLay = (LinearLayout) findViewById(R.id.premiumLay);
         membershipValid = (CustomTextView) findViewById(R.id.membership_valid);

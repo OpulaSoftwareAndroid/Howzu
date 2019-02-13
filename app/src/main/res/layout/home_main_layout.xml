@@ -156,7 +156,7 @@
             android:layout_marginBottom="80dp"
             android:gravity="center_horizontal"
             android:orientation="horizontal"
-            android:visibility="visible">
+            android:visibility="gone">
 
             <ImageView
                 android:id="@+id/reload"

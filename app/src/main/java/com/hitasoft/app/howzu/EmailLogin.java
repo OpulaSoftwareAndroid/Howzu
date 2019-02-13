@@ -12,6 +12,8 @@ import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -59,6 +61,8 @@ public class EmailLogin extends AppCompatActivity implements View.OnClickListene
     ArrayList<String> arrayListCountryID = new ArrayList<>();
     EditText editTextDOB, editTextMobileNumber, editTextName;
     ProgressWheel progressWheel;
+    RadioButton radioButtonMale,radioButtonFemale;
+    RadioGroup radioGroupGender;
     String strLocationAddress="";
     double doubleLatitude=0,doubleLongitude=0;
     @Override
@@ -76,6 +80,9 @@ public class EmailLogin extends AppCompatActivity implements View.OnClickListene
         editTextMobileNumber = (EditText) findViewById(R.id.editTextMobileNumber);
         editTextName = (EditText) findViewById(R.id.editTextName);
         editTextDOB = (EditText) findViewById(R.id.editTextBirthDate);
+        radioButtonFemale=findViewById(R.id.radioFemale);
+        radioButtonMale=findViewById(R.id.radioMale);
+        radioGroupGender=findViewById(R.id.radioSex);
 
         mLocationClient = new LocationClient(this);
         LocationClientOption Option = new LocationClientOption ();
@@ -194,7 +201,22 @@ public class EmailLogin extends AppCompatActivity implements View.OnClickListene
                 String strMobileNumber = editTextMobileNumber.getText().toString();
                 String strCountryCode = country_spinner.getSelectedItem().toString();
                 SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-                System.out.println("jigar the string dob is " + strDateOfBirth);
+                int radioButtonID = radioGroupGender.getCheckedRadioButtonId();
+                View radioButton = radioGroupGender.findViewById(radioButtonID);
+                int indexOfSelectedGender = radioGroupGender.indexOfChild(radioButton);
+                String strGender;
+
+                String selectedtext = radioButtonMale.getText().toString();
+
+                if(indexOfSelectedGender==0)
+                {
+                    strGender="men";
+                }else
+                {
+                    strGender="women";
+
+                }
+                System.out.println("jigar the selected gender is " + indexOfSelectedGender);
                 int intDate = 0, intMonth = 0, intYear = 0;
 
                 try {
@@ -246,6 +268,7 @@ public class EmailLogin extends AppCompatActivity implements View.OnClickListene
                         intent.putExtra(Constants.TAG_LOGIN_INTENT_DETAIL_LATITUDE, String.valueOf(doubleLatitude));
                         intent.putExtra(Constants.TAG_LOGIN_INTENT_DETAIL_LONGITUDE, String.valueOf(doubleLongitude));
                         intent.putExtra(Constants.TAG_LOGIN_INTENT_DETAIL_LOCATION, strLocationAddress);
+                        intent.putExtra(Constants.TAG_LOGIN_INTENT_GENDER, strGender);
                         startActivity(intent);
                     }
                 } catch (ParseException e) {

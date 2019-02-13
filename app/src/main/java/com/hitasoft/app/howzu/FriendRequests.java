@@ -3,10 +3,12 @@ package com.hitasoft.app.howzu;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -237,8 +239,10 @@ public class FriendRequests extends Fragment implements SwipeRefreshLayout.OnRef
             }
 
             Glide.with(mContext)
-                    .load(album.getNotificationImageMainURL()+"/"+album.getNotificationImageProfileUrl()).listener
+            //                    .load(album.getNotificationImageMainURL()+"/"+album.getNotificationImageProfileUrl()).listener
 //                    .load(album.getNotificationImageMainURL()+"/male.png").listener
+                    .load(album.getNotificationImageMainURL())
+                    .listener
 
         (new RequestListener<String, GlideDrawable>() {
             @Override
@@ -324,6 +328,20 @@ public class FriendRequests extends Fragment implements SwipeRefreshLayout.OnRef
                                 String strStatus = json.getString(Constants.TAG_STATUS);
                                 if (strStatus.equals("1")) {
 //                                    finish();
+                                    final FragmentTransaction ft = getFragmentManager().beginTransaction();
+                                    ft.replace(R.id.content_frame, new FriendRequests(), TAG);
+                                    ft.commit();
+
+//                                    Fragment frg = null;
+//
+////                                    frg = getActivity().getSupportFragmentManager().findFragmentByTag(TAG);
+//                                    frg = getChildFragmentManager().findFragmentByTag(TAG);
+////                                    final FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+//                                    final FragmentTransaction ft = getChildFragmentManager().beginTransaction();
+//                                    ft.detach(frg);
+//                                    ft.attach(frg);
+//                                    ft.commit();
+
 //                                    startActivity(getIntent());
 //                                    setNotificationData(res);
                                     CommonFunctions.hideProgressDialog(getContext());

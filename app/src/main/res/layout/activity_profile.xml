@@ -172,7 +172,7 @@
                         app:fonts="font_regular.ttf" />
 
                     <com.hitasoft.app.customclass.CustomTextView
-                        android:id="@+id/bio"
+                        android:id="@+id/textViewProfileLocation"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/info"
@@ -190,7 +190,7 @@
                         android:id="@+id/location"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/bio"
+                        android:layout_below="@+id/textViewProfileLocation"
                         android:layout_marginTop="5dp"
                         android:gravity="center_horizontal"
                         android:includeFontPadding="false"
