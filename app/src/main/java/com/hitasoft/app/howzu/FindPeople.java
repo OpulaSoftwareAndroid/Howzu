@@ -42,6 +42,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -111,6 +112,9 @@ public class FindPeople extends Fragment implements View.OnClickListener {
                 MODE_PRIVATE);
         editor = pref.edit();
 
+        Date date= new Date();
+        long time = date.getTime();
+        System.out.println("jigar the time in Milliseconds: " + time);
         changeLocation.setOnClickListener(this);
         locationLay.setOnClickListener(this);
         becomePremium.setOnClickListener(this);
@@ -135,7 +139,12 @@ public class FindPeople extends Fragment implements View.OnClickListener {
             scrollHeight = display.getHeight() - HowzuApplication.dpToPx(context, 95);
         }
 
-        Picasso.with(getActivity()).load(GetSet.getImageUrl()).placeholder(R.drawable.user_placeholder).error(R.drawable.user_placeholder)
+        Log.d(TAG,"jigar the user image for find people is "+Constants.pref.getString("user_image", null));
+        Picasso.with(getActivity())
+//                .load(GetSet.getImageUrl())
+                .load(Constants.pref.getString("user_image", null))
+                .placeholder(R.drawable.user_placeholder)
+                .error(R.drawable.user_placeholder)
                 .into(userImage);
         setAdapter();
 
@@ -478,22 +487,24 @@ public class FindPeople extends Fragment implements View.OnClickListener {
             }
         }) {
 
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> map = new HashMap<String, String>();
-                map.put(Constants.TAG_AUTHORIZATION, pref.getString(Constants.TAG_AUTHORIZATION, ""));
-                Log.v(TAG, "getPeopleParams auth =" + map);
-                System.out.println("jigar the find people auth have is " + map);
-                return map;
-            }
+//            @Override
+//            public Map<String, String> getHeaders() throws AuthFailureError {
+//                Map<String, String> map = new HashMap<String, String>();
+//                map.put(Constants.TAG_AUTHORIZATION, pref.getString(Constants.TAG_AUTHORIZATION, ""));
+//                Log.v(TAG, "getPeopleParams auth =" + map);
+//                System.out.println("jigar the find people auth have is " + map);
+//                return map;
+//            }
 
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
-                params.put(Constants.TAG_USERID, GetSet.getUserId());
-          //      params.put(Constants.TAG_REGISTERED_ID, GetSet.getUserId());
-                params.put(Constants.TAG_OFFSET, String.valueOf(currentPage * 20));
-                params.put(Constants.TAG_LIMIT, "20");
+//                params.put(Constants.TAG_USERID, pref.getString(Constants.TAG_TOKEN_LIKE_USER_ID,""));
+                params.put(Constants.TAG_USERID, "4dc61be0-2dca-11e9-9304-2900178afb99");
+
+                //      params.put(Constants.TAG_REGISTERED_ID, GetSet.getUserId());
+//                params.put(Constants.TAG_OFFSET, String.valueOf(currentPage * 20));
+//                params.put(Constants.TAG_LIMIT, "20");
                 params.put(Constants.TAG_TIMESTAMP, String.valueOf(System.currentTimeMillis() / 1000L));
                 Log.v(TAG, "getPeopleParams=" + params);
                 System.out.println("jigar the find people param have is " + params);

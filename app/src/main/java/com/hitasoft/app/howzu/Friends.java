@@ -72,8 +72,8 @@ public class Friends extends Fragment implements View.OnClickListener, TextWatch
 
     RecyclerView recyclerView;
     GridLayoutManager mLayoutManager;
-//    RecyclerViewAdapter itemAdapter;
-    FriendRequestAdapter friendRequestAdapter;
+    RecyclerViewAdapter itemAdapter;
+//    FriendRequestAdapter friendRequestAdapter;
     Display display;
     RelativeLayout main, searchLay;
     LinearLayout nullLay;
@@ -85,8 +85,8 @@ public class Friends extends Fragment implements View.OnClickListener, TextWatch
     public static Context context;
     int currentPage = 0, firstVisibleItem, visibleItemCount, totalItemCount, visibleThreshold = 5, previousTotal = 0;
     InputMethodManager imm;
-//    ArrayList<HashMap<String, String>> peoplesAry = new ArrayList<HashMap<String, String>>();
-    ArrayList<POJOFriendsListDetails> peoplesAry = new ArrayList<>();
+    ArrayList<HashMap<String, String>> peoplesAry = new ArrayList<HashMap<String, String>>();
+//    ArrayList<POJOFriendsListDetails> peoplesAry = new ArrayList<>();
 
     boolean loading = true, loadmore = false;
     SharedPreferences pref;
@@ -154,10 +154,10 @@ public class Friends extends Fragment implements View.OnClickListener, TextWatch
                             searchLay.setVisibility(View.GONE);
                             searchEdit.setText("");
                             nullLay.setVisibility(View.GONE);
-//                            itemAdapter = new RecyclerViewAdapter(peoplesAry);
-//                            recyclerView.setAdapter(itemAdapter);
-                            friendRequestAdapter = new FriendRequestAdapter(getContext(),peoplesAry);
-                            recyclerView.setAdapter(friendRequestAdapter);
+                            itemAdapter = new RecyclerViewAdapter(peoplesAry);
+                            recyclerView.setAdapter(itemAdapter);
+//                            friendRequestAdapter = new FriendRequestAdapter(getContext(),peoplesAry);
+//                            recyclerView.setAdapter(friendRequestAdapter);
 
                             if (peoplesAry.size() == 0) {
                                 currentPage = 0;
@@ -213,7 +213,7 @@ public class Friends extends Fragment implements View.OnClickListener, TextWatch
     @Override
     public void onResume() {
         super.onResume();
-        setOnlineStatus();
+        //setOnlineStatus();
     }
 
     private void setAdapter() {
@@ -221,8 +221,8 @@ public class Friends extends Fragment implements View.OnClickListener, TextWatch
         mLayoutManager = new GridLayoutManager(context, 3);
         recyclerView.setLayoutManager(mLayoutManager);
 
-//        itemAdapter = new RecyclerViewAdapter(peoplesAry);
-//        recyclerView.setAdapter(itemAdapter);
+        itemAdapter = new RecyclerViewAdapter(peoplesAry);
+        recyclerView.setAdapter(itemAdapter);
 //
 
 
@@ -303,8 +303,8 @@ public class Friends extends Fragment implements View.OnClickListener, TextWatch
                         popup.dismiss();
                         MainScreenActivity.spinText.setText(values[position]);
                         peoplesAry.clear();
-//                        itemAdapter.notifyDataSetChanged();
-                        friendRequestAdapter.notifyDataSetChanged();
+                        itemAdapter.notifyDataSetChanged();
+//                        friendRequestAdapter.notifyDataSetChanged();
                         currentPage = 0;
                         previousTotal = 0;
                         loadmore = false;
@@ -329,129 +329,134 @@ public class Friends extends Fragment implements View.OnClickListener, TextWatch
 //    }
 
 
-//    class RecyclerViewAdapter extends RecyclerView.Adapter {
-//        private static final int TYPE_ITEM = 1,TYPE_FOOTER = 2;
-//        ArrayList<HashMap<String, String>> Items;
-//        private boolean showLoader;
-//
-//        public RecyclerViewAdapter(ArrayList<HashMap<String, String>> Items) {
-//            this.Items = Items;
-//        }
-//
-//        @Override
-//        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-//            if (viewType == TYPE_ITEM) {
-//                View itemView = LayoutInflater.from(parent.getContext())
-//                        .inflate(R.layout.people_item_layout, parent, false);
-//                return new MyViewHolder(itemView);
-//            } else {
-//                View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.footer_loader, parent, false);
-//                return new FooterViewHolder(v);
-//            }
-//        }
-//
-//        @Override
-//        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-//            int itemType = getItemViewType(position);
-//            if (itemType == TYPE_ITEM) {
-//                HashMap<String, String> tempMap = Items.get(position);
-//                MyViewHolder viewHolder = (MyViewHolder) holder;
-//
-//                viewHolder.userName.setText(tempMap.get(Constants.TAG_USERNAME));
+    class RecyclerViewAdapter extends RecyclerView.Adapter {
+        private static final int TYPE_ITEM = 1,TYPE_FOOTER = 2;
+        ArrayList<HashMap<String, String>> Items;
+        private boolean showLoader;
+
+        public RecyclerViewAdapter(ArrayList<HashMap<String, String>> Items) {
+            this.Items = Items;
+        }
+
+        @Override
+        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            if (viewType == TYPE_ITEM) {
+                View itemView = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.people_item_layout, parent, false);
+                return new MyViewHolder(itemView);
+            } else {
+                View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.footer_loader, parent, false);
+                return new FooterViewHolder(v);
+            }
+        }
+
+        @Override
+        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+            int itemType = getItemViewType(position);
+            if (itemType == TYPE_ITEM)
+            {
+                HashMap<String, String> tempMap = Items.get(position);
+                MyViewHolder viewHolder = (MyViewHolder) holder;
+                Log.d(TAG,"jigar the friend list user name is "+tempMap.get(Constants.TAG_USERNAME));
+
+                viewHolder.userName.setText(tempMap.get(Constants.TAG_USERNAME));
 //                String img = Constants.RESIZE_URL + CommonFunctions.getImageName(tempMap.get(Constants.TAG_USERIMAGE)) + Constants.IMAGE_RES;
-//                Picasso.with(context)
-//                        .load(img)
-//                        .placeholder(R.drawable.user_placeholder)
-//                        .error(R.drawable.user_placeholder)
-//                        .resize(Constants.IMG_WT_HT, Constants.IMG_WT_HT)
-//                        .centerCrop()
-//                        .into(viewHolder.singleImage);
-//
-//                if (tempMap.get(Constants.TAG_ONLINE).equals("1")) {
-//                    viewHolder.online.setVisibility(View.VISIBLE);
-//                    viewHolder.online.setImageResource(R.drawable.online);
-//                } else if (tempMap.get(Constants.TAG_ONLINE).equals("2")) {
-//                    viewHolder.online.setVisibility(View.VISIBLE);
-//                    viewHolder.online.setImageResource(R.drawable.away);
-//                } else {
-//                    viewHolder.online.setVisibility(View.GONE);
-//                }
-//            } else {
-//                FooterViewHolder footerHolder = (FooterViewHolder) holder;
-//                if (showLoader) {
-//                    footerHolder.progress.setVisibility(View.VISIBLE);
-//                    footerHolder.progress.spin();
-//                } else {
-//                    footerHolder.progress.setVisibility(View.GONE);
-//                    footerHolder.progress.stopSpinning();
-//                }
-//            }
-//        }
-//
-//        public void updateList(ArrayList<HashMap<String, String>> data) {
-//            Items = data;
-//            notifyDataSetChanged();
-//        }
-//
-//        public void showLoading(boolean status) {
-//            showLoader = status;
-//        }
-//
-//        @Override
-//        public int getItemViewType(int position) {
-//            if (isPositionFooter(position)) {
-//                return TYPE_FOOTER;
-//            }
-//            return TYPE_ITEM;
-//        }
-//
-//        private boolean isPositionFooter(int position) {
-//            return position == Items.size();
-//        }
-//
-//        @Override
-//        public int getItemCount() {
-//            if (Items.size() == 0)
-//                return 0;
-//            else
-//                return Items.size() + 1;
-//        }
-//
-//        public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-//            ImageView singleImage, online;
-//            TextView userName;
-//
-//            public MyViewHolder(View view) {
-//                super(view);
-//                singleImage = view.findViewById(R.id.user_image);
-//                userName =  view.findViewById(R.id.user_name);
-//                online = view.findViewById(R.id.online);
-//
-//                singleImage.setOnClickListener(this);
-//            }
-//
-//            @Override
-//            public void onClick(View v) {
-//                switch (v.getId()) {
-//                    case R.id.user_image:
-//                        Intent p = new Intent(getActivity(), MainViewProfileDetailActivity.class);
-//                        p.putExtra("from", "friends");
-//                        p.putExtra("strFriendID", Items.get(getAdapterPosition()).get(Constants.TAG_USERID));
-//                        startActivity(p);
-//                        break;
-//                }
-//            }
-//        }
-//
-//        public class FooterViewHolder extends RecyclerView.ViewHolder {
-//            ProgressWheel progress;
-//
-//            public FooterViewHolder(View parent) {
-//                super(parent);
-//                progress = parent.findViewById(R.id.footer_progress);
-//            }
-//        }
-//    }
+                String img = CommonFunctions.getImageName(tempMap.get(Constants.TAG_USERIMAGE)) + Constants.IMAGE_RES;
+
+                Picasso.with(context)
+                        .load(tempMap.get(Constants.TAG_USERIMAGE))
+                        .placeholder(R.drawable.user_placeholder)
+                        .error(R.drawable.user_placeholder)
+                        .resize(Constants.IMG_WT_HT, Constants.IMG_WT_HT)
+                        .centerCrop()
+                        .into(viewHolder.singleImage);
+
+                if (tempMap.get(Constants.TAG_ONLINE).equals("1")) {
+                    viewHolder.online.setVisibility(View.VISIBLE);
+                    viewHolder.online.setImageResource(R.drawable.online);
+                } else if (tempMap.get(Constants.TAG_ONLINE).equals("2")) {
+                    viewHolder.online.setVisibility(View.VISIBLE);
+                    viewHolder.online.setImageResource(R.drawable.away);
+                } else {
+                    viewHolder.online.setVisibility(View.GONE);
+                }
+            }
+            else {
+                FooterViewHolder footerHolder = (FooterViewHolder) holder;
+                if (showLoader) {
+                    footerHolder.progress.setVisibility(View.VISIBLE);
+                    footerHolder.progress.spin();
+                } else {
+                    footerHolder.progress.setVisibility(View.GONE);
+                    footerHolder.progress.stopSpinning();
+                }
+            }
+        }
+
+        public void updateList(ArrayList<HashMap<String, String>> data) {
+            Items = data;
+            notifyDataSetChanged();
+        }
+
+        public void showLoading(boolean status) {
+            showLoader = status;
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            if (isPositionFooter(position)) {
+                return TYPE_FOOTER;
+            }
+            return TYPE_ITEM;
+        }
+
+        private boolean isPositionFooter(int position) {
+            return position == Items.size();
+        }
+
+        @Override
+        public int getItemCount() {
+            if (Items.size() == 0)
+                return 0;
+            else
+                return Items.size() + 1;
+        }
+
+        public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+            ImageView singleImage, online;
+            TextView userName;
+
+            public MyViewHolder(View view) {
+                super(view);
+                singleImage = view.findViewById(R.id.user_image);
+                userName =  view.findViewById(R.id.user_name);
+                online = view.findViewById(R.id.online);
+
+                singleImage.setOnClickListener(this);
+            }
+
+            @Override
+            public void onClick(View v) {
+                switch (v.getId()) {
+                    case R.id.user_image:
+                        Intent p = new Intent(getActivity(), MainViewProfileDetailActivity.class);
+                        p.putExtra("from", "friends");
+                        p.putExtra("strFriendID", Items.get(getAdapterPosition()).get(Constants.TAG_USERID));
+                        startActivity(p);
+                        break;
+                }
+            }
+        }
+
+        public class FooterViewHolder extends RecyclerView.ViewHolder {
+            ProgressWheel progress;
+
+            public FooterViewHolder(View parent) {
+                super(parent);
+                progress = parent.findViewById(R.id.footer_progress);
+            }
+        }
+    }
 
 
 
@@ -468,17 +473,19 @@ public class Friends extends Fragment implements View.OnClickListener, TextWatch
                 if (peoplesAry.size() == 0) {
                     progress.setVisibility(View.VISIBLE);
                     progress.spin();
-//                    itemAdapter.showLoading(false);
+                    itemAdapter.showLoading(false);
 //                    friendRequestAdapter.show
                 } else if (peoplesAry.size() >= 20) {
                     progress.stopSpinning();
                     progress.setVisibility(View.GONE);
+                    itemAdapter.showLoading(false);
+                    itemAdapter.notifyDataSetChanged();
 //                    friendRequestAdapter.showLoading(true);
-                    friendRequestAdapter.notifyDataSetChanged();
+   //                 friendRequestAdapter.notifyDataSetChanged();
                 } else {
                     progress.stopSpinning();
                     progress.setVisibility(View.GONE);
-//                    itemAdapter.showLoading(false);
+                    itemAdapter.showLoading(false);
                 }
             }
         });
@@ -488,12 +495,55 @@ public class Friends extends Fragment implements View.OnClickListener, TextWatch
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String res) {
-                        Log.d(TAG, "getPeopleRes="+res);
+  //                      Log.d(TAG, "getPeopleRes="+res);
                         try {
-                            JSONObject response = new JSONObject(res);
+//                            Log.d(TAG, "getVisitorRes=" + res);
+                            Log.d(TAG, "jigar the response in friend list  is : " + res);
+
+                                JSONObject response = new JSONObject(res);
+
+//                            String status = DefensiveClass.optString(response, Constants.TAG_STATUS);
+
+                                String strStatus=response.getString(Constants.TAG_STATUS);
+                                   String strMessage=response.getString(Constants.TAG_MSG);
+
+                                if(strStatus.equals("1")) {
+
+                                    JSONArray jsonArrayMainInfo = response.getJSONArray(Constants.TAG_INFO);
+                                    for (int i = 0; i < jsonArrayMainInfo.length(); i++) {
+                                        HashMap<String,String> map = new HashMap<String, String>();
+                                        JSONObject jsonObjectSubMainResponse = jsonArrayMainInfo.getJSONObject(i);
+                                        String strFriendName = jsonObjectSubMainResponse.getString(Constants.TAG_NAME);
+                                        String strFriendLocation = jsonObjectSubMainResponse.getString(Constants.TAG_LOCATION);
+                                        String strFriendUserID = jsonObjectSubMainResponse.getString(Constants.TAG_ID);
+                                        String strFriendImageUrl = jsonObjectSubMainResponse.getString(Constants.TAG_IMAGE);
+                                        map.put(Constants.TAG_USERID, strFriendUserID);
+                                        map.put(Constants.TAG_USERIMAGE, strFriendImageUrl);
+                                        map.put(Constants.TAG_LOCATION, strFriendLocation);
+                                        map.put(Constants.TAG_USERNAME, strFriendName);
+                                        map.put(Constants.TAG_ONLINE, "0");
+
+                                        peoplesAry.add(map);
+                                      //  peoplesAry.add(map);
+
+//                                    map.put(Constants.TAG_USERNAME, DefensiveClass.optString(values, Constants.TAG_USERNAME));
+//                                    map.put(Constants.TAG_SEND_MATCH, DefensiveClass.optString(values, Constants.TAG_SEND_MATCH));
+//                                    map.put(Constants.TAG_AGE, DefensiveClass.optString(values, Constants.TAG_AGE));
+//                                    map.put(Constants.TAG_BIO, DefensiveClass.optString(values, Constants.TAG_BIO));
+//                                    map.put(Constants.TAG_LAT, DefensiveClass.optString(values, Constants.TAG_LAT));
+//                                    map.put(Constants.TAG_LON, DefensiveClass.optString(values, Constants.TAG_LON));
+//                                    map.put(Constants.TAG_USERIMAGE, DefensiveClass.optString(values, Constants.TAG_USERIMAGE));
+//                                    map.put(Constants.TAG_ONLINE, DefensiveClass.optInt(values, Constants.TAG_ONLINE));
+//                                    peoplesAry.add(map);
+                                    }
+
+                                }
 
 
-                            Log.d(TAG,"jigar the response in friend list "+response);
+
+                            Log.d(TAG,"jigar the friend list people array "+peoplesAry.size());
+
+
 
 //                            if (DefensiveClass.optString(response, Constants.TAG_STATUS).equalsIgnoreCase("true"))
 //                            {
@@ -524,10 +574,11 @@ public class Friends extends Fragment implements View.OnClickListener, TextWatch
                                 loadmore = false;
                             }
 
-//                            itemAdapter.showLoading(false);
-                            friendRequestAdapter.notifyDataSetChanged();
+                            itemAdapter.notifyDataSetChanged();
+                        //    itemAdapter.showLoading(false);
+//                            friendRequestAdapter.notifyDataSetChanged();
                             if (peoplesAry.size() == 0) {
-                                nullLay.setVisibility(View.VISIBLE);
+                                //nullLay.setVisibility(View.VISIBLE);
                                 String spinTxt = MainScreenActivity.spinText.getText().toString();
                                 if (spinTxt.equals(getString(R.string.all_friends))) {
                                     nullText.setText(getString(R.string.no_friends));
@@ -657,11 +708,11 @@ public class Friends extends Fragment implements View.OnClickListener, TextWatch
             case R.id.searchbtn:
                 searchLay.setVisibility(View.VISIBLE);
                 nullLay.setVisibility(View.GONE);
-//                itemAdapter = new RecyclerViewAdapter(peoplesAry);
-//                recyclerView.setAdapter(itemAdapter);
+                itemAdapter = new RecyclerViewAdapter(peoplesAry);
+                recyclerView.setAdapter(itemAdapter);
 
-                friendRequestAdapter = new FriendRequestAdapter(getContext(),peoplesAry);
-                recyclerView.setAdapter(friendRequestAdapter);
+//                friendRequestAdapter = new FriendRequestAdapter(getContext(),peoplesAry);
+//                recyclerView.setAdapter(friendRequestAdapter);
 
                 if (peoplesAry.size() == 0) {
                     currentPage = 0;
@@ -678,11 +729,11 @@ public class Friends extends Fragment implements View.OnClickListener, TextWatch
                 searchLay.setVisibility(View.GONE);
                 searchEdit.setText("");
                 nullLay.setVisibility(View.GONE);
-//                itemAdapter = new RecyclerViewAdapter(peoplesAry);
-//                recyclerView.setAdapter(itemAdapter);
+                itemAdapter = new RecyclerViewAdapter(peoplesAry);
+                recyclerView.setAdapter(itemAdapter);
 //
-                friendRequestAdapter = new FriendRequestAdapter(getContext(),peoplesAry);
-                recyclerView.setAdapter(friendRequestAdapter);
+//                friendRequestAdapter = new FriendRequestAdapter(getContext(),peoplesAry);
+//                recyclerView.setAdapter(friendRequestAdapter);
 
 
                 if (peoplesAry.size() == 0) {

@@ -115,6 +115,54 @@ public class CommonFunctions {
         }
     }
 
+
+    public static void showProgressDialog2(Context context) {
+        try {
+            if (context != null) {
+
+                if (dialog != null && dialog.isShowing()) {
+
+                } else {
+                    dialog = new Dialog(context);
+                    dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+                    dialog.getWindow().setLayout(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    dialog.setCancelable(false);
+
+                    dialog.setContentView(R.layout.dialog_progress);
+
+                    WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+                    Window window = dialog.getWindow();
+
+                    lp.copyFrom(window.getAttributes());
+                    lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
+                    lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+                    window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    window.setAttributes(lp);
+
+                    RotateLoading pDialog = (RotateLoading) dialog.findViewById(R.id.progressBar_Dialog);
+                    pDialog.start();
+
+                    dialog.show();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public static void hideProgressDialog2(Context context) {
+        // progressDialog.dismiss();
+        try {
+            if (context != null && dialog.isShowing()) {
+                dialog.dismiss();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public static String loadJSONFromAsset(Context context, String name) {
         String json = null;
         try {

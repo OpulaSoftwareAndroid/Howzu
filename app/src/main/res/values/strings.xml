@@ -64,7 +64,10 @@
     <string name="search_distance">Search distance</string>
     <string name="filter">Filter</string>
     <string name="find_unlimited_people">Find a unlimited people</string>
+    <string name="new_user_register">New User? Get Register</string>
     <string name="get_unlimited_likes">Get unlimited likes</string>
+    <string name="get_more_visitor">Get more visitors</string>
+
     <string name="app_of_day">App of the day</string>
     <string name="checkout_app_of_day">Hey, check out our app of the
         day!</string>

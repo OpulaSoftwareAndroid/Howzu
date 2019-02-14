@@ -111,5 +111,8 @@
     <orderEntry type="library" name="Gradle: __local_aars__:D.\Jigar\Android Project\howzuNew\anymaps-baidu\libs\baidumapapi_base_v4_1_0.jar:unspecified@jar" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: junit:junit:4.11@jar" level="project" />
     <orderEntry type="module" module-name="anymaps-base" />
+    <orderEntry type="module" module-name="anymaps-base" />
+    <orderEntry type="module" module-name="anymaps-base" />
+    <orderEntry type="module" module-name="anymaps-base" />
   </component>
 </module>

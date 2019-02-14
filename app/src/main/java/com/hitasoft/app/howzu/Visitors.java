@@ -219,9 +219,11 @@ public class Visitors extends Fragment implements View.OnClickListener {
                 }
 
                 viewHolder.userName.setText(tempMap.get(Constants.TAG_USERNAME));
-                String img = Constants.RESIZE_URL + CommonFunctions.getImageName(tempMap.get(Constants.TAG_USERIMAGE)) + Constants.IMAGE_RES;
+//                String img = Constants.RESIZE_URL + CommonFunctions.getImageName(tempMap.get(Constants.TAG_USERIMAGE)) + Constants.IMAGE_RES;
+//                String img = Constants.RESIZE_URL + CommonFunctions.getImageName(tempMap.get(Constants.TAG_USERIMAGE)) + Constants.IMAGE_RES;
+
                 Picasso.with(context)
-                        .load(img)
+                        .load(tempMap.get(Constants.TAG_USERIMAGE))
                         .placeholder(R.drawable.user_placeholder)
                         .error(R.drawable.user_placeholder)
                         .resize(Constants.IMG_WT_HT, Constants.IMG_WT_HT)
@@ -380,15 +382,44 @@ public class Visitors extends Fragment implements View.OnClickListener {
                     @Override
                     public void onResponse(String res) {
                         Log.d(TAG, "getVisitorRes=" + res);
-                        Log.d(TAG, "jigar the response in null pointer exception  is : " + res);
+                        Log.d(TAG, "jigar the response in visitors list  is : " + res);
 
                         try {
                             JSONObject response = new JSONObject(res);
+
 //                            String status = DefensiveClass.optString(response, Constants.TAG_STATUS);
 
                             String strStatus=response.getString(Constants.TAG_STATUS);
-                            String strMessage=response.getString(Constants.TAG_MESSAGE);
+                         //   String strMessage=response.getString(Constants.TAG_MESSAGE);
 
+                            if(strStatus.equals(Constants.TRUE))
+                            {
+
+                                JSONArray jsonArrayMainVisitors=response.getJSONArray(Constants.TAG_PEOPLES);
+                                for(int i=0;i<jsonArrayMainVisitors.length();i++)
+                                {
+                                    JSONObject jsonObjectSubMainResponse=jsonArrayMainVisitors.getJSONObject(i);
+                                    String strVisitorUserID=jsonObjectSubMainResponse.getString(Constants.TAG_USERID);
+                                    String strVisitorUserName=jsonObjectSubMainResponse.getString(Constants.TAG_USERNAME);
+                                    String strVisitorGender=jsonObjectSubMainResponse.getString(Constants.TAG_GENDER);
+                                    String strVisitorAge=jsonObjectSubMainResponse.getString(Constants.TAG_AGE);
+                                    String strVisitorImage=jsonObjectSubMainResponse.getString(Constants.TAG_USERIMAGE);
+                                    String strVisitorOnline=jsonObjectSubMainResponse.getString(Constants.TAG_ONLINE);
+
+                                    HashMap<String, String> map = new HashMap<String, String>();
+                                    map.put(Constants.TAG_USERID,strVisitorUserID);
+                                    map.put(Constants.TAG_USERNAME,strVisitorUserName);
+                                    map.put(Constants.TAG_GENDER,strVisitorGender);
+                                    map.put(Constants.TAG_AGE,strVisitorAge);
+                                    map.put(Constants.TAG_USERIMAGE,strVisitorImage );
+                                    map.put(Constants.TAG_ONLINE,strVisitorOnline );
+
+                                    peoplesAry.add(map);
+
+                                }
+
+
+                            }
 //                            if (status.equalsIgnoreCase("true")) {
 //                                JSONArray peoples = response.optJSONArray(Constants.TAG_PEOPLES);
 //                                for (int i = 0; i < peoples.length(); i++) {
@@ -437,15 +468,15 @@ public class Visitors extends Fragment implements View.OnClickListener {
                             itemAdapter.notifyDataSetChanged();
 
                         } catch (JSONException e) {
-                            Log.d(TAG, "jigar the error in json is : " + e);
+                            Log.d(TAG, "jigar the error in visitor list json is : " + e);
 
                             e.printStackTrace();
                         } catch (NullPointerException e) {
-                            Log.d(TAG, "jigar the error in null pointer exception  is : " + e);
+                            Log.d(TAG, "jigar the error in null pointer visitor list exception  is : " + e);
 
                             e.printStackTrace();
                         } catch (Exception e) {
-                            Log.d(TAG, "jigar the error in exception  is : " + e);
+                            Log.d(TAG, "jigar the error in visitor list exception  is : " + e);
 
                             e.printStackTrace();
                         }
@@ -455,7 +486,7 @@ public class Visitors extends Fragment implements View.OnClickListener {
             @Override
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
-                VolleyLog.d(TAG, "jigar the error in volley is : " + error.getMessage());
+                VolleyLog.d(TAG, "jigar the error visitor list in volley is : " + error.getMessage());
 
                 progress.setVisibility(View.GONE);
                 progress.stopSpinning();
@@ -491,11 +522,11 @@ public class Visitors extends Fragment implements View.OnClickListener {
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
 //                params.put(Constants.TAG_USERID, GetSet.getUserId());
-                params.put(Constants.TAG_NEW_USERID, strUserID);
+                params.put(Constants.TAG_USERID, strUserID);
 //                params.put(Constants.TAG_OFFSET, String.valueOf(currentPage * 20));
 //                params.put(Constants.TAG_LIMIT, "20");
 //                params.put(Constants.TAG_TIMESTAMP, String.valueOf(System.currentTimeMillis() / 1000L));
-                Log.v(TAG, "getVisitorParams=" + params);
+                Log.v(TAG, "jigar the getVisitorParams=" + params);
                 return params;
             }
         };

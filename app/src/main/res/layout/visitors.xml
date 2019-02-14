@@ -24,7 +24,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="30dp"
             android:gravity="center"
-            android:text="@string/get_unlimited_likes"
+            android:text="@string/get_more_visitor"
             android:textColor="@color/colorGray"
             android:textSize="30sp"
             app:fonts="font_bold.ttf" />

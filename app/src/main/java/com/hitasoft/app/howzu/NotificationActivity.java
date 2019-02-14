@@ -42,7 +42,7 @@ public class NotificationActivity extends AppCompatActivity {
     POJONotificationDetails pojoNotificationDetails;
     List<POJONotificationDetails> notificationDetailList;
     NotificationAdapter notificationAdapter;
-
+    ImageView imageViewBackButton;
     LinearLayout linearLayoutEmptyNotification;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +75,13 @@ public class NotificationActivity extends AppCompatActivity {
         recycler_notification.setLayoutManager(horizontalLayoutManagaer);
         notificationAdapter = new NotificationAdapter(getApplicationContext(), notificationDetailList);
         recycler_notification.setAdapter(notificationAdapter);
+        imageViewBackButton=findViewById(R.id.imageViewBackButton);
+        imageViewBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
         getProfileNotificationList();
 
     }

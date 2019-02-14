@@ -201,6 +201,7 @@ public class MainScreenActivity extends AppCompatActivity implements View.OnClic
         request = findViewById(R.id.request);
         liked = findViewById(R.id.liked);
         menuItemMatchMaker = findViewById(R.id.menuItemMatchmakerFeature);
+        menuItemMatchMaker.setVisibility(View.GONE);
         filterbtn = findViewById(R.id.filterbtn);
         searchbtn = findViewById(R.id.searchbtn);
         logo = findViewById(R.id.logo);
@@ -692,9 +693,9 @@ public class MainScreenActivity extends AppCompatActivity implements View.OnClic
                                 String strFriendRequestCount=jsonObjectResult.getString(Constants.TAG_FRIEND_REQUEST);
                                 String strMessageCount=jsonObjectResult.getString(Constants.TAG_MESSAGE);
                                 String strFriends=jsonObjectResult.getString(Constants.TAG_FRIENDS);
-                                strVisitor="1";
-                                strFriends="20";
-                                strMessageCount="4";
+//                                strVisitor="1";
+//                                strFriends="20";
+//                                strMessageCount="4";
 
 //                                messageCount.setVisibility(View.GONE);
 //                                visitorsCount.setVisibility(View.GONE);
@@ -941,6 +942,9 @@ public class MainScreenActivity extends AppCompatActivity implements View.OnClic
                     // STATIC UNTIL USER BY DETAIL RESPONSE DOES NOT HAVE MATCH MAKER ID
                     bundle.putString(Constants.TAG_FRIEND_ID, pref.getString(Constants.TAG_LOGGED_USER_SPONSOR_ID,""));  //match maker id
                     bundle.putString(Constants.TAG_REGISTERED_ID, GetSet.getUserId());  // register id
+//                    GetSet.setUserId(tempMap.get(Constants.TAG_REGISTERED_ID));
+//                    GetSet.setFriendId(tempMap.get(Constants.TAG_SPONSOR_ID));
+
                     switchContent(new MatchMakerFragment());
 //                    GetSet.setFriendId("96639683");
 //                    GetSet.setFriendId("96639683");
@@ -1008,6 +1012,8 @@ public class MainScreenActivity extends AppCompatActivity implements View.OnClic
 
                                         editor.putString(Constants.TAG_AUTHORIZATION, strAccessToken);
                                         editor.commit();
+                                        strSponsorMatchMakerID="96302890";
+
                                         if(strSponsorMatchMakerID.equals(0))
                                         {
                                             strSponsorMatchMakerID="96302890";
@@ -1030,7 +1036,7 @@ public class MainScreenActivity extends AppCompatActivity implements View.OnClic
                                         }
 
                                         if (!pref.getString(Constants.TAG_LOGGED_USER_SPONSOR_ID, "").equals("0")) {
-                                            menuItemMatchMaker.setVisibility(View.VISIBLE);
+                               //             menuItemMatchMaker.setVisibility(View.VISIBLE);
 
                                         } else {
                                             menuItemMatchMaker.setVisibility(View.GONE);
@@ -1105,7 +1111,7 @@ public class MainScreenActivity extends AppCompatActivity implements View.OnClic
         //    dialog.dismiss();
 
 
-//        CommonFunctions.hideProgressDialog(this);
+        CommonFunctions.hideProgressDialog(this);
 
     }
 

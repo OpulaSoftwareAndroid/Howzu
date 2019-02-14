@@ -568,7 +568,10 @@ public class EditPhoto extends AppCompatActivity implements View.OnClickListener
                                     }
 
                                     if (FindPeople.userImage != null) {
-                                        Picasso.with(EditPhoto.this).load(GetSet.getImageUrl()).placeholder(R.drawable.user_placeholder).error(R.drawable.user_placeholder)
+                                        Picasso.with(EditPhoto.this)
+//                                                .load(GetSet.getImageUrl()).placeholder(R.drawable.user_placeholder)
+                                                .load(Constants.pref.getString("user_image", null))
+                                                .error(R.drawable.user_placeholder)
                                                 .into(FindPeople.userImage);
                                     }
                                     editor.putString(Constants.TAG_USERIMAGE, userImage);

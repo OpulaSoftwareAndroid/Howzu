@@ -6,13 +6,31 @@
     android:background="#FFFFFF"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
+    <com.hitasoft.app.customclass.RoundedImageView
+        android:id="@+id/user_image"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:background="@color/lightPrimary"
+        android:scaleType="centerCrop"
+        app:border_color="#ffffff"
+        app:border_width="3dp"
+        app:corner_radius="150dip"
+        app:round_background="true" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="220dp"
+        android:layout_below="@id/user_image"
+        android:background="@drawable/premium_bottom_bg" />
+
     <com.hitasoft.app.customclass.RippleBackground
         android:id="@+id/ripple_background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_centerInParent="true"
-        android:paddingBottom="10dp"
         android:paddingTop="10dp"
+        android:paddingBottom="10dp"
         android:visibility="visible"
         app:rb_color="@color/ripple_fill"
         app:rb_duration="5000"
@@ -20,18 +38,6 @@
         app:rb_rippleAmount="4"
         app:rb_scale="4">
 
-        <com.hitasoft.app.customclass.RoundedImageView
-            android:id="@+id/user_image"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:layout_centerInParent="true"
-            android:layout_gravity="center"
-            android:background="@color/lightPrimary"
-            android:scaleType="centerCrop"
-            app:border_color="#ffffff"
-            app:border_width="3dp"
-            app:corner_radius="150dip"
-            app:round_background="true" />
 
         <LinearLayout
             android:id="@+id/linearLayoutMainSwipe"
@@ -57,8 +63,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="40dp"
-                android:layout_marginRight="40dp"
                 android:layout_marginTop="20dp"
+                android:layout_marginRight="40dp"
                 android:background="@drawable/primary_rounded_corner"
                 android:orientation="vertical">
 
@@ -82,6 +88,8 @@
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/scrollview"
         android:layout_width="match_parent"
+        android:layout_marginTop="70dp"
+        android:layout_below="@id/user_image"
         android:layout_height="match_parent"
         android:fillViewport="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
@@ -107,13 +115,12 @@
                 android:id="@+id/premium_lay"
                 android:layout_width="match_parent"
                 android:layout_height="220dp"
-                android:layout_above="@+id/view"
-                android:visibility="gone">
+                android:layout_below="@+id/view">
 
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="220dp"
-                    android:background="@drawable/premium_bottom_bg" />
+                <!--android:visibility="gone"-->
+                <!--&gt;-->
+
+
 
                 <com.hitasoft.app.customclass.CustomTextView
                     android:layout_width="wrap_content"
@@ -150,7 +157,10 @@
 
     </android.support.v4.widget.NestedScrollView>
 
-</RelativeLayout><!--
+</RelativeLayout>
+
+
+    <!--
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"

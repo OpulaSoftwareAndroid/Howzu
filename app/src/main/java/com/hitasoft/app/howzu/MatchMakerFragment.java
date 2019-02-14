@@ -139,7 +139,7 @@ public class MatchMakerFragment extends Fragment implements View.OnClickListener
 
 
         getMatchMakerDetails();
-
+//        getMatchMakerProfile
         help_more.setOnClickListener(this);
         lin_one.setOnClickListener(this);
         lin_two.setOnClickListener(this);
@@ -543,41 +543,45 @@ public class MatchMakerFragment extends Fragment implements View.OnClickListener
         @Override
         public void onBindViewHolder(final MyViewHolder holder, int position) {
             MatchMackerDetailModel.Matchmakermember album = albumList.get(position);
-            holder.title.setText(album.getName());
+            try {
+                if (album.getName() != null) {
+                    holder.title.setText(album.getName());
 
-            if (album.getImage().equalsIgnoreCase("http://www.ilovemisskey.com/uploads/user/")) {
-                Glide.with(getActivity()).load(album.getImage())
-                        .listener(new RequestListener<String, GlideDrawable>() {
-                            @Override
-                            public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                                return false;
-                            }
+                }
 
-                            @Override
-                            public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                                return false;
-                            }
-                        }).placeholder(R.drawable.user_placeholder)
-                        .into(holder.profile_pic);
-            } else {
-                Glide.with(getActivity()).load(album.getImage())
-                        .listener(new RequestListener<String, GlideDrawable>() {
-                            @Override
-                            public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                                return false;
-                            }
+                if (album.getImage().equalsIgnoreCase("http://www.ilovemisskey.com/uploads/user/")) {
+                    Glide.with(getActivity()).load(album.getImage())
+                            .listener(new RequestListener<String, GlideDrawable>() {
+                                @Override
+                                public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                                    return false;
+                                }
 
-                            @Override
-                            public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                                return false;
-                            }
-                        })
-                        .into(holder.profile_pic);
-            }
+                                @Override
+                                public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                                    return false;
+                                }
+                            }).placeholder(R.drawable.user_placeholder)
+                            .into(holder.profile_pic);
+                } else {
+                    Glide.with(getActivity()).load(album.getImage())
+                            .listener(new RequestListener<String, GlideDrawable>() {
+                                @Override
+                                public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                                    return false;
+                                }
 
-            holder.profile_pic.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View view) {
+                                @Override
+                                public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                                    return false;
+                                }
+                            })
+                            .into(holder.profile_pic);
+                }
+
+                holder.profile_pic.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View view) {
 //                    PopupWindow pw;
 //                    try {
 //                        //We need to get the instance of the LayoutInflater, use the context of this activity
@@ -600,11 +604,11 @@ public class MatchMakerFragment extends Fragment implements View.OnClickListener
 //                    }
 
 
-                    //creating a popup menu
-                    PopupMenu popup = new PopupMenu(getContext(), holder.profile_pic);
-                    //inflating menu from xml resource
-                    popup.getMenuInflater().inflate(R.menu.options_menu, popup.getMenu());
-                    //adding click listener
+                        //creating a popup menu
+                        PopupMenu popup = new PopupMenu(getContext(), holder.profile_pic);
+                        //inflating menu from xml resource
+                        popup.getMenuInflater().inflate(R.menu.options_menu, popup.getMenu());
+                        //adding click listener
 //                    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
 //                        @Override
 //                        public boolean onMenuItemClick(MenuItem item) {
@@ -622,11 +626,15 @@ public class MatchMakerFragment extends Fragment implements View.OnClickListener
 //                            return false;
 //                        }
 //                    });
-                    //displaying the popup
-                    popup.show();
-                    return false;
-                }
-            });
+                        //displaying the popup
+                        popup.show();
+                        return false;
+                    }
+                });
+            } catch (NullPointerException ex)
+            {
+
+            }
         }
 
 
