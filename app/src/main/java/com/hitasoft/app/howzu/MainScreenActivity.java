@@ -1036,7 +1036,7 @@ public class MainScreenActivity extends AppCompatActivity implements View.OnClic
                                         }
 
                                         if (!pref.getString(Constants.TAG_LOGGED_USER_SPONSOR_ID, "").equals("0")) {
-                               //             menuItemMatchMaker.setVisibility(View.VISIBLE);
+                                            menuItemMatchMaker.setVisibility(View.VISIBLE);
 
                                         } else {
                                             menuItemMatchMaker.setVisibility(View.GONE);
