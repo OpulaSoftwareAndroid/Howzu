@@ -333,7 +333,7 @@
                     android:weightSum="1">
 
                     <LinearLayout
-                        android:id="@+id/lin_one"
+                        android:id="@+id/linearLayoutSendFriendRequest"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -532,13 +532,14 @@
         android:focusable="true" />
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/batch"
+        android:id="@+id/floatingButtonStartChat"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="75dp"
         android:layout_marginTop="80dp"
-        android:src="@drawable/batch"
-        app:backgroundTint="#00000000"
+        android:src="@drawable/msg"
+
+        app:backgroundTint="@color/colorPrimary"
         app:borderWidth="0dp"
         app:elevation="0dp"
         app:fabSize="mini"

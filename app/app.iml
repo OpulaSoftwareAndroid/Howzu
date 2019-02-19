@@ -214,6 +214,7 @@
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-ads:10.2.1@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-tasks:10.2.1@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.paypal.android.sdk:paypal-one-touch:2.10.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: com.yarolegovich:lovely-dialog:1.1.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.android.support:appcompat-v7:27.1.1@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.facebook.android:facebook-core:4.40.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-clearcut:10.2.1@aar" level="project" />
@@ -259,15 +260,6 @@
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-instantapps:10.2.1@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.victor:lib:1.0.4@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.firebase:firebase-auth:10.2.1@aar" level="project" />
-    <orderEntry type="module" module-name="anymaps-baidu" />
-    <orderEntry type="module" module-name="anymaps-base" />
-    <orderEntry type="module" module-name="library" />
-    <orderEntry type="module" module-name="anymaps-baidu" />
-    <orderEntry type="module" module-name="anymaps-base" />
-    <orderEntry type="module" module-name="library" />
-    <orderEntry type="module" module-name="anymaps-baidu" />
-    <orderEntry type="module" module-name="anymaps-base" />
-    <orderEntry type="module" module-name="library" />
     <orderEntry type="module" module-name="anymaps-baidu" />
     <orderEntry type="module" module-name="anymaps-base" />
     <orderEntry type="module" module-name="library" />

@@ -57,14 +57,14 @@
                         android:layout_centerHorizontal="true">
 
                         <ImageView
-                            android:id="@+id/guy_bg"
+                            android:id="@+id/imageViewBoy"
                             android:layout_width="70dp"
                             android:layout_height="70dp"
                             android:layout_centerInParent="true"
                             android:src="@drawable/filter_bg_selector" />
 
                         <ImageView
-                            android:id="@+id/guy"
+                            android:id="@+id/imageViewBoy1"
                             android:layout_width="40dp"
                             android:layout_height="40dp"
                             android:layout_centerInParent="true"
@@ -105,7 +105,7 @@
                         android:layout_centerHorizontal="true">
 
                         <ImageView
-                            android:id="@+id/girl_bg"
+                            android:id="@+id/imageViewGirl"
                             android:layout_width="70dp"
                             android:layout_height="70dp"
                             android:layout_centerInParent="true"
@@ -158,7 +158,7 @@
                     android:layout_margin="10dp"
                     android:background="@color/dividerColor"
                     android:horizontalSpacing="1dp"
-                    android:numColumns="3"
+                    android:numColumns="2"
                     android:stretchMode="columnWidth"
                     android:verticalSpacing="1dp" />
             </LinearLayout>
@@ -285,7 +285,7 @@
                     android:paddingLeft="15dp"
                     android:paddingRight="15dp"
                     android:paddingTop="15dp"
-                    android:text="18 - 100km."
+                    android:text="0 k.m"
                     android:textColor="@color/black"
                     android:textSize="16sp"
                     app:fonts="font_bold.ttf" />
@@ -310,19 +310,29 @@
 
                 </LinearLayout>
 
+                <!--<SeekBar-->
+                    <!--android:id="@+id/distance_bar"-->
+                    <!--style="@android:style/Widget.Holo.Light.SeekBar"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="5dp"-->
+                    <!--android:background="@null"-->
+                    <!--android:layout_marginTop="10dp"-->
+                    <!--android:progressDrawable="@drawable/thumb_selector"-->
+                    <!--android:thumb="@drawable/seek_thumb_normal" />-->
                 <SeekBar
-                    android:id="@+id/distance_bar"
-                    style="@android:style/Widget.Holo.SeekBar"
+                    android:id="@+id/seekBar2"
                     android:layout_width="match_parent"
+                    style="@android:style/Widget.Holo.Light.SeekBar"
                     android:layout_height="wrap_content"
-                    android:background="@null"
-                    android:layout_marginTop="10dp"
-                    android:max="100"
-                    android:maxHeight="2dip"
-                    android:minHeight="2dip"
-                    android:progressDrawable="@drawable/thumb_selector"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:max="200"
                     android:thumb="@drawable/seek_thumb_normal"
-                    android:visibility="gone" />
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
             </LinearLayout>
         </LinearLayout>
 

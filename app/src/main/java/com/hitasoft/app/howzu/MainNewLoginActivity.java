@@ -81,8 +81,8 @@ public class MainNewLoginActivity extends AppCompatActivity implements View.OnCl
         btnLogin.setOnClickListener(this);
         editTextPassword=findViewById(R.id.editTextPassword);
         editTextUserName =findViewById(R.id.editTextMobileNumber);
-        editTextUserName.setText("9852412008");
-        editTextPassword.setText("123456");
+//        editTextUserName.setText("9852412008");
+//        editTextPassword.setText("123456");
         back.setOnClickListener(this);
 
         customTextViewNewUser=findViewById(R.id.textViewNewUser);
@@ -249,7 +249,11 @@ public class MainNewLoginActivity extends AppCompatActivity implements View.OnCl
                                         startActivity(intent);
                                         finish();
                                     }
-
+                                }else if(status.equalsIgnoreCase("false"))
+                                {
+                                    String strMessage=results.getString(Constants.TAG_MESSAGE);
+                                    Toast.makeText(MainNewLoginActivity.this,strMessage,Toast.LENGTH_LONG).show();
+                                    CommonFunctions.hideProgressDialog2(MainNewLoginActivity.this);
                                 }
 
 

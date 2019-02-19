@@ -357,7 +357,7 @@ public class Friends extends Fragment implements View.OnClickListener, TextWatch
             {
                 HashMap<String, String> tempMap = Items.get(position);
                 MyViewHolder viewHolder = (MyViewHolder) holder;
-                Log.d(TAG,"jigar the friend list user name is "+tempMap.get(Constants.TAG_USERNAME));
+                Log.d(TAG,"jigar the friend list user name is "+tempMap.get(Constants.TAG_USERID));
 
                 viewHolder.userName.setText(tempMap.get(Constants.TAG_USERNAME));
 //                String img = Constants.RESIZE_URL + CommonFunctions.getImageName(tempMap.get(Constants.TAG_USERIMAGE)) + Constants.IMAGE_RES;
@@ -371,6 +371,24 @@ public class Friends extends Fragment implements View.OnClickListener, TextWatch
                         .centerCrop()
                         .into(viewHolder.singleImage);
 
+                viewHolder.singleImage.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent p = new Intent(getActivity(), MainViewProfileDetailActivity.class);
+                        p.putExtra("from", "home");
+                        //       p.putExtra("from", "home");
+                        // here friend id means user own id
+                        // and register id means friend id whos profile we are visiting
+                        p.putExtra(Constants.TAG_FRIEND_ID,tempMap.get(Constants.TAG_USERID));
+                        p.putExtra(Constants.TAG_PROFILE_VISITOR_ID_LIKE_TOKEN,GetSet.getUseridLikeToken());
+                        p.putExtra(Constants.TAG_REGISTERED_ID,tempMap.get(Constants.TAG_REGISTERED_ID));
+                        //peoplesAry.get(itemPosition).get(Constants.TAG_ID));
+//                        p.putExtra(Constants.TAG_REGISTERED_ID, peoplesAry.get(itemPosition).get(Constants.TAG_REGISTERED_ID));
+
+//                        p.putExtra("strFriendID", Items.get(getAdapterPosition()).get(Constants.TAG_USERID));
+                        startActivity(p);
+                    }
+                });
                 if (tempMap.get(Constants.TAG_ONLINE).equals("1")) {
                     viewHolder.online.setVisibility(View.VISIBLE);
                     viewHolder.online.setImageResource(R.drawable.online);
@@ -391,6 +409,8 @@ public class Friends extends Fragment implements View.OnClickListener, TextWatch
                     footerHolder.progress.stopSpinning();
                 }
             }
+
+
         }
 
         public void updateList(ArrayList<HashMap<String, String>> data) {
@@ -441,7 +461,15 @@ public class Friends extends Fragment implements View.OnClickListener, TextWatch
                     case R.id.user_image:
                         Intent p = new Intent(getActivity(), MainViewProfileDetailActivity.class);
                         p.putExtra("from", "friends");
-                        p.putExtra("strFriendID", Items.get(getAdapterPosition()).get(Constants.TAG_USERID));
+                 //       p.putExtra("from", "home");
+                        // here friend id means user own id
+                        // and register id means friend id whos profile we are visiting
+                        p.putExtra(Constants.TAG_FRIEND_ID, GetSet.getUseridLikeToken());
+                        p.putExtra(Constants.TAG_PROFILE_VISITOR_ID_LIKE_TOKEN, Items.get(getAdapterPosition()).get(Constants.TAG_ID));
+                                //peoplesAry.get(itemPosition).get(Constants.TAG_ID));
+//                        p.putExtra(Constants.TAG_REGISTERED_ID, peoplesAry.get(itemPosition).get(Constants.TAG_REGISTERED_ID));
+
+//                        p.putExtra("strFriendID", Items.get(getAdapterPosition()).get(Constants.TAG_USERID));
                         startActivity(p);
                         break;
                 }
@@ -514,10 +542,12 @@ public class Friends extends Fragment implements View.OnClickListener, TextWatch
                                         HashMap<String,String> map = new HashMap<String, String>();
                                         JSONObject jsonObjectSubMainResponse = jsonArrayMainInfo.getJSONObject(i);
                                         String strFriendName = jsonObjectSubMainResponse.getString(Constants.TAG_NAME);
+                                        String strFriendRegisterID = jsonObjectSubMainResponse.getString(Constants.TAG_REGISTERED_ID);
                                         String strFriendLocation = jsonObjectSubMainResponse.getString(Constants.TAG_LOCATION);
                                         String strFriendUserID = jsonObjectSubMainResponse.getString(Constants.TAG_ID);
                                         String strFriendImageUrl = jsonObjectSubMainResponse.getString(Constants.TAG_IMAGE);
                                         map.put(Constants.TAG_USERID, strFriendUserID);
+                                        map.put(Constants.TAG_REGISTERED_ID, strFriendRegisterID);
                                         map.put(Constants.TAG_USERIMAGE, strFriendImageUrl);
                                         map.put(Constants.TAG_LOCATION, strFriendLocation);
                                         map.put(Constants.TAG_USERNAME, strFriendName);

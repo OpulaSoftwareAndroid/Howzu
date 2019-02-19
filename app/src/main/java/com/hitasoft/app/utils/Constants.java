@@ -17,7 +17,11 @@ public class Constants {
      * Api
      **/
 //    public static final String URL = "http://howzuapp.com/";
-    public static final String URL = "http://www.ilovemisskey.com/";
+//    public static final String URL = "http://www.ilovemisskey.com/";
+    public static final String URL = "http://opulasoft.com/howzu/";
+
+
+
 //    public static final String URL = "http://howzuapp.com/beta/";
 //    public static final String URL = "http://192.168.1.29/howzu/";
     /**
@@ -72,6 +76,7 @@ public class Constants {
     public static final String API_GET_CHAT_MESSAGE = URL + "api/" + "getchatmessage";
     public static final String API_GET_MY_MEMBERS = URL + "api/" + "interest";
     public static final String API_GET_INTEREST = URL + "api/" + "interest";
+    public static final String API_ADD_COMMENT = URL + "api/" + "girlprofilecomment";
 
     public static final String API_BLOCK = URL + "api/" + "blockchat";
     public static final String API_FAVORITE = URL + "api/" + "favorite";
@@ -147,6 +152,8 @@ public class Constants {
 
     // people api
     public static final String TAG_USERNAME = "user_name";
+    public static final String TAG_FIRST_NAME = "firstname";
+
     public static final String TAG_REQUEST_USERNAME = "username";
     public static final String TAG_NEW_USERNAME = "username";
 
@@ -196,6 +203,8 @@ public class Constants {
     public static final String TAG_MESSAGE = "message";
     public static final String TAG_MSG = "msg";
     public static final String TAG_MEMBER = "member";
+    public static final String TAG_MATCH_MAKER_MEMBER = "matchmakermember";
+    public static final String TAG_NON_MATCH_MAKER_MEMBER = "nomatchmakermember";
 
 //    public static final String TAG_AGE = "age";
     public static final String TAG_CHAT_TIME = "chat_time";
@@ -236,7 +245,6 @@ public class Constants {
     public static final String TAG_LOGGED_USER_SPONSOR_ID = "logged_user_sponsor_id";
 
     public static final String TAG_NAME = "name";
-
     public static final String TAG_COMMENT_USER_NAME = "comment_user";
     public static final String TAG_NOTIFICATION_ID = "notification_id";
     public static final String TAG_NOTIFICATION_FRIEND_ID = "friend_id";
@@ -252,6 +260,8 @@ public class Constants {
 
     public static final String TAG_COMMENT_ID = "comment_id";
     public static final String TAG_COMMENT = "comment";
+    public static final String TAG_COMMENT_TEST = "comment_test";
+
     public static final String TAG_COMMENT_USER_IMAGE = "image";
 
     public static final String TAG_ICON = "icon";

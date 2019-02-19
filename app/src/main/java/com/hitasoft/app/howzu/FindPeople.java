@@ -319,6 +319,13 @@ public class FindPeople extends Fragment implements View.OnClickListener {
                 switch (v.getId()) {
                     case R.id.user_image:
                         Intent p = new Intent(getActivity(), MainViewProfileDetailActivity.class);
+                        p.putExtra("from", "home");
+                        // here friend id means user own id
+                        // and register id means friend id whos profile we are visiting
+                        p.putExtra(Constants.TAG_FRIEND_ID, GetSet.getUseridLikeToken());
+                        p.putExtra(Constants.TAG_PROFILE_VISITOR_ID_LIKE_TOKEN,  peopleList.get(getAdapterPosition()).get(Constants.TAG_USERID));
+                        p.putExtra(Constants.TAG_REGISTERED_ID, peopleList.get(getAdapterPosition()).get(Constants.TAG_REGISTERED_ID));
+
                         p.putExtra("from", "other");
                         p.putExtra("strFriendID", peopleList.get(getAdapterPosition()).get(Constants.TAG_USERID));
                         startActivity(p);
@@ -409,6 +416,7 @@ public class FindPeople extends Fragment implements View.OnClickListener {
                                     JSONObject values = peoples.optJSONObject(i);
                                     HashMap<String, String> map = new HashMap<String, String>();
                                     map.put(Constants.TAG_USERID, DefensiveClass.optInt(values, Constants.TAG_USERID));
+                                    map.put(Constants.TAG_REGISTERED_ID, DefensiveClass.optInt(values, Constants.TAG_REGISTERED_ID));
                                     map.put(Constants.TAG_USERNAME, DefensiveClass.optString(values, Constants.TAG_USERNAME));
                                     map.put(Constants.TAG_SEND_MATCH, DefensiveClass.optString(values, Constants.TAG_SEND_MATCH));
                                     map.put(Constants.TAG_AGE, DefensiveClass.optString(values, Constants.TAG_AGE));

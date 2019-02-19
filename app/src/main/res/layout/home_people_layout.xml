@@ -27,6 +27,79 @@
             android:layout_height="200dp"
             android:layout_alignParentBottom="true"
             android:layout_gravity="bottom" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/bottomLay"
+            android:visibility="gone"
+            android:layout_marginBottom="130dp">
+
+            <LinearLayout
+                android:id="@+id/lin_open"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:background="@drawable/black_round_opacity"
+                android:gravity="end"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/open"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:paddingLeft="4dp"
+                    android:src="@drawable/ic_rightarrow" />
+            </LinearLayout>
+
+
+            <LinearLayout
+            android:id="@+id/my_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            android:layout_alignParentEnd="true"
+            android:background="@drawable/black_round_opacity"
+            android:gravity="center"
+            android:visibility="gone">
+
+
+            <ImageView
+                android:id="@+id/close"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:paddingLeft="4dp"
+                android:src="@drawable/ic_leftarrow" />
+
+            <ImageView
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:id="@+id/imageViewShowComments"
+                android:layout_margin="3dp"
+                android:src="@drawable/ic_comment" />
+
+            <ImageView
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:id="@+id/imageViewAddComments"
+                android:layout_margin="3dp"
+                android:src="@drawable/ic_like" />
+
+            <Switch
+                android:id="@+id/chkNotification"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="8dp"
+                android:checked="true"
+                android:thumb="@drawable/customswitchselector"
+                android:track="@drawable/custom_track" />
+
+
+        </LinearLayout>
+        </RelativeLayout>
+
+
         <LinearLayout
             android:id="@+id/linearLayoutProfileButton"
             android:layout_width="match_parent"

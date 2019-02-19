@@ -31,10 +31,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.StringRequest;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
 import com.hitasoft.app.customclass.CustomTextView;
 import com.hitasoft.app.customclass.FontCache;
 import com.hitasoft.app.customclass.LaybelLayout;
@@ -46,11 +42,14 @@ import com.hitasoft.app.utils.Constants;
 import com.hitasoft.app.utils.DefensiveClass;
 import com.hitasoft.app.utils.GetSet;
 import com.hitasoft.app.webservice.RestClient;
+import com.squareup.picasso.Picasso;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,28 +60,29 @@ import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 
-import static com.hitasoft.app.utils.Constants.TAG_IMAGE;
-
 public class MatchMakerFragment extends Fragment implements View.OnClickListener {
     String TAG = "MatchMakerFragment";
     ViewPager viewPager;
-    LinearLayout sliderDotspanel, lin_without_matchmaker, lin_one, lin_two, lin_three, lin_matchmaker_comment, lin_dating, lin_comments;
+    LinearLayout sliderDotspanel, lin_without_matchmaker, lin_one, lin_two, lin_three, lin_matchmaker_comment, lin_dating, linearLayoutBio;
     private int dotscount;
     private ImageView[] dots;
     LaybelLayout laybelLayout;
     boolean loading = false;
     ArrayList<String> interestsAry = new ArrayList<>();
     RecyclerView recycler_my_members, recycler_without_matchmaker;
-    List<MatchMackerDetailModel.Matchmakermember> myMembersList;
+   // List<MatchMackerDetailModel.Matchmakermember> myMembersList;
     List<MatchMackerDetailModel.Nomatchmakermember> matchmakerMembersList;
+    public static ArrayList<HashMap<String, String>> arrayListMatchMakerMember = new ArrayList<HashMap<String, String>>();
+    public static ArrayList<HashMap<String, String>> arrayListNonMatchMakerMember = new ArrayList<HashMap<String, String>>();
+
     ArrayList<String> imgList;
-    MyMemberAdapter myMemberAdapter;
-    NotMatchMakerMemberAdapter matchmakerMemberAdapter;
+    MyMemberAdapter matchMakerMemberAdapter;
+    NotMatchMakerMemberAdapter notMatchMakerMemberAdapter;
     ViewPagerAdapter viewPagerAdapter;
     HashMap<String, String> haspMapProfileDetails = new HashMap<String, String>();
-
+    ArrayList<String> arrayListInterestStatic;
     CustomTextView help_more;
-    TextView txtDinner, txtVideo, txtAsk, txtname, txtStudy, txtAddress;
+    TextView txtDinner, txtVideo, txtAsk, txtname, txtAddress,textViewBio;
     ImageView imgAsk, imgVideo, imgDinner,imageViewMatchMakerProfile;
     BottomSheetDialog dialogMenu;
     String selectedPosition = "";
@@ -94,7 +94,13 @@ public class MatchMakerFragment extends Fragment implements View.OnClickListener
         View view = inflater.inflate(R.layout.home_matchmaker_layout, container, false);
 
         initViews(view);
-
+//
+        arrayListInterestStatic=new ArrayList<String>();
+        arrayListInterestStatic.add("Foodie");
+        arrayListInterestStatic.add("Gaming");
+        arrayListInterestStatic.add("Books");
+        arrayListInterestStatic.add("Movies");
+        arrayListInterestStatic.add("Bike Riding");
 
         if(getArguments()!=null) {
            strFriendID = getArguments().getString(Constants.TAG_FRIEND_ID);
@@ -104,33 +110,23 @@ public class MatchMakerFragment extends Fragment implements View.OnClickListener
         strUserID=GetSet.getUserId();
         strFriendID=GetSet.getFriendId();
 
+        //        strFriendID="81384754";
+        //        strUserID="81384754";
+
         System.out.println("jigar the friend id when enter to matchmaker fragment "+strFriendID);
         System.out.println("jigar the user id when enter to matchmaker fragment "+strUserID);
 
         //Interests
-        interestsAry.add("gaming");
-        interestsAry.add("Foodie");
-        interestsAry.add("Bike Riding");
-        interestsAry.add("Books");
-        for (int i = 0; i < interestsAry.size(); i++) {
-            TextView tv = new TextView(getContext());
-            tv.setText(interestsAry.get(i));
-            tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
-            tv.setTypeface(FontCache.get("font_regular.ttf", getContext()));
-            ViewGroup.MarginLayoutParams lp = new ViewGroup.MarginLayoutParams(
-                    ViewGroup.MarginLayoutParams.WRAP_CONTENT,
-                    ViewGroup.MarginLayoutParams.WRAP_CONTENT);
-            lp.leftMargin = HowzuApplication.dpToPx(getContext(), 5);
-            lp.rightMargin = HowzuApplication.dpToPx(getContext(), 5);
-            lp.bottomMargin = HowzuApplication.dpToPx(getContext(), 5);
-            lp.topMargin = HowzuApplication.dpToPx(getContext(), 5);
-            tv.setBackgroundDrawable(getResources().getDrawable(R.drawable.primary_rounded_stroke_corner));
-            tv.setTextColor(getResources().getColor(R.color.colorPrimary));
-            laybelLayout.addView(tv, lp);
-        }
+        interestsAry=new ArrayList<String>();
+
+//        interestsAry.add("gaming");
+//
+//        interestsAry.add("Foodie");
+//        interestsAry.add("Bike Riding");
+//        interestsAry.add("Books");
+
 
         imgList = new ArrayList<>();
-
         LinearLayoutManager horizontalLayoutManagaer = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         recycler_my_members.setLayoutManager(horizontalLayoutManagaer);
 
@@ -138,8 +134,8 @@ public class MatchMakerFragment extends Fragment implements View.OnClickListener
         recycler_without_matchmaker.setLayoutManager(horizontalLayoutManagaer1);
 
 
-        getMatchMakerDetails();
-//        getMatchMakerProfile
+//        getMatchMakerDetailsOld();
+        getMatchMakerProfile();
         help_more.setOnClickListener(this);
         lin_one.setOnClickListener(this);
         lin_two.setOnClickListener(this);
@@ -162,7 +158,7 @@ public class MatchMakerFragment extends Fragment implements View.OnClickListener
         imageViewMatchMakerProfile=view.findViewById(R.id.imageViewMatchMakerProfile);
 
                 lin_without_matchmaker = view.findViewById(R.id.lin_without_matchmaker);
-        lin_one = view.findViewById(R.id.lin_one);
+        lin_one = view.findViewById(R.id.linearLayoutSendFriendRequest);
         lin_two = view.findViewById(R.id.lin_two);
         lin_three = view.findViewById(R.id.lin_three);
         lin_matchmaker_comment = view.findViewById(R.id.lin_matchmaker_comment);
@@ -175,10 +171,12 @@ public class MatchMakerFragment extends Fragment implements View.OnClickListener
         imgDinner = view.findViewById(R.id.imgDinner);
 
         txtname = view.findViewById(R.id.txtname);
-        txtStudy = view.findViewById(R.id.txtStudy);
+        //textViewUserStudy = view.findViewById(R.id.textViewUserStudy);
         txtAddress = view.findViewById(R.id.txtAddress);
+        textViewBio = view.findViewById(R.id.textViewBio);
+
         lin_dating = view.findViewById(R.id.lin_dating);
-        lin_comments = view.findViewById(R.id.lin_comments);
+        linearLayoutBio = view.findViewById(R.id.linearLayoutBio);
     }
 
     @Override
@@ -187,7 +185,7 @@ public class MatchMakerFragment extends Fragment implements View.OnClickListener
         MainScreenActivity.setToolBar(getActivity(), "menuItemMatchMaker");
     }
 
-    public void getMatchMakerDetails() {
+    public void getMatchMakerDetailsOld() {
         if (CommonFunctions.isNetwork(Objects.requireNonNull(getActivity()))) {
             CommonFunctions.showProgressDialog(getContext());
             System.out.println("jigar the received fragment friend id  is "+GetSet.getFriendId());
@@ -201,9 +199,9 @@ public class MatchMakerFragment extends Fragment implements View.OnClickListener
                     if (response.body() != null) {
                         if (response.body().getStatus() == 1) {
                             //Mymember
-                            myMembersList = response.body().getInfo().getMatchmakermember();
-                            myMemberAdapter = new MyMemberAdapter(getActivity(), myMembersList);
-                            recycler_my_members.setAdapter(myMemberAdapter);
+                          //  myMembersList = response.body().getInfo().getMatchmakermember();
+                            //matchMakerMemberAdapter = new MyMemberAdapter(getActivity(), myMembersList);
+                            recycler_my_members.setAdapter(matchMakerMemberAdapter);
 
                             //Mot Match maker member
                             matchmakerMembersList = response.body().getInfo().getNomatchmakermember();
@@ -216,6 +214,21 @@ public class MatchMakerFragment extends Fragment implements View.OnClickListener
                             txtname.setText(response.body().getInfo().getUser().getFirstname() + " , " + response.body().getInfo().getUser().getAge());
                             txtAddress.setText(response.body().getInfo().getUser().getBio());
 
+                            if(       !haspMapProfileDetails.get(Constants.TAG_INTEREST_PLAN).equals("")) {
+                                try {
+                                    List<String> aListInterest = Arrays.asList(haspMapProfileDetails.get(Constants.TAG_INTEREST_PLAN).split("\\s*,\\s*"));
+                                    System.out.println("jigar the array arrayListComments  in tab listner is "+aListInterest.toString());
+                                    System.out.println("jigar the array arrayListComments  size is tab listner is "+aListInterest.size());
+
+
+                                    JSONArray ints = new JSONArray(aListInterest);
+                                    for (int i = 0; i < ints.length(); i++) {
+                                        interestsAry.add(interestsAry.get(Integer.parseInt(ints.optString(i, ""))));
+                                    }
+                                }catch (NullPointerException e)
+                                {
+                                }
+                            }
 //                            if (response.body().getInfo().getMatchmaker() != null) {
 //                                lin_matchmaker_comment.setVisibility(View.VISIBLE);
 //                            } else {
@@ -257,65 +270,14 @@ public class MatchMakerFragment extends Fragment implements View.OnClickListener
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String res) {
-                            try {
-                                Log.v(TAG, "getProfileRes=" + res);
-                                System.out.println("jigar the response on view profile is " + res);
-                                JSONObject json = new JSONObject(res);
-                                String strStatus = DefensiveClass.optString(json, Constants.TAG_STATUS);
-                                if (strStatus.equals("1")) {
-                                    JSONObject jsonObjectMainInfo = json.getJSONObject(Constants.TAG_INFO);
-                                    JSONObject jsonObjectMainUserInfo = jsonObjectMainInfo.getJSONObject(Constants.TAG_USER_INFO);
+                            setMatchMakerProfile(res);
 
-                                    //    sendMatch = DefensiveClass.optString(jsonObject, Constants.TAG_SEND_MATCH);
-
-                                    haspMapProfileDetails.put(Constants.TAG_REGISTERED_ID, jsonObjectMainUserInfo.getString(Constants.TAG_REGISTERED_ID));
-                                    haspMapProfileDetails.put(Constants.TAG_NEW_USERNAME, jsonObjectMainUserInfo.getString(Constants.TAG_NEW_USERNAME));
-                                    //          haspMapProfileDetails.put(Constants.TAG_GENDER, DefensiveClass.optString(jsonObject, Constants.TAG_GENDER));
-                                    haspMapProfileDetails.put(Constants.TAG_AGE, jsonObjectMainUserInfo.getString(Constants.TAG_AGE));
-                                    haspMapProfileDetails.put(Constants.TAG_BIO, jsonObjectMainUserInfo.getString(Constants.TAG_BIO));
-                                    haspMapProfileDetails.put(Constants.TAG_LATITUDE, jsonObjectMainUserInfo.getString(Constants.TAG_LATITUDE));
-                                    haspMapProfileDetails.put(Constants.TAG_LONGITUDE, jsonObjectMainUserInfo.getString(Constants.TAG_LONGITUDE));
-                                    haspMapProfileDetails.put(Constants.TAG_ONLINE_STATUS, jsonObjectMainUserInfo.getString(Constants.TAG_ONLINE_STATUS));
-                                    haspMapProfileDetails.put(Constants.TAG_LOCATION, jsonObjectMainUserInfo.getString(Constants.TAG_LOCATION));
-                                    haspMapProfileDetails.put(Constants.TAG_INFO, jsonObjectMainUserInfo.getString(Constants.TAG_INFO));
-                                    haspMapProfileDetails.put(Constants.TAG_INTEREST, jsonObjectMainUserInfo.getString(Constants.TAG_INTEREST));
-                                    haspMapProfileDetails.put(Constants.TAG_INTEREST_PLAN, jsonObjectMainUserInfo.getString(Constants.TAG_INTEREST_PLAN));
-                                    haspMapProfileDetails.put(Constants.TAG_PROFILE_IMAGE, jsonObjectMainUserInfo.getString(Constants.TAG_PROFILE_IMAGE));
-                                    haspMapProfileDetails.put(Constants.TAG_IMAGES, jsonObjectMainUserInfo.getString(Constants.TAG_IMAGES));
-                                    haspMapProfileDetails.put(Constants.TAG_AGE_STATUS, jsonObjectMainUserInfo.getString(Constants.TAG_AGE_STATUS));
-                                    haspMapProfileDetails.put(Constants.TAG_DISTANCE_STATUS, jsonObjectMainUserInfo.getString(Constants.TAG_DISTANCE_STATUS));
-                                    haspMapProfileDetails.put(Constants.TAG_INVISIBLE_STATUS, jsonObjectMainUserInfo.getString(Constants.TAG_INVISIBLE_STATUS));
-                                    //  haspMapProfileDetails.put(Constants.TAG_REPORT, DefensiveClass.optString(jsonObject, Constants.TAG_REPORT));
-                                    haspMapProfileDetails.put(Constants.TAG_PREMIUM_FROM, jsonObjectMainUserInfo.getString(Constants.TAG_PREMIUM_FROM));
-                                    //   haspMapProfileDetails.put(Constants.TAG_MEMBERSHIP_VALID, DefensiveClass.optString(jsonObject, Constants.TAG_MEMBERSHIP_VALID));
-                                    //    haspMapProfileDetails.put(Constants.TAG_SEND_MATCH, sendMatch);
-                                    haspMapProfileDetails.put(TAG_IMAGE, jsonObjectMainUserInfo.getString(TAG_IMAGE));
-
-                                    CommonFunctions.hideProgressDialog(getContext());
-
-                                    System.out.println("jigar the response on images we have view profile is " + haspMapProfileDetails.get(TAG_IMAGE));
-
-//                                    checkUser();
-//                                    setProfile();
-
-                                } else if (strStatus.equals("0")) {
-                                    System.out.println("jigar the error in status json response on view profile is " + json.getString(Constants.TAG_MSG));
-
-                                    CommonFunctions.disabledialog(getContext(), "Error", json.getString("message"));
-                                }
-                            } catch (JSONException e) {
-                                System.out.println("jigar the error in json response on view profile is " + e);
-                                e.printStackTrace();
-                            }
                             //                        catch (NullPointerException e) {
                             //                            System.out.println("jigar the error in null pointeron view profile is "+e);
                             //
                             //                            e.printStackTrace();
                             //                        }
-                            catch (Exception e) {
-                                System.out.println("jigar the error main exception view profile is " + e);
-                                e.printStackTrace();
-                            }
+
                         }
                     }, new Response.ErrorListener() {
 
@@ -342,11 +304,9 @@ public class MatchMakerFragment extends Fragment implements View.OnClickListener
                     Map<String, String> map = new HashMap<String, String>();
                     //if (GetSet.getUserId().equals(strFriendID))
                     {
-
                         //                    GetSet.setUserId("96519710");
                         //                    map.put(Constants.TAG_REGISTERED_ID,"96519710");
                         map.put(Constants.TAG_REGISTERED_ID, GetSet.getUserId());
-
                         map.put(Constants.TAG_FRIEND_ID, strFriendID);
                     }
                     // else
@@ -370,17 +330,194 @@ public class MatchMakerFragment extends Fragment implements View.OnClickListener
 
     }
 
+    public void setMatchMakerProfile(String strResponse)
+    {
+
+        try {
+            Log.v(TAG, "jigar the Match Maker Res=" + strResponse);
+            System.out.println("jigar the response on view match maker is " + strResponse);
+
+            JSONObject json = new JSONObject(strResponse);
+            String strStatus = DefensiveClass.optString(json, Constants.TAG_STATUS);
+            if (strStatus.equals("1")) {
+                JSONObject jsonObjectMainInfo = json.getJSONObject(Constants.TAG_INFO);
+                JSONObject jsonObjectMainUserInfo = jsonObjectMainInfo.getJSONObject(Constants.TAG_USER_INFO);
+
+                //    sendMatch = DefensiveClass.optString(jsonObject, Constants.TAG_SEND_MATCH);
+                String strUserName=jsonObjectMainUserInfo.getString(Constants.TAG_NEW_USERNAME);
+                String strFirstName=jsonObjectMainUserInfo.getString(Constants.TAG_FIRST_NAME);
+                String strUserAddress=jsonObjectMainUserInfo.getString(Constants.TAG_LOCATION);
+                String strUserAge=jsonObjectMainUserInfo.getString(Constants.TAG_AGE);
+                String strUserBio=jsonObjectMainUserInfo.getString(Constants.TAG_BIO);
+                String strUserImage=jsonObjectMainUserInfo.getString(Constants.TAG_IMAGE);
+                String strUserInterestPlan=jsonObjectMainUserInfo.getString(Constants.TAG_INTEREST_PLAN);
+                strUserName = strUserName.substring(0,1).toUpperCase() + strUserName.substring(1);
+                txtname.setText(strUserName + " , " + strUserAge);
+                strUserAddress = strUserAddress.substring(0,1).toUpperCase() + strUserAddress.substring(1);
+                strUserBio = strUserBio.substring(0,1).toUpperCase() + strUserBio.substring(1);
+                txtAddress.setText(strUserAddress);
+                imgList.add(strUserImage);
+                viewPagerAdapter = new ViewPagerAdapter(getContext(), imgList);
+                viewPager.setAdapter(viewPagerAdapter);
+
+
+                JSONArray jsonArrayMatchMakerMember=jsonObjectMainInfo.getJSONArray(Constants.TAG_MATCH_MAKER_MEMBER);
+                if(jsonArrayMatchMakerMember.length()>0)
+
+                {
+                    for(int i=0;i<jsonArrayMatchMakerMember.length();i++) {
+                        HashMap<String, String> haspMapMatchMakerDetails = new HashMap<String, String>();
+
+                        JSONObject jsonObjectMain=jsonArrayMatchMakerMember.getJSONObject(i);
+                        {
+                            String strMemberRegisterID = jsonObjectMain.getString(Constants.TAG_REGISTERED_ID);
+                            String strMemberName = jsonObjectMain.getString(Constants.TAG_NAME);
+                            String strMemberImage = jsonObjectMain.getString(Constants.TAG_IMAGE);
+                            haspMapMatchMakerDetails.put(Constants.TAG_REGISTERED_ID, strMemberRegisterID);
+                            haspMapMatchMakerDetails.put(Constants.TAG_NAME, strMemberName);
+                            haspMapMatchMakerDetails.put(Constants.TAG_IMAGE, strMemberImage);
+                            arrayListMatchMakerMember.add(haspMapMatchMakerDetails);
+                        }
+                    }
+
+                    matchMakerMemberAdapter = new MyMemberAdapter( getContext(),arrayListMatchMakerMember);
+                    recycler_my_members.setAdapter(matchMakerMemberAdapter);
+
+                    matchMakerMemberAdapter.notifyDataSetChanged();
+
+                }
+                JSONArray jsonArrayNonMatchMakerMember=jsonObjectMainInfo.getJSONArray(Constants.TAG_NON_MATCH_MAKER_MEMBER);
+                if(jsonArrayNonMatchMakerMember.length()>0)
+                {
+                    for(int i=0;i<jsonArrayNonMatchMakerMember.length();i++) {
+                        HashMap<String, String> haspMapMatchMakerDetails = new HashMap<String, String>();
+
+                        JSONObject jsonObjectMain=jsonArrayNonMatchMakerMember.getJSONObject(i);
+                        String strMemberRegisterID = jsonObjectMain.getString(Constants.TAG_REGISTERED_ID);
+                        String strMemberName = jsonObjectMain.getString(Constants.TAG_NAME);
+                        String strMemberImage = jsonObjectMain.getString(Constants.TAG_IMAGE);
+                        haspMapMatchMakerDetails.put(Constants.TAG_REGISTERED_ID,strMemberRegisterID);
+                        haspMapMatchMakerDetails.put(Constants.TAG_NAME,strMemberName);
+                        haspMapMatchMakerDetails.put(Constants.TAG_IMAGE,strMemberImage);
+                        arrayListNonMatchMakerMember.add(haspMapMatchMakerDetails);
+                    }
+
+                    lin_without_matchmaker.setVisibility(View.VISIBLE);
+                    recycler_without_matchmaker.setVisibility(View.VISIBLE);
+                    notMatchMakerMemberAdapter = new NotMatchMakerMemberAdapter( getContext(),arrayListNonMatchMakerMember);
+                    recycler_without_matchmaker.setAdapter(notMatchMakerMemberAdapter);
+                    help_more.setVisibility(View.GONE);
+                    notMatchMakerMemberAdapter.notifyDataSetChanged();
+                }
+//
+//                                    haspMapProfileDetails.put(Constants.TAG_REGISTERED_ID, jsonObjectMainUserInfo.getString(Constants.TAG_REGISTERED_ID));
+//                                    haspMapProfileDetails.put(Constants.TAG_NEW_USERNAME, jsonObjectMainUserInfo.getString(Constants.TAG_NEW_USERNAME));
+//                                    //          haspMapProfileDetails.put(Constants.TAG_GENDER, DefensiveClass.optString(jsonObject, Constants.TAG_GENDER));
+//                                    haspMapProfileDetails.put(Constants.TAG_AGE, jsonObjectMainUserInfo.getString(Constants.TAG_AGE));
+//                                    haspMapProfileDetails.put(Constants.TAG_BIO, jsonObjectMainUserInfo.getString(Constants.TAG_BIO));
+//                                    haspMapProfileDetails.put(Constants.TAG_LATITUDE, jsonObjectMainUserInfo.getString(Constants.TAG_LATITUDE));
+//                                    haspMapProfileDetails.put(Constants.TAG_LONGITUDE, jsonObjectMainUserInfo.getString(Constants.TAG_LONGITUDE));
+//                                    haspMapProfileDetails.put(Constants.TAG_ONLINE_STATUS, jsonObjectMainUserInfo.getString(Constants.TAG_ONLINE_STATUS));
+//                                    haspMapProfileDetails.put(Constants.TAG_LOCATION, jsonObjectMainUserInfo.getString(Constants.TAG_LOCATION));
+//                                    haspMapProfileDetails.put(Constants.TAG_INFO, jsonObjectMainUserInfo.getString(Constants.TAG_INFO));
+//                                    haspMapProfileDetails.put(Constants.TAG_INTEREST, jsonObjectMainUserInfo.getString(Constants.TAG_INTEREST));
+//                                    haspMapProfileDetails.put(Constants.TAG_INTEREST_PLAN, jsonObjectMainUserInfo.getString(Constants.TAG_INTEREST_PLAN));
+//                                    haspMapProfileDetails.put(Constants.TAG_PROFILE_IMAGE, jsonObjectMainUserInfo.getString(Constants.TAG_PROFILE_IMAGE));
+//                                    haspMapProfileDetails.put(Constants.TAG_IMAGES, jsonObjectMainUserInfo.getString(Constants.TAG_IMAGES));
+//                                    haspMapProfileDetails.put(Constants.TAG_AGE_STATUS, jsonObjectMainUserInfo.getString(Constants.TAG_AGE_STATUS));
+//                                    haspMapProfileDetails.put(Constants.TAG_DISTANCE_STATUS, jsonObjectMainUserInfo.getString(Constants.TAG_DISTANCE_STATUS));
+//                                    haspMapProfileDetails.put(Constants.TAG_INVISIBLE_STATUS, jsonObjectMainUserInfo.getString(Constants.TAG_INVISIBLE_STATUS));
+//                                    //  haspMapProfileDetails.put(Constants.TAG_REPORT, DefensiveClass.optString(jsonObject, Constants.TAG_REPORT));
+//                                    haspMapProfileDetails.put(Constants.TAG_PREMIUM_FROM, jsonObjectMainUserInfo.getString(Constants.TAG_PREMIUM_FROM));
+//                                    //   haspMapProfileDetails.put(Constants.TAG_MEMBERSHIP_VALID, DefensiveClass.optString(jsonObject, Constants.TAG_MEMBERSHIP_VALID));
+//                                    //    haspMapProfileDetails.put(Constants.TAG_SEND_MATCH, sendMatch);
+//                                    haspMapProfileDetails.put(TAG_IMAGE, jsonObjectMainUserInfo.getString(TAG_IMAGE));
+
+
+                if(!strUserBio.equals(""))
+                {
+                    linearLayoutBio.setVisibility(View.VISIBLE);
+                    textViewBio.setText(strUserBio);
+
+                }else
+                {
+                    linearLayoutBio.setVisibility(View.GONE);
+
+                }
+                if(!strUserInterestPlan.equals("")) {
+                    try {
+                        List<String> aListInterest = Arrays.asList(strUserInterestPlan.split("\\s*,\\s*"));
+                        System.out.println("jigar the array arrayListComments  in tab listner is "+aListInterest.toString());
+                        System.out.println("jigar the array arrayListComments  size is tab listner is "+aListInterest.size());
+
+                        JSONArray ints = new JSONArray(aListInterest);
+                        for (int i = 0; i < ints.length(); i++) {
+                            if(Integer.parseInt(ints.optString(i))<ints.length())
+                            {
+                                interestsAry.add(arrayListInterestStatic.get(Integer.parseInt(ints.optString(i, ""))));
+                            }
+
+                        }
+
+                        for (int i = 0; i < interestsAry.size(); i++) {
+                            TextView tv = new TextView(getContext());
+                            tv.setText(interestsAry.get(i));
+                            tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+                            tv.setTypeface(FontCache.get("font_regular.ttf", getContext()));
+                            ViewGroup.MarginLayoutParams lp = new ViewGroup.MarginLayoutParams(
+                                    ViewGroup.MarginLayoutParams.WRAP_CONTENT,
+                                    ViewGroup.MarginLayoutParams.WRAP_CONTENT);
+                            lp.leftMargin = HowzuApplication.dpToPx(getContext(), 5);
+                            lp.rightMargin = HowzuApplication.dpToPx(getContext(), 5);
+                            lp.bottomMargin = HowzuApplication.dpToPx(getContext(), 5);
+                            lp.topMargin = HowzuApplication.dpToPx(getContext(), 5);
+                            tv.setBackgroundDrawable(getResources().getDrawable(R.drawable.primary_rounded_stroke_corner));
+                            tv.setTextColor(getResources().getColor(R.color.colorPrimary));
+                            laybelLayout.addView(tv, lp);
+                        }
+                    }
+
+
+                    catch (NullPointerException ex)
+                    {
+                        Log.d(TAG,"jigar the error exception  in interest "+ex);
+                    }
+                }
+
+
+
+                CommonFunctions.hideProgressDialog(getContext());
+
+                System.out.println("jigar the response on images we have view matchmaker is " + strUserImage);
+
+                //                                    checkUser();
+//                                    setProfile();
+
+            } else if (strStatus.equals("0")) {
+                System.out.println("jigar the error in status json response on view profile is " + json.getString(Constants.TAG_MSG));
+
+                CommonFunctions.disabledialog(getContext(), "Error", json.getString("message"));
+            }
+        } catch (JSONException e) {
+            System.out.println("jigar the error in json response on view profile is " + e);
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println("jigar the error main exception view profile is " + e);
+            e.printStackTrace();
+        }
+
+    }
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.help_more:
                 help_more.setVisibility(View.GONE);
                 lin_without_matchmaker.setVisibility(View.VISIBLE);
-                matchmakerMemberAdapter = new NotMatchMakerMemberAdapter(getActivity(), matchmakerMembersList);
-                recycler_without_matchmaker.setAdapter(matchmakerMemberAdapter);
+//                notMatchMakerMemberAdapter = new NotMatchMakerMemberAdapter(getActivity(), matchmakerMembersList);
+                recycler_without_matchmaker.setAdapter(notMatchMakerMemberAdapter);
                 break;
 
-            case R.id.lin_one:
+            case R.id.linearLayoutSendFriendRequest:
 
                 lin_one.setBackgroundResource(R.drawable.gray_bg);
                 lin_two.setBackgroundResource(R.drawable.gray_bg_border);
@@ -466,7 +603,7 @@ public class MatchMakerFragment extends Fragment implements View.OnClickListener
     class MyMemberAdapter extends RecyclerView.Adapter<MyMemberAdapter.MyViewHolder> {
 
         private Context mContext;
-        private List<MatchMackerDetailModel.Matchmakermember> albumList;
+        ArrayList<HashMap<String, String>> albumList;
 
         public class MyViewHolder extends RecyclerView.ViewHolder {
             public TextView title;
@@ -483,10 +620,7 @@ public class MatchMakerFragment extends Fragment implements View.OnClickListener
                 super(view);
                 title = view.findViewById(R.id.title);
                 profile_pic = view.findViewById(R.id.profile_pic);
-
-
                 fabSettings = (Button) view.findViewById(R.id.fabSetting);
-
                 layoutFabSave = (LinearLayout) view.findViewById(R.id.layoutFabSave);
                 layoutFabEdit = (LinearLayout) view.findViewById(R.id.layoutFabEdit);
                 layoutFabPhoto = (LinearLayout) view.findViewById(R.id.layoutFabPhoto);
@@ -527,8 +661,7 @@ public class MatchMakerFragment extends Fragment implements View.OnClickListener
 
         }
 
-
-        public MyMemberAdapter(Context mContext, List<MatchMackerDetailModel.Matchmakermember> albumList) {
+        public MyMemberAdapter(Context mContext,  ArrayList<HashMap<String, String>> albumList) {
             this.mContext = mContext;
             this.albumList = albumList;
         }
@@ -542,42 +675,50 @@ public class MatchMakerFragment extends Fragment implements View.OnClickListener
 
         @Override
         public void onBindViewHolder(final MyViewHolder holder, int position) {
-            MatchMackerDetailModel.Matchmakermember album = albumList.get(position);
+        final     HashMap<String, String> album = albumList.get(position);
+
+            //    Log.v("image", "image" + tempMap.get(Constants.TAG_USERIMAGE));
+
             try {
-                if (album.getName() != null) {
-                    holder.title.setText(album.getName());
-
+                if (album.get(Constants.TAG_NAME) != null) {
+                    holder.title.setText(album.get(Constants.TAG_NAME));
                 }
 
-                if (album.getImage().equalsIgnoreCase("http://www.ilovemisskey.com/uploads/user/")) {
-                    Glide.with(getActivity()).load(album.getImage())
-                            .listener(new RequestListener<String, GlideDrawable>() {
-                                @Override
-                                public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                                    return false;
-                                }
-
-                                @Override
-                                public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                                    return false;
-                                }
-                            }).placeholder(R.drawable.user_placeholder)
-                            .into(holder.profile_pic);
-                } else {
-                    Glide.with(getActivity()).load(album.getImage())
-                            .listener(new RequestListener<String, GlideDrawable>() {
-                                @Override
-                                public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                                    return false;
-                                }
-
-                                @Override
-                                public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                                    return false;
-                                }
-                            })
-                            .into(holder.profile_pic);
-                }
+                Picasso.with(getActivity())
+                        .load(album.get(Constants.TAG_IMAGE))
+                        .error(R.drawable.user_placeholder)
+                        .centerCrop()
+                        .fit().centerCrop()
+                        .into(holder.profile_pic);
+//                if (album.get(Constants.TAG_IMAGE).equalsIgnoreCase("http://www.ilovemisskey.com/uploads/user/")) {
+//                     Glide.with(getActivity()).load(album.get(Constants.TAG_IMAGE))
+//                            .listener(new RequestListener<String, GlideDrawable>() {
+//                                @Override
+//                                public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+//                                    return false;
+//                                }
+//
+//                                @Override
+//                                public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+//                                    return false;
+//                                }
+//                            }).placeholder(R.drawable.user_placeholder)
+//                            .into(holder.profile_pic);
+//                } else {
+//                    Glide.with(getActivity()).load(album.get(Constants.TAG_IMAGE))
+//                            .listener(new RequestListener<String, GlideDrawable>() {
+//                                @Override
+//                                public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+//                                    return false;
+//                                }
+//
+//                                @Override
+//                                public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+//                                    return false;
+//                                }
+//                            })
+//                            .into(holder.profile_pic);
+//                }
 
                 holder.profile_pic.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
@@ -649,7 +790,7 @@ public class MatchMakerFragment extends Fragment implements View.OnClickListener
     class NotMatchMakerMemberAdapter extends RecyclerView.Adapter<NotMatchMakerMemberAdapter.MyViewHolder> {
 
         private Context mContext;
-        private List<MatchMackerDetailModel.Nomatchmakermember> albumList;
+        private ArrayList<HashMap<String, String>> albumList;
 
         public class MyViewHolder extends RecyclerView.ViewHolder {
             public TextView title;
@@ -664,7 +805,7 @@ public class MatchMakerFragment extends Fragment implements View.OnClickListener
         }
 
 
-        public NotMatchMakerMemberAdapter(Context mContext, List<MatchMackerDetailModel.Nomatchmakermember> albumList) {
+        public NotMatchMakerMemberAdapter(Context mContext, ArrayList<HashMap<String, String>> albumList) {
             this.mContext = mContext;
             this.albumList = albumList;
         }
@@ -678,39 +819,48 @@ public class MatchMakerFragment extends Fragment implements View.OnClickListener
 
         @Override
         public void onBindViewHolder(final MyViewHolder holder, int position) {
-            MatchMackerDetailModel.Nomatchmakermember album = albumList.get(position);
-            holder.title.setText(album.getName());
+//            MatchMackerDetailModel.Nomatchmakermember album = albumList.get(position);
+            final     HashMap<String, String> album = albumList.get(position);
+            Log.v(TAG, "jigar the non matchmaker image " + album.get(Constants.TAG_IMAGE));
 
-            if (album.getImage().equalsIgnoreCase("http://www.ilovemisskey.com/uploads/user/")) {
-                Glide.with(getActivity()).load(album.getImage())
-                        .listener(new RequestListener<String, GlideDrawable>() {
-                            @Override
-                            public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                                return false;
-                            }
+//            ArrayList<HashMap<String, String>> album=albumList.get(position);
+            holder.title.setText(album.get(Constants.TAG_NAME));
 
-                            @Override
-                            public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                                return false;
-                            }
-                        }).placeholder(R.drawable.user_placeholder)
-                        .into(holder.profile_pic);
-            } else {
-                Glide.with(getActivity()).load(album.getImage())
-                        .listener(new RequestListener<String, GlideDrawable>() {
-                            @Override
-                            public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                                return false;
-                            }
-
-                            @Override
-                            public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                                return false;
-                            }
-                        })
-                        .into(holder.profile_pic);
-            }
-
+            Picasso.with(getActivity())
+                    .load(album.get(Constants.TAG_IMAGE))
+                    .error(R.drawable.user_placeholder)
+                    .centerCrop()
+                    .fit().centerCrop()
+                    .into(holder.profile_pic);
+            //            if (album.get(Constants.TAG_IMAGE).equalsIgnoreCase("http://www.ilovemisskey.com/uploads/user/")) {
+//                Glide.with(getActivity()).load(album.get(Constants.TAG_IMAGE))
+//                        .listener(new RequestListener<String, GlideDrawable>() {
+//                            @Override
+//                            public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+//                                return false;
+//                            }
+//
+//                            @Override
+//                            public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+//                                return false;
+//                            }
+//                        }).placeholder(R.drawable.user_placeholder)
+//                        .into(holder.profile_pic);
+//            } else {
+//                Glide.with(getActivity()).load(album.get(Constants.TAG_NAME))
+//                        .listener(new RequestListener<String, GlideDrawable>() {
+//                            @Override
+//                            public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+//                                return false;
+//                            }
+//
+//                            @Override
+//                            public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+//                                return false;
+//                            }
+//                        })
+//                        .into(holder.profile_pic);
+//            }
         }
 
 
@@ -811,35 +961,49 @@ public class MatchMakerFragment extends Fragment implements View.OnClickListener
             View view = layoutInflater.inflate(R.layout.matchmaker_profile_image_layout, null);
             ImageView imageView = (ImageView) view.findViewById(R.id.imageView);
 
-            if (img_list.get(position).equalsIgnoreCase("http://www.ilovemisskey.com/uploads/user/")) {
-                Glide.with(getActivity()).load(img_list.get(position))
-                        .listener(new RequestListener<String, GlideDrawable>() {
-                            @Override
-                            public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                                return false;
-                            }
-
-                            @Override
-                            public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                                return false;
-                            }
-                        }).placeholder(R.drawable.user_placeholder)
-                        .into(imageView);
-            } else {
-                Glide.with(getActivity()).load(img_list.get(position))
-                        .listener(new RequestListener<String, GlideDrawable>() {
-                            @Override
-                            public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                                return false;
-                            }
-
-                            @Override
-                            public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                                return false;
-                            }
-                        })
-                        .into(imageView);
+            Picasso.with(getActivity())
+                    .load(img_list.get(position))
+                    .error(R.drawable.user_placeholder)
+                    .into(imageView);
+//            if (img_list.get(position).equalsIgnoreCase("http://www.ilovemisskey.com/uploads/user/"))
+            {
+//                Glide.with(getActivity())
+//                        .load(img_list.get(position)
+//                        )
+//                        .listener(new RequestListener<String, GlideDrawable>() {
+//                            @Override
+//                            public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+//                                Log.d(TAG,"jigar the exception in image load  is is "+e);
+//                                return false;
+//                            }
+//
+//                            @Override
+//                            public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+//                                return false;
+//                            }
+//                        }).placeholder(R.drawable.user_placeholder)
+//                        .centerCrop()
+//                        .into(imageView);
             }
+
+            //            else
+//                {
+//                Glide.with(getActivity()).load(img_list.get(position))
+//                        .listener(new RequestListener<String, GlideDrawable>() {
+//                            @Override
+//                            public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+//                                Log.d(TAG,"jigar the exception in image load  second is is "+e);
+//
+//                                return false;
+//                            }
+//
+//                            @Override
+//                            public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+//                                return false;
+//                            }
+//                        })
+//                        .into(imageView);
+//            }
             ViewPager vp = (ViewPager) container;
             vp.addView(view, 0);
 

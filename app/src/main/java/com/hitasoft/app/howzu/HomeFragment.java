@@ -10,7 +10,10 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -48,6 +51,7 @@ import com.hitasoft.app.utils.DefensiveClass;
 import com.hitasoft.app.utils.GetSet;
 import com.hitasoft.app.utils.Item;
 import com.squareup.picasso.Picasso;
+import com.yarolegovich.lovelydialog.LovelyTextInputDialog;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -71,7 +75,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener
     public static ImageView userImage;
     public static RippleBackground rippleBackground;
     public static RelativeLayout linearLayoutSwipeProfileCard;
-    public static LinearLayout bottomLay;
     public static SwipeFlingAdapterView flingContainer;
     public static ImageView reload,match,customer_care,unmatch,comments;
     Display display;
@@ -93,11 +96,13 @@ public class HomeFragment extends Fragment implements View.OnClickListener
     public  LinearLayout container;
     private static String[] labels = {"Hello Bubble", "This is bubble view", "Android", "Github", "Jared", "Bubble with different size", "Yo"};
     boolean isClickedCommentFirst=false;
-
-    //Slider
-    ImageView open, close,imageViewShowComments,imageViewMatchMakerProfile;
+    ImageView open, close;
     LinearLayout myView;
     LinearLayout lin_open;
+
+
+    //Slider
+    ImageView imageViewShowComments,imageViewAddComments,imageViewMatchMakerProfile;
     TagView<Item> tags;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -114,15 +119,16 @@ public class HomeFragment extends Fragment implements View.OnClickListener
 
         userImage = getView().findViewById(R.id.user_image);
         rippleBackground = getView().findViewById(R.id.ripple_background);
-        close = getView().findViewById(R.id.close);
 
         rippleBackground.startRippleAnimation();
         linearLayoutSwipeProfileCard = getView().findViewById(R.id.linearLayoutSwipeProfileCard);
-        bottomLay = getView().findViewById(R.id.bottomLay);
         flingContainer = getView().findViewById(R.id.cardView);
-        imageViewShowComments=getView().findViewById(R.id.imageViewShowComments);
-        imageViewMatchMakerProfile=getView().findViewById(R.id.imageViewMatchMakerProfile);
 
+
+
+
+
+        imageViewMatchMakerProfile=getView().findViewById(R.id.imageViewMatchMakerProfile);
         //        BubbleLayout layout = (BubbleLayout) getView().findViewById(R.id.bubble_layout);
 //
 //        for (String label : labels) {
@@ -149,24 +155,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener
 //        arrayListComments.add(new Item(5, "Very Nice Pic"));
 //        arrayListComments.add(new Item(6, "Nice One Dear"));
 
-        tags = getView().findViewById(R.id.tagview);
-        tags.getBackground().setAlpha(80);
-        slideUp = AnimationUtils.loadAnimation(getContext(), R.anim.from_bottom_to_top);
-        slideUp.setDuration(5000);
-
-        float bottomOfScreen = getResources().getDisplayMetrics()
-                .heightPixels - (tags.getHeight() * 4);
-        //bottomOfScreen is where you want to animate to
-
-        tags.setVisibility(View.GONE);
-        imageViewShowComments.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                arrayListComments.clear();
-                    //getProfileCommentList();
-
-            }
-        });
 
 //        LocalBroadcastManager.getInstance(getContext()).registerReceiver(mMessageReceiver,
 //                new IntentFilter("custom-message"));
@@ -177,12 +165,15 @@ public class HomeFragment extends Fragment implements View.OnClickListener
         comments = getView().findViewById(R.id.comments);
         nullLay = getView().findViewById(R.id.nullLay);
         changeLocation = getView().findViewById(R.id.change_location);
+
 //Slider
         myView = getView().findViewById(R.id.my_view);
         open = getView().findViewById(R.id.open);
         lin_open = getView().findViewById(R.id.lin_open);
         myView.setVisibility(View.INVISIBLE);
-
+        close = getView().findViewById(R.id.close);
+        imageViewAddComments = getView().findViewById(R.id.imageViewAddComments);
+        imageViewShowComments = getView().findViewById(R.id.imageViewShowComments);
         getPeopleList();
 
         open.setOnClickListener(new View.OnClickListener() {
@@ -206,6 +197,133 @@ public class HomeFragment extends Fragment implements View.OnClickListener
         });
 
 
+        imageViewShowComments.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                close.performClick();
+                Log.d(TAG,"jigar the view comment friend id is "
+                        + peoplesAry.get(0).get(Constants.TAG_REGISTERED_ID));
+//               String strNewCommentID=peoplesAry.get(0).get(Constants.TAG_REGISTERED_ID);
+//                Log.d(TAG,"jigar the view comment friend id is "
+//                        + peoplesAry.get(0).get(Constants.TAG_COMMENT));
+//                List<String> myList = new ArrayList<String>(Arrays.asList(peoplesAry.get(0).get(Constants.TAG_COMMENT).split(",")));
+//                Log.d(TAG,"jigar the view array list comment friend id is "
+//                        + myList.size());
+
+                if( peoplesAry.get(0).get(Constants.TAG_COMMENT_TEST)!=null)
+                {
+
+                    List<String> myList = new ArrayList<String>(Arrays.asList(peoplesAry.get(0).get(Constants.TAG_COMMENT_TEST).split(",")));
+                    Log.d(TAG,"jigar the view string list size comment is "
+                            +  myList.size());
+                    arrayListComments.clear();
+                    tags.setTag(null);
+
+                    for(int i=0;i<myList.size();i++)
+                    {
+                        arrayListComments.add(new Item(i,myList.get(i)));
+                    }
+                    tags.setVisibility(View.VISIBLE);
+                    tags.startAnimation(slideUp);
+
+                    tags.removeAllViewsInLayout();
+                    tags.removeAllViews();
+                    tags.refreshDrawableState();
+
+
+//                    tags.setBackgroundDrawable(getContext().getDrawable(R.drawable.black_curve_background));
+
+                    tags.setTags(arrayListComments, new DataTransform<Item>() {
+                        @NotNull
+                        @Override
+                        public String transfer(Item item) {
+                            return item.getName();
+                        }
+                    });
+
+                    tags.setClickListener(new TagView.TagClickListener<Item>() {
+                        @Override
+                        public void onTagClick(Item item) {
+
+                            item.getId();
+                        }
+
+                    });
+
+                    // close.performClick();
+                    //tags.setVisibility(View.VISIBLE);
+                    //   tags.startAnimation(slideUp);
+                    slideUp.setAnimationListener(new Animation.AnimationListener() {
+                        @Override
+                        public void onAnimationStart(Animation animation) {
+
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animation animation) {
+                            tags.setVisibility(View.GONE);
+                            arrayListComments.clear();
+
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animation animation) {
+
+                        }
+                    });
+
+                }else
+                {
+                    Toast.makeText(getContext(),"No Comments Available",Toast.LENGTH_LONG).show();
+                }
+
+//                arrayListComments.add(new Item(i, strUserComment));
+
+
+            }
+        });
+
+        imageViewAddComments.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        close.performClick();
+
+                        Log.d(TAG,"jigar the add comment friend id is "
+                                + peoplesAry.get(0).get(Constants.TAG_REGISTERED_ID));
+                        Log.d(TAG,"jigar the add comment user id is "+GetSet.getUserId());
+                        LovelyTextInputDialog lovelyTextInputDialog;
+                        lovelyTextInputDialog=    new LovelyTextInputDialog(getContext(), R.style.TintTheme);
+                        lovelyTextInputDialog.setTopColorRes(R.color.colorPrimary);
+                        lovelyTextInputDialog.setTitle("Comment");
+                        lovelyTextInputDialog.setMessage("Add Comment");
+                        lovelyTextInputDialog.setIcon(R.drawable.ic_comment);
+                        lovelyTextInputDialog.setInputFilter("Enter Valid Comment", new LovelyTextInputDialog.TextFilter() {
+                            @Override
+                            public boolean check(String text) {
+                                return text.matches("\\w+");
+                            }
+                        })
+                                .setNegativeButton(R.string.cancel, new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        lovelyTextInputDialog.dismiss();
+                                    }
+                                })
+                                .setConfirmButton(android.R.string.ok, new LovelyTextInputDialog.OnTextInputConfirmListener() {
+                                    @Override
+                                    public void onTextInputConfirmed(String text) {
+                                        addNewComment(text, peoplesAry.get(0).get(Constants.TAG_REGISTERED_ID));
+                                        Toast.makeText(getContext(), text, Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+
+                        lovelyTextInputDialog.show();
+                    }
+                });
+
+
+        getPeopleList();
+
         display = getActivity().getWindowManager().getDefaultDisplay();
         screenWidth = display.getWidth() * 90 / 100;
         screenHeight = display.getHeight() * 62 / 100;
@@ -215,7 +333,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener
         editor = pref.edit();
         //   flingContainer.setVisibility(View.GONE);
         //   flingContainer.getLayoutParams().height = screenWidth + 50;
-        bottomLay.setVisibility(View.GONE);
+     //   bottomLay.setVisibility(View.GONE);
         linearLayoutSwipeProfileCard.setVisibility(View.VISIBLE);
         rippleBackground.setVisibility(View.VISIBLE);
         match.setOnClickListener(this);
@@ -228,8 +346,18 @@ public class HomeFragment extends Fragment implements View.OnClickListener
         peopleAdapter = new PeopleAdapter(getActivity(), peoplesAry);
         flingContainer.setAdapter(peopleAdapter);
         peopleAdapter.notifyDataSetChanged();
+        tags = getView().findViewById(R.id.tagview);
+        tags.getBackground().setAlpha(80);
+        slideUp = AnimationUtils.loadAnimation(getContext(), R.anim.from_bottom_to_top);
+        slideUp.setDuration(5000);
 
-//        handler.postDelayed(new Runnable() {
+        float bottomOfScreen = getResources().getDisplayMetrics()
+                .heightPixels - (tags.getHeight() * 4);
+        //bottomOfScreen is where you want to animate to
+
+        tags.setVisibility(View.GONE);
+
+        //        handler.postDelayed(new Runnable() {
 //            @Override
 //            public void run() {
 //                HowzuApplication.getInstance().getRequestQueue().cancelAll(TAG);
@@ -237,19 +365,16 @@ public class HomeFragment extends Fragment implements View.OnClickListener
 //            }
 //        }, 3000);
 
-
         userImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (loadmore) {
                     peoplesAry.clear();
                     HowzuApplication.getInstance().getRequestQueue().cancelAll(TAG);
-                    HowzuApplication.getInstance().addToRequestQueue(getPeople, TAG);
+            //        HowzuApplication.getInstance().addToRequestQueue(getPeople, TAG);
                 }
-
             }
         });
-
 
         Picasso.with(getActivity()).load(GetSet.getImageUrl())
                 .placeholder(R.drawable.user_placeholder)
@@ -328,19 +453,20 @@ public class HomeFragment extends Fragment implements View.OnClickListener
                     } else {
                         linearLayoutSwipeProfileCard.setVisibility(View.VISIBLE);
                     }
-                    if (peoplesAry.size() == 0) {
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                rippleBackground.setVisibility(View.VISIBLE);
-                                rippleBackground.startRippleAnimation();
-                                linearLayoutSwipeProfileCard.setVisibility(View.GONE);
-                                bottomLay.setVisibility(View.GONE);
-                                peoplesAry.clear();
-                                HowzuApplication.getInstance().addToRequestQueue(getPeople, TAG);
+                                if (peoplesAry.size() == 0) {
+                                    rippleBackground.setVisibility(View.VISIBLE);
+                                    rippleBackground.startRippleAnimation();
+                                    linearLayoutSwipeProfileCard.setVisibility(View.GONE);
+                          //          bottomLay.setVisibility(View.GONE);
+                                    peoplesAry.clear();
+//                                HowzuApplication.getInstance().addToRequestQueue(getPeople, TAG);
+                                }
                             }
                         }, 3000);
-                    }
+
                 } catch (NullPointerException e) {
                     e.printStackTrace();
                 } catch (IllegalArgumentException e) {
@@ -375,14 +501,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener
                 p.putExtra("from", "home");
                 // here friend id means user own id
                 // and register id means friend id whos profile we are visiting
-
                 p.putExtra(Constants.TAG_FRIEND_ID, GetSet.getUseridLikeToken());
                 p.putExtra(Constants.TAG_PROFILE_VISITOR_ID_LIKE_TOKEN, peoplesAry.get(itemPosition).get(Constants.TAG_ID));
                 p.putExtra(Constants.TAG_REGISTERED_ID, peoplesAry.get(itemPosition).get(Constants.TAG_REGISTERED_ID));
 
                 Log.d(TAG,"jigar the profile whom we visited is "+peoplesAry.get(itemPosition).get(Constants.TAG_ID));
-                Log.d(TAG,"jigar the  our user id in visitor is "+GetSet.getUseridLikeToken());
-
+                Log.d(TAG,"jigar the our user id in visitor is "+GetSet.getUseridLikeToken());
                 startActivity(p);
             }
         });
@@ -397,6 +521,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener
 //            Toast.makeText(getContext(),ItemName +" "+qty ,Toast.LENGTH_SHORT).show();
 //        }
 //    };
+
     public void undoSwipe() {
         peoplesAry.add(0, lastSwipedUser);
         peopleAdapter.notifyDataSetChanged();
@@ -518,28 +643,47 @@ public class HomeFragment extends Fragment implements View.OnClickListener
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            Log.e(TAG, "getView: " + position);
-            if (convertView == null) {
-                LayoutInflater inflater = (LayoutInflater) mContext
-                        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                convertView = inflater.inflate(R.layout.home_people_layout, parent, false);//layout
-                holder = new ViewHolder();
-
-                holder.imageViewPeopleProfile = convertView.findViewById(R.id.imageViewPeopleProfile);
-                holder.imageViewMatchMakerProfile = convertView.findViewById(R.id.imageViewMatchMakerProfile);
-
-                holder.main = convertView.findViewById(R.id.main);
-                holder.userName = convertView.findViewById(R.id.user_name);
-                holder.textViewProfileLocation = convertView.findViewById(R.id.textViewProfileLocation);
-
-                //    holder.main.getLayoutParams().height = screenHeight;
-                //    holder.main.getLayoutParams().width = screenWidth;
-
-                convertView.setTag(holder);
-            } else {
-                holder = (ViewHolder) convertView.getTag();
-            }
             try {
+                if(convertView == null){
+                    // LayoutInflater class is used to instantiate layout XML file into its corresponding View objects.
+                    LayoutInflater inflater = (LayoutInflater) mContext
+                            .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    convertView = inflater.inflate(R.layout.home_people_layout, parent, false);//layout
+
+                }
+            holder = new ViewHolder();
+            Log.e(TAG, "getView: " + position);
+//            holder.myView = convertView.findViewById(R.id.my_view);
+//            holder.close = convertView.findViewById(R.id.close);
+//            holder.main = convertView.findViewById(R.id.main);
+//            holder.open = convertView.findViewById(R.id.open);
+//            holder.lin_open = convertView.findViewById(R.id.lin_open);
+//            holder. bottomLay = convertView.findViewById(R.id.bottomLay);
+
+            holder.imageViewPeopleProfile = convertView.findViewById(R.id.imageViewPeopleProfile);
+            holder.imageViewMatchMakerProfile = convertView.findViewById(R.id.imageViewMatchMakerProfile);
+    //        holder.imageViewShowComments= convertView.findViewById(R.id.imageViewShowComments);
+       //     holder.imageViewAddComments= convertView.findViewById(R.id.imageViewAddComments);
+            holder.userName = convertView.findViewById(R.id.user_name);
+            holder.textViewProfileLocation = convertView.findViewById(R.id.textViewProfileLocation);
+        //    holder.lin_open.setVisibility(View.VISIBLE);
+            convertView.setTag(holder);
+//            if (convertView == null) {
+//
+////Slider
+//
+//
+//
+//                //    holder.main.getLayoutParams().height = screenHeight;
+//                //    holder.main.getLayoutParams().width = screenWidth;
+//
+//
+//            } else {
+//                holder = (ViewHolder) convertView.getTag();
+//            }
+
+  //              holder.myView.setVisibility(View.VISIBLE);
+
                 final HashMap<String, String> tempMap = peoples.get(position);
 
                 //    Log.v("image", "image" + tempMap.get(Constants.TAG_USERIMAGE));
@@ -553,7 +697,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener
                         .placeholder(R.drawable.user_placeholder)
                         .into(holder.imageViewPeopleProfile);
 
-//                if (tempMap.get(Constants.TAG_SHOW_AGE).equals("true"))
+
+                //                if (tempMap.get(Constants.TAG_SHOW_AGE).equals("true"))
 //                {
 //                    holder.userName.setText(tempMap.get(Constants.TAG_NAME));
 //                }
@@ -565,8 +710,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener
                     }
 
                 //if (tempMap.get(Constants.TAG_SHOW_LOCATION).equals("true") && !tempMap.get(Constants.TAG_USERID).equals(GetSet.getUserId()))
-                {
-//
+
+
+                    //
 //                    holder.textViewProfileLocation.setVisibility(View.INVISIBLE);
 //                    holder.textViewProfileLocation.setText("");
 //                }
@@ -575,6 +721,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener
 //                    holder.textViewProfileLocation.setVisibility(View.VISIBLE);
 //                    holder.textViewProfileLocation.setText(tempMap.get(Constants.TAG_LOCATION));
 
+                {
                     String ItemName = tempMap.get(Constants.TAG_SPONSOR_ID);
                     String qty = tempMap.get(Constants.TAG_COMMENT);
                     Intent intent = new Intent("custom-message");
@@ -610,10 +757,121 @@ public class HomeFragment extends Fragment implements View.OnClickListener
                         }
                     }
                 });
+//                holder.imageViewAddComments.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//
+//
+//                        Log.d(TAG,"jigar the add comment friend id is "+tempMap.get(Constants.TAG_REGISTERED_ID));
+//                        Log.d(TAG,"jigar the add comment user id is "+GetSet.getUserId());
+//                        LovelyTextInputDialog lovelyTextInputDialog;
+//                        lovelyTextInputDialog=    new LovelyTextInputDialog(getContext(), R.style.TintTheme);
+//                        lovelyTextInputDialog.setTopColorRes(R.color.colorPrimary);
+//                        lovelyTextInputDialog.setTitle("Comment");
+//                        lovelyTextInputDialog.setMessage("Add Comment");
+//                        lovelyTextInputDialog.setIcon(R.drawable.ic_comment);
+//                        lovelyTextInputDialog.setInputFilter("Enter Valid Comment", new LovelyTextInputDialog.TextFilter() {
+//                            @Override
+//                            public boolean check(String text) {
+//                                return text.matches("\\w+");
+//                            }
+//                        })
+//                                .setNegativeButton(R.string.cancel, new View.OnClickListener() {
+//                                    @Override
+//                                    public void onClick(View view) {
+//                                        lovelyTextInputDialog.dismiss();
+//                                    }
+//                                })
+//                                .setConfirmButton(android.R.string.ok, new LovelyTextInputDialog.OnTextInputConfirmListener() {
+//                                    @Override
+//                                    public void onTextInputConfirmed(String text) {
+//                                        addNewComment(text,tempMap.get(Constants.TAG_REGISTERED_ID));
+//                                        Toast.makeText(getContext(), text, Toast.LENGTH_SHORT).show();
+//                                    }
+//                                });
+//
+//                        lovelyTextInputDialog.show();
+//                    }
+//                });
+//
+//                holder. imageViewShowComments.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        arrayListComments.clear();
+//                        //getProfileCommentList();
+//
+//                    }
+//                });
+//
+//                holder.open.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        //                     Animation slideUp = AnimationUtils.loadAnimation(getContext(), R.anim.left_swipe);
+////                        holder.myView.setVisibility(View.VISIBLE);
+////                        holder.lin_open.setVisibility(View.INVISIBLE);
+//
+//
+//                            if(holder.open.getVisibility() == View.INVISIBLE){
+//                                holder.open.setVisibility(View.VISIBLE);
+//                            } else {
+//                                holder.open.setVisibility(View.INVISIBLE);
+//                            }
+////                        if(holder.myView.getVisibility()!=View.INVISIBLE) {
+////
+////                            holder.bottomLay.clearAnimation();
+////                            holder.myView.clearAnimation();
+////                            holder.lin_open.clearAnimation();
+////                            holder.open.clearAnimation();
+////                            holder.close.clearAnimation();
+////
+////                            holder.bottomLay.setVisibility(View.VISIBLE);
+////                            holder.myView.setVisibility(View.VISIBLE);
+////                            holder.lin_open.setVisibility(View.VISIBLE);
+////                            holder.open.setVisibility(View.VISIBLE);
+////                            holder.close.setVisibility(View.INVISIBLE);
+////                        }else
+////                        {
+////                            holder.bottomLay.setVisibility(View.INVISIBLE);
+////                            holder.myView.setVisibility(View.INVISIBLE);
+////                            holder.lin_open.setVisibility(View.INVISIBLE);
+////                            holder.open.setVisibility(View.INVISIBLE);
+////                            holder.close.setVisibility(View.VISIBLE);
+////
+////                        }
+//                        System.out.println("jigar the i open clicked and visibleity is "+holder.open.getVisibility());
+//
+/////                        holder.myView.startAnimation(slideUp);
+//
+//                    }
+//                });
+//
+//                holder.close.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        //         Animation slideDown = AnimationUtils.loadAnimation(getContext(), R.anim.rigt_swipe);
+//                        System.out.println("jigar the i close clicked "+holder.myView.getVisibility());
+////                        if(holder.myView.getVisibility()==View.INVISIBLE)
+////                        {
+////                            holder.bottomLay.setVisibility(View.INVISIBLE);
+////                            holder.lin_open.setVisibility(View.VISIBLE);
+////                            holder.myView.setVisibility(View.VISIBLE);
+////
+////
+////                        }else {
+////                            holder.bottomLay.setVisibility(View.VISIBLE);
+////                            holder.lin_open.setVisibility(View.VISIBLE);
+////                            holder.myView.setVisibility(View.INVISIBLE);
+////                            //              holder.myView.startAnimation(slideDown);
+////                        }
+//                    }
+//                });
 
             } catch (NullPointerException e) {
+                Log.d(TAG,"jigar the nulll pointer exception in list is "+e);
                 e.printStackTrace();
             } catch (Exception e) {
+                Log.d(TAG,"jigar the main  exception in list is "+e);
+
                 e.printStackTrace();
             }
             return convertView;
@@ -625,119 +883,124 @@ public class HomeFragment extends Fragment implements View.OnClickListener
         }
 
         class ViewHolder {
-            ImageView imageViewPeopleProfile,imageViewMatchMakerProfile;
+            ImageView imageViewPeopleProfile,imageViewMatchMakerProfile,imageViewShowComments,imageViewAddComments,open, close;
             TextView userName, textViewProfileLocation;
+            LinearLayout myView,lin_open;
+             LinearLayout bottomLay;
+
             RelativeLayout main;
         }
     }
 
-    /**
-     * API Implementation
-     **/
 
-    StringRequest getPeople = new StringRequest(Request.Method.POST, Constants.API_GET_PEOPLE,
-            new Response.Listener<String>() {
-                @Override
-                public void onResponse(String res) {
-                    Log.v(TAG, "getPeopleRes: " + res);
-                    try {
-                        JSONObject response = new JSONObject(res);
-                        loadmore = true;
-                        if (DefensiveClass.optString(response, Constants.TAG_STATUS).equalsIgnoreCase("true")) {
-                            JSONArray peoples = response.optJSONArray(Constants.TAG_PEOPLES);
-                            peoplesAry.clear();
-                            for (int i = 0; i < peoples.length(); i++) {
-                                JSONObject values = peoples.optJSONObject(i);
-                                HashMap<String, String> map = new HashMap<String, String>();
-                                map.put(Constants.TAG_USERID, DefensiveClass.optInt(values, Constants.TAG_USERID));
-                                map.put(Constants.TAG_USERNAME, DefensiveClass.optString(values, Constants.TAG_USERNAME));
-                                map.put(Constants.TAG_SEND_MATCH, DefensiveClass.optString(values, Constants.TAG_SEND_MATCH));
-                                map.put(Constants.TAG_AGE, DefensiveClass.optString(values, Constants.TAG_AGE));
-                                map.put(Constants.TAG_BIO, DefensiveClass.optString(values, Constants.TAG_BIO));
-                                map.put(Constants.TAG_LAT, DefensiveClass.optString(values, Constants.TAG_LAT));
-                                map.put(Constants.TAG_LON, DefensiveClass.optString(values, Constants.TAG_LON));
-                                map.put(Constants.TAG_USERIMAGE, DefensiveClass.optString(values, Constants.TAG_USERIMAGE));
-                                map.put(Constants.TAG_ONLINE, DefensiveClass.optInt(values, Constants.TAG_ONLINE));
-                                map.put(Constants.TAG_SHOW_AGE, DefensiveClass.optString(values, Constants.TAG_SHOW_AGE));
-                                map.put(Constants.TAG_SHOW_LOCATION, DefensiveClass.optString(values, Constants.TAG_SHOW_LOCATION));
-                                map.put(Constants.TAG_LOCATION, DefensiveClass.optString(values, Constants.TAG_LOCATION));
-                                peoplesAry.add(map);
-                            }
 
-                            Log.v(TAG, "peoplesAry" + peoplesAry);
-
-                        } else if (DefensiveClass.optString(response, Constants.TAG_STATUS).equalsIgnoreCase("error")) {
-                            CommonFunctions.disabledialog(getActivity(), "Error", response.getString("message"));
-                        } else if (DefensiveClass.optString(response, Constants.TAG_STATUS).equalsIgnoreCase("false") &&
-                                (DefensiveClass.optString(response, Constants.TAG_MESSAGE).equalsIgnoreCase("There's no one new around you"))) {
-                            peoplesAry.clear();
-                        }
-                        if (peopleAdapter != null) {
-                            peopleAdapter.refreshAdapter(peoplesAry);
-                        } else {
-                            peopleAdapter = new PeopleAdapter(getActivity(), peoplesAry);
-                            flingContainer.setAdapter(peopleAdapter);
-                            peopleAdapter.notifyDataSetChanged();
-                        }
-
-                        if (peoplesAry.size() > 0) {
-                            rippleBackground.stopRippleAnimation();
-                            rippleBackground.setVisibility(View.GONE);
-                            linearLayoutSwipeProfileCard.setVisibility(View.VISIBLE);
-                            bottomLay.setVisibility(View.VISIBLE);
-                            nullLay.setVisibility(View.GONE);
-                        } else {
-                            nullLay.setVisibility(View.VISIBLE);
-                        }
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    } catch (NullPointerException e) {
-                        e.printStackTrace();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }, new Response.ErrorListener() {
-
-        @Override
-        public void onErrorResponse(VolleyError error) {
-            VolleyLog.d(TAG, "Error: " + error.getMessage());
-            linearLayoutSwipeProfileCard.setVisibility(View.GONE);
-            rippleBackground.setVisibility(View.VISIBLE);
-            rippleBackground.startRippleAnimation();
-            if (peoplesAry.size() > 0) {
-                rippleBackground.stopRippleAnimation();
-                rippleBackground.setVisibility(View.GONE);
-                linearLayoutSwipeProfileCard.setVisibility(View.VISIBLE);
-                bottomLay.setVisibility(View.VISIBLE);
-                nullLay.setVisibility(View.GONE);
-            } else {
-                nullLay.setVisibility(View.VISIBLE);
-            }
-        }
-
-    }) {
-
-        @Override
-        public Map<String, String> getHeaders() throws AuthFailureError {
-            Map<String, String> map = new HashMap<String, String>();
-            map.put(Constants.TAG_AUTHORIZATION, pref.getString(Constants.TAG_AUTHORIZATION, ""));
-            return map;
-        }
-
-        @Override
-        protected Map<String, String> getParams() {
-            Map<String, String> params = new HashMap<String, String>();
-//            params.put(Constants.TAG_USERID, GetSet.getUserId());
-            params.put(Constants.TAG_USERID, "87c7a170-1d47-11e9-95a3-8b2fc6cd19c1");
-            params.put(Constants.TAG_OFFSET, "0");
-            params.put(Constants.TAG_LIMIT, "20");
-            params.put(Constants.TAG_TIMESTAMP, String.valueOf(System.currentTimeMillis() / 1000L));
-            Log.v(TAG, "getPeopleParams=" + params);
-            return params;
-        }
-    };
+//    StringRequest getPeople = new StringRequest(Request.Method.POST, Constants.API_GET_PEOPLE,
+//            new Response.Listener<String>() {
+//                @Override
+//                public void onResponse(String res) {
+//                    Log.v(TAG, "getPeopleRes: " + res);
+//                    try {
+//                        JSONObject response = new JSONObject(res);
+//                        loadmore = true;
+//                        if (DefensiveClass.optString(response, Constants.TAG_STATUS).equalsIgnoreCase("true")) {
+//                            JSONArray peoples = response.optJSONArray(Constants.TAG_PEOPLES);
+//                            peoplesAry.clear();
+//                            for (int i = 0; i < peoples.length(); i++) {
+//                                JSONObject values = peoples.optJSONObject(i);
+//                                HashMap<String, String> map = new HashMap<String, String>();
+//                                map.put(Constants.TAG_USERID, DefensiveClass.optInt(values, Constants.TAG_USERID));
+//                                map.put(Constants.TAG_USERNAME, DefensiveClass.optString(values, Constants.TAG_USERNAME));
+//                                map.put(Constants.TAG_SEND_MATCH, DefensiveClass.optString(values, Constants.TAG_SEND_MATCH));
+//                                map.put(Constants.TAG_AGE, DefensiveClass.optString(values, Constants.TAG_AGE));
+//                                map.put(Constants.TAG_BIO, DefensiveClass.optString(values, Constants.TAG_BIO));
+//                                map.put(Constants.TAG_LAT, DefensiveClass.optString(values, Constants.TAG_LAT));
+//                                map.put(Constants.TAG_LON, DefensiveClass.optString(values, Constants.TAG_LON));
+//                                map.put(Constants.TAG_USERIMAGE, DefensiveClass.optString(values, Constants.TAG_USERIMAGE));
+//                                map.put(Constants.TAG_ONLINE, DefensiveClass.optInt(values, Constants.TAG_ONLINE));
+//                                map.put(Constants.TAG_SHOW_AGE, DefensiveClass.optString(values, Constants.TAG_SHOW_AGE));
+//                                map.put(Constants.TAG_SHOW_LOCATION, DefensiveClass.optString(values, Constants.TAG_SHOW_LOCATION));
+//                                map.put(Constants.TAG_LOCATION, DefensiveClass.optString(values, Constants.TAG_LOCATION));
+//                                peoplesAry.add(map);
+//                            }
+//
+//                            Log.v(TAG, "peoplesAry" + peoplesAry);
+//
+//                        } else if (DefensiveClass.optString(response, Constants.TAG_STATUS).equalsIgnoreCase("error")) {
+//                            CommonFunctions.disabledialog(getActivity(), "Error", response.getString("message"));
+//                        } else if (DefensiveClass.optString(response, Constants.TAG_STATUS).equalsIgnoreCase("false") &&
+//                                (DefensiveClass.optString(response, Constants.TAG_MESSAGE).equalsIgnoreCase("There's no one new around you"))) {
+//                            peoplesAry.clear();
+//                        }
+//                        if (peopleAdapter != null) {
+//                            peopleAdapter.refreshAdapter(peoplesAry);
+//                        } else {
+//                            peopleAdapter = new PeopleAdapter(getActivity(), peoplesAry);
+//                            flingContainer.setAdapter(peopleAdapter);
+//                            peopleAdapter.notifyDataSetChanged();
+//                        }
+//
+//                        if (peoplesAry.size() > 0) {
+//                            rippleBackground.stopRippleAnimation();
+//                            rippleBackground.setVisibility(View.GONE);
+//                            linearLayoutSwipeProfileCard.setVisibility(View.VISIBLE);
+//                            bottomLay.setVisibility(View.VISIBLE);
+//                            nullLay.setVisibility(View.GONE);
+//                        } else {
+//                            nullLay.setVisibility(View.VISIBLE);
+//                        }
+//
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    } catch (NullPointerException e) {
+//                        e.printStackTrace();
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }, new Response.ErrorListener() {
+//
+//        @Override
+//        public void onErrorResponse(VolleyError error) {
+//            VolleyLog.d(TAG, "Error: " + error.getMessage());
+//            VolleyLog.d(TAG, "jigar the error is in the home fragment method call : " + error.getMessage());
+//            Log.d(TAG, "jigar the error is in the home fragment method call : " + error.getMessage());
+//
+//
+//            linearLayoutSwipeProfileCard.setVisibility(View.GONE);
+//            rippleBackground.setVisibility(View.VISIBLE);
+//            rippleBackground.startRippleAnimation();
+//            if (peoplesAry.size() > 0) {
+//                rippleBackground.stopRippleAnimation();
+//                rippleBackground.setVisibility(View.GONE);
+//                linearLayoutSwipeProfileCard.setVisibility(View.VISIBLE);
+//                bottomLay.setVisibility(View.VISIBLE);
+//                nullLay.setVisibility(View.GONE);
+//            } else {
+//                nullLay.setVisibility(View.VISIBLE);
+//            }
+//        }
+//
+//    }) {
+//
+//        @Override
+//        public Map<String, String> getHeaders() throws AuthFailureError {
+//            Map<String, String> map = new HashMap<String, String>();
+//            map.put(Constants.TAG_AUTHORIZATION, pref.getString(Constants.TAG_AUTHORIZATION, ""));
+//            return map;
+//        }
+//
+//        @Override
+//        protected Map<String, String> getParams() {
+//            Map<String, String> params = new HashMap<String, String>();
+////            params.put(Constants.TAG_USERID, GetSet.getUserId());
+//            params.put(Constants.TAG_USERID, "87c7a170-1d47-11e9-95a3-8b2fc6cd19c1");
+//            params.put(Constants.TAG_OFFSET, "0");
+//            params.put(Constants.TAG_LIMIT, "20");
+//            params.put(Constants.TAG_TIMESTAMP, String.valueOf(System.currentTimeMillis() / 1000L));
+//            Log.v(TAG, "getPeopleParams=" + params);
+//            return params;
+//        }
+//    };
 
 
     public void match(final String followId) {
@@ -1033,7 +1296,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener
                                     String StrMessage = json.getString(Constants.TAG_MSG);
                                     Toast.makeText(getActivity(), StrMessage, Toast.LENGTH_LONG).show();
                                     tags.setVisibility(View.GONE);
-                                    close.performClick();
+                                    //close.performClick();
                                     CommonFunctions.hideProgressDialog(getActivity());
                                 }
                             } catch (JSONException e) {
@@ -1184,7 +1447,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener
                                     String StrMessage = json.getString(Constants.TAG_MSG);
                                     Toast.makeText(getActivity(), StrMessage, Toast.LENGTH_LONG).show();
                                     tags.setVisibility(View.GONE);
-                                    close.performClick();
+                                    //close.performClick();
                                     CommonFunctions.hideProgressDialog(getActivity());
                                 }
                             } catch (JSONException e) {
@@ -1290,7 +1553,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener
 
             });
 
-            close.performClick();
+           // close.performClick();
             tags.setVisibility(View.VISIBLE);
             tags.startAnimation(slideUp);
             slideUp.setAnimationListener(new Animation.AnimationListener() {
@@ -1323,6 +1586,82 @@ public class HomeFragment extends Fragment implements View.OnClickListener
         {
             System.out.println("jigar the error in json comment response is "+ex);
         }
+    }
+
+    public void addNewComment(String strCommentText,String strFriendID) {
+        if (CommonFunctions.isNetwork(Objects.requireNonNull(getActivity()))) {
+
+            CommonFunctions.showProgressDialog(getActivity());
+//            String strFriendId = peoplesAry.get(0).get(Constants.TAG_REGISTERED_ID);
+
+            StringRequest getProfileList = new StringRequest(Request.Method.POST, Constants.API_ADD_COMMENT,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String res) {
+                            Log.d(TAG, "jigar the add comment response we have is " + res);
+                            try {
+                                JSONObject json = new JSONObject(res);
+                                String strStatus = json.getString(Constants.TAG_STATUS);
+                                if (strStatus.equals("1")) {
+                                    setFindPeoplePageData(res);
+                                    CommonFunctions.hideProgressDialog(getActivity());
+                                } else {
+                                    String StrMessage = json.getString(Constants.TAG_MSG);
+                                    Toast.makeText(getActivity(), StrMessage, Toast.LENGTH_LONG).show();
+                                    tags.setVisibility(View.GONE);
+                                    //close.performClick();
+                                    CommonFunctions.hideProgressDialog(getActivity());
+                                }
+                            } catch (JSONException e) {
+                                System.out.println("jigar the error in commenting json is " + e);
+                                e.printStackTrace();
+                            } catch (NullPointerException e) {
+                                System.out.println("jigar the error in commenting null is " + e);
+
+                                e.printStackTrace();
+                            } catch (Exception e) {
+                                System.out.println("jigar the error main commenting exception in json is " + e);
+
+                                e.printStackTrace();
+                            }
+                        }
+                    }, new Response.ErrorListener() {
+
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    VolleyLog.d(TAG, "comment Params Error: " + error.getMessage());
+                    CommonFunctions.hideProgressDialog(getActivity());
+                    System.out.println("jigar the error volley in json is " + error.getMessage());
+
+                }
+            }) {
+
+                //            @Override
+//            public Map<String, String> getHeaders() throws AuthFailureError {
+//                Map<String, String> map = new HashMap<String, String>();
+//                map.put(Constants.TAG_AUTHORIZATION, pref.getString(Constants.TAG_AUTHORIZATION, ""));
+//                return map;
+//            }
+
+                @Override
+                protected Map<String, String> getParams() {
+                    Map<String, String> params = new HashMap<String, String>();
+//                params.put(Constants.TAG_FRIEND_ID, strFriendId);
+                    params.put(Constants.TAG_REGISTERED_ID, GetSet.getUserId());
+                    params.put(Constants.TAG_FRIEND_ID, strFriendID);
+                    params.put(Constants.TAG_COMMENT, strCommentText);
+                    Log.v(TAG, "jigar the comment parameter are =" + params);
+                    return params;
+                }
+            };
+
+            HowzuApplication.getInstance().addToRequestQueue(getProfileList, "");
+
+        }else {
+            Toast.makeText(getActivity(), getString(R.string.network_error), Toast.LENGTH_SHORT).show();
+        }
+        CommonFunctions.hideProgressDialog(getActivity());
+
     }
 
     public void setFindPeoplePageData(String strResponse)
@@ -1359,33 +1698,13 @@ public class HomeFragment extends Fragment implements View.OnClickListener
                     JSONArray  jsonArrayCommentList = jsonObjectMemberMainInfo.getJSONArray(Constants.TAG_COMMENT);
                     System.out.println("jigar the member size comment list name is "+jsonArrayCommentList.length());
                     System.out.println("jigar the member comment list name is "+jsonArrayCommentList.toString());
-//
-//                    }
 
-//                    if(jsonArrayCommentList!=null)
-//                    {
-//
-//                    }
                     if(jsonArrayCommentList.length()>0)
                     {
+                        String strTempComment="";
+
                         for(int j=0;j<jsonArrayCommentList.length();j++)
                         {
-//                            JSONObject jsonObject = new JSONObject(strResponse);
-//
-//                            String strStatus = jsonObject.getString(Constants.TAG_STATUS);
-//                            String strMessage = jsonObject.getString(Constants.TAG_MSG);
-//                            System.out.println("jigar the commenter response is " + strResponse);
-//
-//                            if (strStatus.equals("1") && strMessage.equals(Constants.TAG_SUCCESS)) {
-//
-//
-//                                JSONArray jsonArrayProfileInfo = jsonObject.getJSONArray(Constants.TAG_INFO);
-//                                //     JSONObject jsonObjectMember=jsonObjectInfo.getJSONObject(Constants.TAG_MEMBER);
-//
-//
-//                                arrayListComments.clear();
-//                                for (int i = 0; i < jsonArrayProfileInfo.length(); i++) {
-//                                    HashMap<String, String> map = new HashMap<String, String>();
 
                                     JSONObject jsonObjectCommentMainInfo = jsonArrayCommentList.getJSONObject(j);
 
@@ -1393,21 +1712,33 @@ public class HomeFragment extends Fragment implements View.OnClickListener
                                     String strCommentID = jsonObjectCommentMainInfo.getString(Constants.TAG_COMMENT_ID);
                                     String strCommentUserImage = jsonObjectCommentMainInfo.getString(Constants.TAG_COMMENT_USER_IMAGE);
                                     String strUserComment = jsonObjectCommentMainInfo.getString(Constants.TAG_COMMENT);
-                                    arrayListComments.add(new Item(i, strUserComment));
+                                    //arrayListComments.add(new Item(i, strUserComment));
                                     System.out.println("jigar the commenter name is " + strCommentUserName);
 
-                                    //       peoplesAry.add(map);
+                                    if(strTempComment.equals(""))
+                                    {
+                                        strTempComment=strUserComment;
+                                    }else
+                                    {
+                                        strTempComment=strTempComment+","+strUserComment;
+                                    }
+//                                           peoplesAry.add(map);
          //                       }
-                                System.out.println("jigar the commenter list have is " + arrayListComments.toString());
-                                System.out.println("jigar the commenter list size is " + arrayListComments.size());
+//                                System.out.println("jigar the commenter list have is " + arrayListComments.toString());
+//                                System.out.println("jigar the commenter list size is " + arrayListComments.size());
            //                 }
-
-                        //    setUserCommentsData(jsonArrayCommentList.toString());
+                            //setUserCommentsData(jsonArrayCommentList.toString());
                         }
-                        map.put(Constants.TAG_COMMENT, Arrays.toString(arrayListComments.toArray()));
+                        System.out.println("jigar the commenter new str temp  list is " + strTempComment);
+                        //
+                     //   map.put(Constants.TAG_COMMENT, Arrays.toString(arrayListComments.toArray()));
+                        map.put(Constants.TAG_COMMENT_TEST, strTempComment);
+
+                        //       map.put(Constants.TAG_COMMENT, strTempComment);
+
                     }
 
-                    System.out.println("jigar the member name is "+strMemberName);
+                    System.out.println("jigar the comment map array have is "+map.get(Constants.TAG_COMMENT));
 
                     map.put(Constants.TAG_REGISTERED_ID, strMemberRegisterID);
                     map.put(Constants.TAG_ID, strFriendIDLikeToken);
@@ -1438,7 +1769,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener
                 rippleBackground.stopRippleAnimation();
                 rippleBackground.setVisibility(View.GONE);
                 linearLayoutSwipeProfileCard.setVisibility(View.VISIBLE);
-                bottomLay.setVisibility(View.VISIBLE);
+                //bottomLay.setVisibility(View.VISIBLE);
                 nullLay.setVisibility(View.VISIBLE);
             } else {
                 nullLay.setVisibility(View.VISIBLE);

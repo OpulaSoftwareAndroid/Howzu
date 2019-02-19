@@ -115,6 +115,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
                     public void onResponse(String res) {
                         try {
                             Log.v(TAG, "getProfileRes=" + res);
+
                             JSONObject json = new JSONObject(res);
                             String response = DefensiveClass.optString(json, Constants.TAG_STATUS);
                             if (response.equalsIgnoreCase("true")) {

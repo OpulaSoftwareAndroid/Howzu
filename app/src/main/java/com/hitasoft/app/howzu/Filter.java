@@ -3,9 +3,14 @@ package com.hitasoft.app.howzu;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.location.Address;
 import android.location.Geocoder;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Display;
@@ -51,6 +56,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Created by hitasoft on 8/6/15.
@@ -61,9 +67,9 @@ public class Filter extends AppCompatActivity implements View.OnClickListener, N
     LinearLayout ageLay, main, locationLay, ageSeekLay, distanceSeekLay;
     TextView ageTxt, nullText, title, save, distance;
     RangeSeekBar<Integer> seekBar;
-    SeekBar distanceBar;
+    SeekBar seekBarDistance;
     ProgressWheel progress;
-    ImageView backbtn, guyBg, guy, girlBg, girl;
+    ImageView backbtn, imageViewBoy, imageViewBoy1, imageViewGirl, girl;
     Display display;
     ExpandableHeightGridView peopleGrid;
     AutoCompleteTextView location;
@@ -78,6 +84,7 @@ public class Filter extends AppCompatActivity implements View.OnClickListener, N
     SharedPreferences.Editor editor;
     ArrayList<HashMap<String, String>> peopleFor = new ArrayList<HashMap<String, String>>();
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,14 +97,38 @@ public class Filter extends AppCompatActivity implements View.OnClickListener, N
         title = findViewById(R.id.title);
         save = findViewById(R.id.save);
         backbtn = findViewById(R.id.backbtn);
-        guyBg = findViewById(R.id.guy_bg);
-        guy = findViewById(R.id.guy);
-        girlBg = findViewById(R.id.girl_bg);
+        imageViewBoy = findViewById(R.id.imageViewBoy);
+        imageViewBoy1 = findViewById(R.id.imageViewBoy1);
+        imageViewGirl = findViewById(R.id.imageViewGirl);
         girl = findViewById(R.id.girl);
         peopleGrid = findViewById(R.id.people_grid);
         location = findViewById(R.id.location);
         locationLay = findViewById(R.id.locationLay);
-        distanceBar = findViewById(R.id.distance_bar);
+    //    distanceBar = findViewById(R.id.distance_bar);
+        seekBarDistance=findViewById(R.id.seekBar2);
+//        seekBar.getProgressDrawable().setColorFilter(new PorterDuffColorFilter(getColor(R.color.colorPrimary), PorterDuff.Mode.MULTIPLY));
+
+        seekBarDistance.getProgressDrawable().setColorFilter(getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
+        seekBarDistance.getThumb().setColorFilter(getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
+        seekBarDistance.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                selectedDistance=String.valueOf(i);
+                Log.d(TAG,"jigar the seekbar distance we have is "+selectedDistance);
+                distance.setText(i+" k.m");
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                //selectedDistance=String.valueOf(seekBar.getMax());
+
+            }
+        });
         distance = findViewById(R.id.distance);
         ageSeekLay = findViewById(R.id.ageSeekLay);
         distanceSeekLay = findViewById(R.id.distanceSeekLay);
@@ -107,8 +138,8 @@ public class Filter extends AppCompatActivity implements View.OnClickListener, N
         peopleGrid.setExpanded(true);
 
         backbtn.setOnClickListener(this);
-        guyBg.setOnClickListener(this);
-        girlBg.setOnClickListener(this);
+        imageViewBoy.setOnClickListener(this);
+        imageViewGirl.setOnClickListener(this);
         locationLay.setOnClickListener(this);
         save.setOnClickListener(this);
         location.setOnClickListener(this);
@@ -131,7 +162,25 @@ public class Filter extends AppCompatActivity implements View.OnClickListener, N
             location.setKeyListener(null);
         }
 
+//        imageViewBoy1.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                imageViewGirl.setSelected(false);
+//                imageViewBoy1.setSelected(true);
+//
+//            }
+//        });
+//        imageViewGirl.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                imageViewBoy1.setSelected(false);
+//                imageViewGirl.setSelected(true);
+//
+//            }
+//        });
 
+
+        setPoeplefor();
         setAgeRange();
         setDistanceRange();
 
@@ -180,21 +229,23 @@ public class Filter extends AppCompatActivity implements View.OnClickListener, N
     }
 
     private void setDistanceRange() {
-        seekBar = new RangeSeekBar<Integer>(18, 100, Filter.this);
-        seekBar.setSelectedMinValue(18);
-        seekBar.setSelectedMaxValue(100);
-        //seekBar.setDefaultColor(getResources().getColor(R.color.colorPrimary));
-        seekBar.setNotifyWhileDragging(true);
-        seekBar.setOnRangeSeekBarChangeListener(new RangeSeekBar.OnRangeSeekBarChangeListener<Integer>() {
-            @Override
-            public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Integer minValue, Integer maxValue) {
-                // handle changed range values
-                Log.i(TAG, "User selected new distance values: MIN=" + minValue + ", MAX=" + maxValue);
-                distance.setText(minValue + " - " + maxValue + "Km.");
-            }
-        });
-
-        distanceSeekLay.addView(seekBar);
+//        seekBar = new RangeSeekBar<Integer>(18, 100, Filter.this);
+////        seekBar.setSelectedMinValue(18);
+//        seekBar.setSelectedMaxValue(100);
+//        //seekBar.setDefaultColor(getResources().getColor(R.color.colorPrimary));
+//        seekBar.setNotifyWhileDragging(true);
+//        seekBar.setOnRangeSeekBarChangeListener(new RangeSeekBar.OnRangeSeekBarChangeListener<Integer>() {
+//            @Override
+//            public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Integer minValue, Integer maxValue) {
+//                // handle changed range values
+//                Log.i(TAG, "User selected new distance values: MIN=" + minValue + ", MAX=" + maxValue);
+////                distance.setText(minValue + " - " + maxValue + "Km.");
+//                distance.setText( maxValue + "Km.");
+////                selectedDistance=String.valueOf(maxValue);
+//            }
+//        });
+//
+//        distanceSeekLay.addView(seekBar);
     }
 
     public class PeopleAdapter extends ListAsGridBaseAdapter {
@@ -249,7 +300,9 @@ public class Filter extends AppCompatActivity implements View.OnClickListener, N
                 } else {
                     holder.detail_lay.setVisibility(View.VISIBLE);
                     holder.name.setText(map.get(Constants.TAG_NAME));
-                    Picasso.with(mContext).load(map.get(Constants.TAG_ICON)).into(holder.icon);
+                    Picasso.with(mContext)
+                            .load(map.get(Constants.TAG_IMG))
+                            .into(holder.icon);
 
                     if (peopleForId.equals("")) {
                         holder.icon_bg.setSelected(false);
@@ -289,6 +342,95 @@ public class Filter extends AppCompatActivity implements View.OnClickListener, N
      * API Implementation
      */
 
+    private void setPoeplefor()
+    {
+
+        if (CommonFunctions.isNetwork(Objects.requireNonNull(this))) {
+
+            CommonFunctions.showProgressDialog2(this);
+
+            StringRequest req = new StringRequest(Request.Method.POST, Constants.API_PEOPLE_INTEREST_FOR,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String res) {
+                            try {
+                                Log.v(TAG, "getSettingsRes=" + res);
+                                JSONObject response = new JSONObject(res);
+                                String strStatus = response.getString(Constants.TAG_STATUS);
+
+                                String strMessage = response.getString(Constants.TAG_MSG);
+                                JSONArray jsonArrayInfo = response.getJSONArray(Constants.TAG_INFO);
+
+                                if (strStatus.equals("1")) {
+//                                JSONObject result = response.optJSONObject(Constants.TAG_RESULT);
+//                                JSONArray people_for = result.getJSONArray(Constants.TAG_PEOPLEFOR);
+//                                JSONObject result = response.optJSONObject(Constants.TAG_);
+//                                JSONArray people_for = result.getJSONArray(Constants.TAG_PEOPLEFOR);
+
+                                    for (int i = 0; i < jsonArrayInfo.length(); i++) {
+                                        JSONObject temp = jsonArrayInfo.getJSONObject(i);
+                                        HashMap<String, String> map = new HashMap<String, String>();
+                                        map.put(Constants.TAG_ID, DefensiveClass.optString(temp, Constants.TAG_ID));
+                                        map.put(Constants.TAG_NAME, DefensiveClass.optString(temp, Constants.TAG_NAME));
+                                        map.put(Constants.TAG_IMG, DefensiveClass.optString(temp, Constants.TAG_IMG));
+
+//                                    map.put(Constants.TAG_ICON, DefensiveClass.optString(temp, Constants.TAG_ICON));
+                                        peopleFor.add(map);
+                                    }
+
+                                    //      peopleAdapter = new SetDialogsActivity.PeopleAdapter(getApplicationContext(), peopleFor);
+                                    if (peopleFor.size() % 2 != 0) {
+                                        HashMap<String, String> map = new HashMap<String, String>();
+                                        peopleFor.add(map);
+                                    }
+
+                                    peopleAdapter = new PeopleAdapter(Filter.this, peopleFor);
+                                    peopleGrid.setAdapter(peopleAdapter);
+
+                                    //    recyclerView.setAdapter(peopleAdapter);
+                                    peopleAdapter.notifyDataSetChanged();
+                                    CommonFunctions.hideProgressDialog2(Filter.this);
+
+//                                peopleProgress.setVisibility(View.GONE);
+//                                peopleProgress.stopSpinning();
+                                } else if (DefensiveClass.optString(response, Constants.TAG_STATUS).equalsIgnoreCase("error")) {
+                                    CommonFunctions.disabledialog(getApplicationContext(), "Error", response.getString("message"));
+                                } else {
+//                                peopleProgress.setVisibility(View.GONE);
+//                                peopleProgress.stopSpinning();
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            } catch (NullPointerException e) {
+                                e.printStackTrace();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }, new Response.ErrorListener() {
+
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    VolleyLog.d(TAG, "Error: " + error.getMessage());
+                }
+
+
+            }) {
+
+                @Override
+                protected Map<String, String> getParams() {
+                    Map<String, String> map = new HashMap<String, String>();
+                    Log.v(TAG, "getSettingsParams=" + map);
+                    return map;
+                }
+            };
+            HowzuApplication.getInstance().addToRequestQueue(req, TAG);
+
+        }else
+        {
+            CommonFunctions.hideProgressDialog2(this);
+        }
+    }
     private void getSettings() {
         main.setVisibility(View.INVISIBLE);
         progress.setVisibility(View.VISIBLE);
@@ -335,8 +477,8 @@ public class Filter extends AppCompatActivity implements View.OnClickListener, N
 
                                 setAgeRange();
                                 setDistanceRange();
-                                distanceBar.setMax(maxDistance);
 
+                                seekBarDistance.setMax(maxDistance);
                                 ageSeekLay.addView(seekBar);
 
                             } else if (DefensiveClass.optString(response, Constants.TAG_STATUS).equalsIgnoreCase("error")) {
@@ -406,25 +548,25 @@ public class Filter extends AppCompatActivity implements View.OnClickListener, N
                                     String age = DefensiveClass.optString(temp, Constants.TAG_AGE);
 
                                     if (DefensiveClass.optString(temp, Constants.TAG_GENDER).equals("both")) {
-                                        girlBg.setSelected(true);
+                                        imageViewGirl.setSelected(true);
                                         girl.setSelected(true);
-                                        guyBg.setSelected(true);
-                                        guy.setSelected(true);
+                                        imageViewBoy.setSelected(true);
+                                        imageViewBoy1.setSelected(true);
                                     } else if (DefensiveClass.optString(temp, Constants.TAG_GENDER).equals("men")) {
-                                        girlBg.setSelected(false);
+                                        imageViewGirl.setSelected(false);
                                         girl.setSelected(false);
-                                        guyBg.setSelected(true);
-                                        guy.setSelected(true);
+                                        imageViewBoy.setSelected(true);
+                                        imageViewBoy1.setSelected(true);
                                     } else if (DefensiveClass.optString(temp, Constants.TAG_GENDER).equals("women")) {
-                                        girlBg.setSelected(true);
+                                        imageViewGirl.setSelected(true);
                                         girl.setSelected(true);
-                                        guyBg.setSelected(false);
-                                        guy.setSelected(false);
+                                        imageViewBoy.setSelected(false);
+                                        imageViewBoy1.setSelected(false);
                                     } else {
-                                        girlBg.setSelected(false);
+                                        imageViewGirl.setSelected(false);
                                         girl.setSelected(false);
-                                        guyBg.setSelected(false);
-                                        guy.setSelected(false);
+                                        imageViewBoy.setSelected(false);
+                                        imageViewBoy1.setSelected(false);
                                     }
 
                                     peopleForId = DefensiveClass.optString(temp, Constants.TAG_PEOPLE_FOR);
@@ -442,10 +584,12 @@ public class Filter extends AppCompatActivity implements View.OnClickListener, N
                                             seekBar.setSelectedMinValue(Integer.parseInt(ages[0]));
                                             seekBar.setSelectedMaxValue(selectedMaxAge);
                                             ageTxt.setText(ages[0] + " - " + selectedMaxAge);
+
                                         } else {
                                             ageTxt.setText("18 - " + maxAge);
                                         }
-                                        distanceBar.setProgress(Integer.parseInt(DefensiveClass.optString(temp, Constants.TAG_DISTANCE)));
+//                                        distanceBar.setProgress(maxAge);
+
                                     } catch (NumberFormatException e) {
                                         e.printStackTrace();
                                     }
@@ -496,66 +640,84 @@ public class Filter extends AppCompatActivity implements View.OnClickListener, N
     }
 
     private void setFilter() {
-        StringRequest req = new StringRequest(Request.Method.POST, Constants.API_SET_FILTER,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String res) {
-                        save.setOnClickListener(Filter.this);
-                        try {
-                            Log.v(TAG, "setFilterRes=" + res);
-                            JSONObject json = new JSONObject(res);
-                            if (DefensiveClass.optString(json, Constants.TAG_STATUS).equalsIgnoreCase("true")) {
-                                GetSet.setLocation(location.getText().toString());
-                                finish();
-                                MainScreenActivity.resumeHome = true;
-                                Intent i = new Intent(Filter.this, MainScreenActivity.class);
-                                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                startActivity(i);
-                            } else if (DefensiveClass.optString(json, Constants.TAG_STATUS).equalsIgnoreCase("error")) {
-                                CommonFunctions.disabledialog(Filter.this, "Error", json.getString("message"));
+        if (CommonFunctions.isNetwork(Objects.requireNonNull(this))) {
+
+            CommonFunctions.showProgressDialog2(this);
+
+            StringRequest req = new StringRequest(Request.Method.POST, Constants.API_SET_FILTER,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String res) {
+                            save.setOnClickListener(Filter.this);
+                            try {
+                                Log.v(TAG, "jigar the set Filter Response we  have " + res);
+                                JSONObject json = new JSONObject(res);
+                                if (DefensiveClass.optString(json, Constants.TAG_STATUS).equalsIgnoreCase("true")) {
+                                    GetSet.setLocation(location.getText().toString());
+                                    finish();
+                                    MainScreenActivity.resumeHome = true;
+                                    CommonFunctions.hideProgressDialog2(Filter.this);
+
+                                    Intent i = new Intent(Filter.this, MainScreenActivity.class);
+                                    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                            | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    startActivity(i);
+                                } else if (DefensiveClass.optString(json, Constants.TAG_STATUS).equalsIgnoreCase("error")) {
+                                    CommonFunctions.disabledialog(Filter.this, "Error", json.getString("message"));
+                                }
+                            } catch (JSONException e) {
+                                CommonFunctions.hideProgressDialog2(Filter.this);
+
+                                e.printStackTrace();
+                            } catch (NullPointerException e) {
+                                CommonFunctions.hideProgressDialog2(Filter.this);
+
+                                e.printStackTrace();
+                            } catch (Exception e) {
+                                CommonFunctions.hideProgressDialog2(Filter.this);
+
+                                e.printStackTrace();
                             }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        } catch (NullPointerException e) {
-                            e.printStackTrace();
-                        } catch (Exception e) {
-                            e.printStackTrace();
                         }
-                    }
-                }, new Response.ErrorListener() {
+                    }, new Response.ErrorListener() {
 
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                VolleyLog.d(TAG, "Error: " + error.getMessage());
-                save.setOnClickListener(Filter.this);
-            }
+                @Override
+                public void onErrorResponse(VolleyError error) {
 
-        }) {
+                    VolleyLog.d(TAG, "jigar the volley error set Filter : " + error.getMessage());
+                    save.setOnClickListener(Filter.this);
+                }
 
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> map = new HashMap<String, String>();
-                map.put(Constants.TAG_AUTHORIZATION, pref.getString(Constants.TAG_AUTHORIZATION, ""));
-                return map;
-            }
+            }) {
 
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> map = new HashMap<String, String>();
-                map.put(Constants.TAG_USERID, GetSet.getUserId());
-                map.put(Constants.TAG_DISTANCE, selectedDistance);
-                map.put(Constants.TAG_AGE, selectedAge);
-                map.put(Constants.TAG_GENDER, selectedGender);
-                map.put(Constants.TAG_PEOPLE_FOR, peopleForId);
-                Log.v(TAG, "setFilterParams=" + map);
-                return map;
-            }
-        };
+//            @Override
+//            public Map<String, String> getHeaders() throws AuthFailureError {
+//                Map<String, String> map = new HashMap<String, String>();
+//                map.put(Constants.TAG_AUTHORIZATION, pref.getString(Constants.TAG_AUTHORIZATION, ""));
+//                return map;
+//            }
 
-        //HowzuApplication.getInstance().addToRequestQueue(req, TAG);
-        RequestQueue queue = HowzuApplication.getInstance().getRequestQueue();
-        queue.add(req);
-        queue.start();
+                @Override
+                protected Map<String, String> getParams() {
+                    Map<String, String> map = new HashMap<String, String>();
+                    map.put(Constants.TAG_USERID, GetSet.getUseridLikeToken());
+                    map.put(Constants.TAG_DISTANCE, selectedDistance);
+                    map.put(Constants.TAG_AGE, selectedAge);
+                    map.put(Constants.TAG_GENDER, selectedGender);
+                    map.put(Constants.TAG_PEOPLE_FOR, peopleForId);
+                    Log.v(TAG, "jigar the set filter params=" + map);
+                    return map;
+                }
+            };
+
+            //HowzuApplication.getInstance().addToRequestQueue(req, TAG);
+            RequestQueue queue = HowzuApplication.getInstance().getRequestQueue();
+            queue.add(req);
+            queue.start();
+        }else
+        {
+            CommonFunctions.hideProgressDialog2(Filter.this);
+        }
     }
 
     private void getLocationFromString(final String params) {
@@ -689,21 +851,24 @@ public class Filter extends AppCompatActivity implements View.OnClickListener, N
                 }
                 finish();
                 break;
-            case R.id.guy_bg:
-                if (guyBg.isSelected()) {
-                    guyBg.setSelected(false);
-                    guy.setSelected(false);
+            case R.id.imageViewBoy:
+                imageViewGirl.setSelected(false);
+
+                if (imageViewBoy.isSelected()) {
+                    imageViewBoy.setSelected(false);
+                    imageViewBoy1.setSelected(false);
                 } else {
-                    guyBg.setSelected(true);
-                    guy.setSelected(true);
+                    imageViewBoy.setSelected(true);
+                    imageViewBoy1.setSelected(true);
                 }
                 break;
-            case R.id.girl_bg:
-                if (girlBg.isSelected()) {
-                    girlBg.setSelected(false);
+            case R.id.imageViewGirl:
+                imageViewBoy.setSelected(false);
+                if (imageViewGirl.isSelected()) {
+                    imageViewGirl.setSelected(false);
                     girl.setSelected(false);
                 } else {
-                    girlBg.setSelected(true);
+                    imageViewGirl.setSelected(true);
                     girl.setSelected(true);
                 }
                 break;
@@ -721,12 +886,14 @@ public class Filter extends AppCompatActivity implements View.OnClickListener, N
                     getGeocodeLocation(location.getText().toString());
                 }
                 selectedAge = seekBar.getSelectedMinValue() + "-" + seekBar.getSelectedMaxValue();
-                selectedDistance = String.valueOf(distanceBar.getProgress());
-                if (girlBg.isSelected() && guyBg.isSelected()) {
+//                selectedDistance = selectedDistance
+
+          //      selectedDistance = String.valueOf(distanceBar.getProgress());
+                if (imageViewGirl.isSelected() && imageViewBoy.isSelected()) {
                     selectedGender = "both";
-                } else if (guyBg.isSelected()) {
+                } else if (imageViewBoy.isSelected()) {
                     selectedGender = "men";
-                } else if (girlBg.isSelected()) {
+                } else if (imageViewGirl.isSelected()) {
                     selectedGender = "women";
                 } else {
                     selectedGender = "";

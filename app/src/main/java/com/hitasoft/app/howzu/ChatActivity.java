@@ -141,6 +141,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                 public void run() {
                     try {
                         JSONObject data = (JSONObject) args[0];
+                        Log.d(TAG,"jigar the emittor have data on typing is "+data);
                         if (data.getString("sender_id").equals(userId)) {
                             if (data.getString("message").equals("type")) {
                                 if (typing.getVisibility() != View.VISIBLE) {
@@ -156,7 +157,10 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                             }
                         }
                     } catch (JSONException e) {
+                        Log.d(TAG,"jigar the emittor json error have is "+e);
+
                         e.printStackTrace();
+
                     }
                 }
             });
@@ -168,6 +172,8 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public void call(Object... args) {
             Log.v("onMessage", "onMessage=" + args[0]);
+            Log.d(TAG,"jigar the emittor on message have data is "+args[0]);
+
             String s = args[0].toString();
             JSONObject data = (JSONObject) args[0];
             try {
@@ -190,6 +196,8 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                     });
                 }
             } catch (JSONException e) {
+                Log.d(TAG,"jigar the error json have emittor on message have data is "+e);
+
                 e.printStackTrace();
             }
         }
@@ -275,7 +283,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         String img = Constants.RESIZE_URL + CommonFunctions.getImageName(userImage) + Constants.IMAGE_RES;
-        Picasso.with(ChatActivity.this).load(img)
+        Picasso.with(ChatActivity.this).load(userImage)
                 .placeholder(R.drawable.user_placeholder)
                 .error(R.drawable.user_placeholder)
                 .resize(Constants.IMG_WT_HT, Constants.IMG_WT_HT)
@@ -322,10 +330,16 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                 online.setSelected(true);
             }
         } catch (NumberFormatException e) {
+            Log.v(TAG, "jigar the number format exception in  Chat Params=" +e);
+
             e.printStackTrace();
         } catch (NullPointerException e) {
+            Log.v(TAG, "jigar the null pointer exception in  Chat Params=" +e);
+
             e.printStackTrace();
         } catch (Exception e) {
+            Log.v(TAG, "jigar the main exception in  Chat Params=" +e);
+
             e.printStackTrace();
         }
 
@@ -881,7 +895,9 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                     @Override
                     public void onResponse(String res) {
                         try {
-                            Log.v(TAG, "getChatRes=" + res);
+//                            Log.v(TAG, "getChatRes=" + res);
+                            Log.v(TAG, "jigar the get Chat response we have =" + res);
+
                             tempAry.clear();
                             tempAry.addAll(parsing(res));
                             Collections.reverse(tempAry);
@@ -937,25 +953,27 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
+                Log.v(TAG, "jigar the error in volley is in  Chat " + error);
+
             }
 
         }) {
 
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> map = new HashMap<String, String>();
-                map.put(Constants.TAG_AUTHORIZATION, pref.getString(Constants.TAG_AUTHORIZATION, ""));
-                return map;
-            }
+//            @Override
+//            public Map<String, String> getHeaders() throws AuthFailureError {
+//                Map<String, String> map = new HashMap<String, String>();
+//                map.put(Constants.TAG_AUTHORIZATION, pref.getString(Constants.TAG_AUTHORIZATION, ""));
+//                return map;
+//            }
 
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> map = new HashMap<String, String>();
-                map.put(Constants.TAG_USERID, GetSet.getUserId());
+                map.put(Constants.TAG_USERID, GetSet.getUseridLikeToken());
                 map.put(Constants.TAG_CHAT_ID, chatId);
                 map.put(Constants.TAG_OFFSET, Integer.toString(offset));
                 map.put(Constants.TAG_LIMIT, "20");
-                Log.v(TAG, "getChatParams=" + map);
+                Log.v(TAG, "jigar the get Chat Params=" + map);
                 return map;
             }
         };
@@ -968,7 +986,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String res) {
-                        Log.v(TAG, "sendChatRes" + res);
+                        Log.v(TAG, "jigar the send Chat message response " + res);
                         try {
                             JSONObject json = new JSONObject(res);
                             String response = DefensiveClass.optString(json, Constants.TAG_STATUS);
@@ -982,10 +1000,16 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                                 Toast.makeText(ChatActivity.this, json.getString("message"), Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
+                            Log.v(TAG, "jigar the json error in send Chat message response " + e);
+
                             e.printStackTrace();
                         } catch (NullPointerException e) {
+                            Log.v(TAG, "jigar the null pointer error in send Chat message response " + e);
+
                             e.printStackTrace();
                         } catch (Exception e) {
+                            Log.v(TAG, "jigar the main exception error in send Chat message response " + e);
+
                             e.printStackTrace();
                         }
                     }
@@ -994,22 +1018,23 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
+                Log.v(TAG, "jigar the main volley error in send Chat message response " + error.getMessage());
             }
 
         }) {
 
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> map = new HashMap<String, String>();
-                map.put(Constants.TAG_AUTHORIZATION, pref.getString(Constants.TAG_AUTHORIZATION, ""));
-                return map;
-            }
+//            @Override
+//            public Map<String, String> getHeaders() throws AuthFailureError {
+//                Map<String, String> map = new HashMap<String, String>();
+//                map.put(Constants.TAG_AUTHORIZATION, pref.getString(Constants.TAG_AUTHORIZATION, ""));
+//                return map;
+//            }
 
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> map = new HashMap<String, String>();
                 map.put(Constants.TAG_CHAT_ID, chatId);
-                map.put(Constants.TAG_SENDER_ID, GetSet.getUserId());
+                map.put(Constants.TAG_SENDER_ID, GetSet.getUseridLikeToken());
                 map.put(Constants.TAG_RECEIVER_ID, userId);
                 map.put(Constants.TAG_CHAT_TIME, String.valueOf(System.currentTimeMillis() / 1000L));
                 map.put(Constants.TAG_TYPE, type);
@@ -1020,7 +1045,9 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                     map.put(Constants.TAG_MESSAGE, "");
                     map.put(Constants.TAG_UPLOAD_IMAGE, params);
                 }
-                Log.v(TAG, "sendChatParams" + map);
+///                Log.v(TAG, "sendChatParams" + map);
+                Log.v(TAG, "jigar the main exception error in send Chat message response " + map);
+
                 return map;
             }
         };
@@ -1921,7 +1948,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
                     HashMap<String, String> hmap = new HashMap<String, String>();
                     hmap.put("message", editText.getText().toString().trim());
-                    hmap.put("sender", GetSet.getUserId());
+                    hmap.put("sender", GetSet.getUseridLikeToken());
                     hmap.put("date", String.valueOf(System.currentTimeMillis() / 1000L));
                     hmap.put("type", "text");
                     hmap.put("image", "");

@@ -249,6 +249,7 @@ public class Message extends Fragment implements AdapterView.OnItemClickListener
 
     }
 
+
     /*private void setUpItemTouchHelper() {
 
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
@@ -341,10 +342,7 @@ public class Message extends Fragment implements AdapterView.OnItemClickListener
         mItemTouchHelper.attachToRecyclerView(mRecyclerView);
     }*/
 
-    /**
-     * We're gonna setup another ItemDecorator that will draw the red background in the empty space while the items are animating to thier new positions
-     * after an item is removed.
-     */
+
     /*private void setUpAnimationDecoratorHelper() {
         mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
 
@@ -695,17 +693,19 @@ public class Message extends Fragment implements AdapterView.OnItemClickListener
 
         }) {
 
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> map = new HashMap<String, String>();
-                map.put(Constants.TAG_AUTHORIZATION, pref.getString(Constants.TAG_AUTHORIZATION, ""));
-                return map;
-            }
+//            @Override
+//            public Map<String, String> getHeaders() throws AuthFailureError {
+//                Map<String, String> map = new HashMap<String, String>();
+//                map.put(Constants.TAG_AUTHORIZATION, pref.getString(Constants.TAG_AUTHORIZATION, ""));
+//                return map;
+//            }
 
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> map = new HashMap<String, String>();
-                map.put(Constants.TAG_USERID, GetSet.getUserId());
+//                map.put(Constants.TAG_USERID, GetSet.getUserId());
+                map.put(Constants.TAG_USERID, GetSet.getUseridLikeToken());
+
                 map.put(Constants.TAG_FAVOURITE_USER_ID, userId);
                 Log.v(TAG, "favoriteParams=" + map);
                 return map;
@@ -796,17 +796,19 @@ public class Message extends Fragment implements AdapterView.OnItemClickListener
 
         }) {
 
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> map = new HashMap<String, String>();
-                map.put(Constants.TAG_AUTHORIZATION, pref.getString(Constants.TAG_AUTHORIZATION, ""));
-                return map;
-            }
+//            @Override
+//            public Map<String, String> getHeaders() throws AuthFailureError {
+//                Map<String, String> map = new HashMap<String, String>();
+//                map.put(Constants.TAG_AUTHORIZATION, pref.getString(Constants.TAG_AUTHORIZATION, ""));
+//                return map;
+//            }
 
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> map = new HashMap<String, String>();
-                map.put(Constants.TAG_USERID, GetSet.getUserId());
+ //               map.put(Constants.TAG_USERID, GetSet.getUserId());
+                map.put(Constants.TAG_USERID, GetSet.getUseridLikeToken());
+
                 map.put(Constants.TAG_STATUS, "1");
                 map.put(Constants.TAG_TIMESTAMP, String.valueOf(System.currentTimeMillis() / 1000L));
                 Log.v(TAG, "setOnlineStatusParams=" + map);
@@ -853,7 +855,7 @@ public class Message extends Fragment implements AdapterView.OnItemClickListener
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String res) {
-                        Log.d(TAG, "getChatRes=" + res);
+                        Log.d(TAG, "jigar the chat list response we have getChatRes=" + res);
                         try {
                             if (pulldown) {
                                 pulldown = false;
@@ -924,10 +926,16 @@ public class Message extends Fragment implements AdapterView.OnItemClickListener
                             messageAdapter.notifyDataSetChanged();
 
                         } catch (JSONException e) {
+                            Log.d(TAG, "jigar the error in json chat list response we have getChatRes=" + e);
+
                             e.printStackTrace();
                         } catch (NullPointerException e) {
+                            Log.d(TAG, "jigar the error in null pointer chat list we have " + e);
+
                             e.printStackTrace();
                         } catch (Exception e) {
+                            Log.d(TAG, "jigar the error main exception chat list we have " + e);
+
                             e.printStackTrace();
                         }
                     }
@@ -936,6 +944,8 @@ public class Message extends Fragment implements AdapterView.OnItemClickListener
             @Override
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
+                Log.d(TAG, "jigar the volley error chat list we have " + error.getMessage());
+
                 pulldown = false;
                 progress.stopSpinning();
                 progress.setVisibility(View.GONE);
@@ -955,17 +965,19 @@ public class Message extends Fragment implements AdapterView.OnItemClickListener
             }
         }) {
 
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> map = new HashMap<String, String>();
-                map.put(Constants.TAG_AUTHORIZATION, pref.getString(Constants.TAG_AUTHORIZATION, ""));
-                return map;
-            }
+//            @Override
+//            public Map<String, String> getHeaders() throws AuthFailureError {
+//                Map<String, String> map = new HashMap<String, String>();
+//                map.put(Constants.TAG_AUTHORIZATION, pref.getString(Constants.TAG_AUTHORIZATION, ""));
+//                return map;
+//            }
 
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
-                params.put(Constants.TAG_USERID, GetSet.getUserId());
+//                params.put(Constants.TAG_USERID, GetSet.getUserId());
+                params.put(Constants.TAG_USERID, GetSet.getUseridLikeToken());
+
                 params.put(Constants.TAG_TIMESTAMP, String.valueOf(System.currentTimeMillis() / 1000L));
                 if (from.equals("search")) {
                     params.put(Constants.TAG_SEARCH_KEY, "1");
@@ -977,6 +989,7 @@ public class Message extends Fragment implements AdapterView.OnItemClickListener
                     params.put(Constants.TAG_LIMIT, "20");
                 }
                 Log.v(TAG, "getChatParams=" + params);
+                Log.d(TAG, "jigar the chat list params have list " + params);
                 return params;
             }
         };

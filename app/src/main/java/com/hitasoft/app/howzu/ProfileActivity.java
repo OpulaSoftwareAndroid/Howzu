@@ -129,7 +129,7 @@ public class ProfileActivity extends AppCompatActivity implements NetworkReceive
         editor = pref.edit();
 
         getProfile();
-
+//        setProfile();
         backbtn.setOnClickListener(this);
         btnPremium.setOnClickListener(this);
         setting.setOnClickListener(this);
@@ -218,54 +218,61 @@ public class ProfileActivity extends AppCompatActivity implements NetworkReceive
 
     private void getProfile() {
         progress.setVisibility(View.VISIBLE);
-        StringRequest req = new StringRequest(Request.Method.POST, Constants.API_PROFILE,
+//        StringRequest req = new StringRequest(Request.Method.POST, Constants.API_PROFILE,
+                StringRequest req = new StringRequest(Request.Method.POST, Constants.API_GET_USER_DETAILS_BY_ID,
+
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String res) {
                         try {
-                            Log.v(TAG, "getProfileRes=" + res);
+                            Log.v(TAG, "jigar the user profile details we have =" + res);
                             JSONObject json = new JSONObject(res);
-                            String response = DefensiveClass.optString(json, Constants.TAG_STATUS);
-                            if (response.equalsIgnoreCase("true")) {
-                                JSONObject values = json.getJSONObject(Constants.TAG_RESULT);
-                                sendMatch = DefensiveClass.optString(values, Constants.TAG_SEND_MATCH);
+                            String strStatus = DefensiveClass.optString(json, Constants.TAG_STATUS);
+                            if (strStatus.equalsIgnoreCase("1")) {
+                                JSONObject values = json.getJSONObject(Constants.TAG_INFO);
+                         //       sendMatch = DefensiveClass.optString(values, Constants.TAG_SEND_MATCH);
 
                                 profileMap.put(Constants.TAG_USERID, DefensiveClass.optString(values, Constants.TAG_USERID));
-                                profileMap.put(Constants.TAG_USERNAME, DefensiveClass.optString(values, Constants.TAG_USERNAME));
+                                profileMap.put(Constants.TAG_NEW_USERNAME, DefensiveClass.optString(values, Constants.TAG_NEW_USERNAME));
                                 profileMap.put(Constants.TAG_GENDER, DefensiveClass.optString(values, Constants.TAG_GENDER));
                                 profileMap.put(Constants.TAG_AGE, DefensiveClass.optString(values, Constants.TAG_AGE));
                                 profileMap.put(Constants.TAG_BIO, DefensiveClass.optString(values, Constants.TAG_BIO));
-                                profileMap.put(Constants.TAG_LAT, DefensiveClass.optString(values, Constants.TAG_LAT));
-                                profileMap.put(Constants.TAG_LON, DefensiveClass.optString(values, Constants.TAG_LON));
+                                profileMap.put(Constants.TAG_LAT, DefensiveClass.optString(values, Constants.TAG_LATITUDE));
+                                profileMap.put(Constants.TAG_LON, DefensiveClass.optString(values, Constants.TAG_LONGITUDE));
                                 profileMap.put(Constants.TAG_ONLINE, DefensiveClass.optString(values, Constants.TAG_ONLINE));
                                 profileMap.put(Constants.TAG_LOCATION, DefensiveClass.optString(values, Constants.TAG_LOCATION));
-                                profileMap.put(Constants.TAG_INFO, DefensiveClass.optString(values, Constants.TAG_INFO));
+                        //        profileMap.put(Constants.TAG_INFO, DefensiveClass.optString(values, Constants.TAG_INFO));
                                 profileMap.put(Constants.TAG_INTEREST, DefensiveClass.optString(values, Constants.TAG_INTEREST));
-                                profileMap.put(Constants.TAG_USERIMAGE, DefensiveClass.optString(values, Constants.TAG_USERIMAGE));
-                                profileMap.put(Constants.TAG_IMAGES, DefensiveClass.optString(values, Constants.TAG_IMAGES));
-                                profileMap.put(Constants.TAG_SHOW_AGE, DefensiveClass.optString(values, Constants.TAG_SHOW_AGE));
-                                profileMap.put(Constants.TAG_SHOW_LOCATION, DefensiveClass.optString(values, Constants.TAG_SHOW_LOCATION));
-                                profileMap.put(Constants.TAG_INVISIBLE, DefensiveClass.optString(values, Constants.TAG_INVISIBLE));
-                                profileMap.put(Constants.TAG_REPORT, DefensiveClass.optString(values, Constants.TAG_REPORT));
-                                profileMap.put(Constants.TAG_PREMIUM_MEMBER, DefensiveClass.optString(values, Constants.TAG_PREMIUM_MEMBER));
-                                profileMap.put(Constants.TAG_MEMBERSHIP_VALID, DefensiveClass.optString(values, Constants.TAG_MEMBERSHIP_VALID));
-                                profileMap.put(Constants.TAG_SEND_MATCH, sendMatch);
+                                profileMap.put(Constants.TAG_IMAGE, DefensiveClass.optString(values, Constants.TAG_IMAGE));
+                     //           profileMap.put(Constants.TAG_IMAGES, DefensiveClass.optString(values, Constants.TAG_IMAGES));
+             //                   profileMap.put(Constants.TAG_SHOW_AGE, DefensiveClass.optString(values, Constants.TAG_SHOW_AGE));
+               //                 profileMap.put(Constants.TAG_SHOW_LOCATION, DefensiveClass.optString(values, Constants.TAG_SHOW_LOCATION));
+                 //               profileMap.put(Constants.TAG_INVISIBLE, DefensiveClass.optString(values, Constants.TAG_INVISIBLE));
+                   //             profileMap.put(Constants.TAG_REPORT, DefensiveClass.optString(values, Constants.TAG_REPORT));
+                     //           profileMap.put(Constants.TAG_PREMIUM_MEMBER, DefensiveClass.optString(values, Constants.TAG_PREMIUM_MEMBER));
+                       //         profileMap.put(Constants.TAG_MEMBERSHIP_VALID, DefensiveClass.optString(values, Constants.TAG_MEMBERSHIP_VALID));
+                        //        profileMap.put(Constants.TAG_SEND_MATCH, sendMatch);
                                 profileMap.put(Constants.TAG_PEOPLE_FOR, DefensiveClass.optString(values, Constants.TAG_PEOPLE_FOR));
+
+                                Log.v(TAG, "jigar the json profile mpa have  in user profile details we have =" + profileMap);
 
                                 progress.setVisibility(View.GONE);
                                 progress.stopSpinning();
                                 mainLay.setVisibility(View.VISIBLE);
-                                checkUser();
+                               // checkUser();
                                 setProfile();
 
-                            } else if (response.equalsIgnoreCase("error")) {
+                            } else if (strStatus.equalsIgnoreCase("0")) {
                                 CommonFunctions.disabledialog(ProfileActivity.this, "Error", json.getString("message"));
                             }
                         } catch (JSONException e) {
+                            Log.v(TAG, "jigar the json error  user profile details we have =" + e);
                             e.printStackTrace();
                         } catch (NullPointerException e) {
+                            Log.v(TAG, "jigar the null pointer user profile details we have =" + res);
                             e.printStackTrace();
                         } catch (Exception e) {
+                            Log.v(TAG, "jigar the exception user profile details we have =" + res);
                             e.printStackTrace();
                         }
                     }
@@ -273,132 +280,147 @@ public class ProfileActivity extends AppCompatActivity implements NetworkReceive
 
             @Override
             public void onErrorResponse(VolleyError error) {
-                VolleyLog.d(TAG, "Error: " + error.getMessage());
+//                VolleyLog.d(TAG, "Error: " + error.getMessage());
+        Log.v(TAG, "jigar the volley exception user profile details we have =" + error);
+                VolleyLog.d(TAG, "jigar the volley error in user profile details we have =" + error);
+                error.printStackTrace();
+
             }
 
         }) {
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> map = new HashMap<String, String>();
-                map.put(Constants.TAG_AUTHORIZATION, pref.getString(Constants.TAG_AUTHORIZATION, ""));
-                Log.i(TAG, "getHeaders: " + pref.getString(Constants.TAG_AUTHORIZATION, ""));
-                Log.i(TAG, "getHeaders: " + map);
-                return map;
-            }
+//
+//            @Override
+//            public Map<String, String> getHeaders() throws AuthFailureError {
+//                Map<String, String> map = new HashMap<String, String>();
+//                map.put(Constants.TAG_AUTHORIZATION, pref.getString(Constants.TAG_AUTHORIZATION, ""));
+//                Log.i(TAG, "getHeaders: " + pref.getString(Constants.TAG_AUTHORIZATION, ""));
+//                Log.i(TAG, "getHeaders: " + map);
+//                return map;
+//            }
 
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> map = new HashMap<String, String>();
-                if (GetSet.getUserId().equals(userId)) {
-                    map.put(Constants.TAG_USERID, GetSet.getUserId());
-                    map.put(Constants.TAG_FRIEND_ID, userId);
-                }
-                map.put(Constants.TAG_TIMESTAMP, String.valueOf(System.currentTimeMillis() / 1000L));
-                Log.v("params", "getProfileParams=" + map);
+          //      if (GetSet.getUserId().equals(userId)) {
+
+                    map.put(Constants.TAG_REGISTERED_ID, GetSet.getUserId());
+           //         map.put(Constants.TAG_FRIEND_ID, userId);
+            //    }
+//                map.put(Constants.TAG_TIMESTAMP, String.valueOf(System.currentTimeMillis() / 1000L));
+                Log.v(TAG, "jigar the user profile parameters " + map);
+
                 return map;
             }
 
         };
-
         HowzuApplication.getInstance().addToRequestQueue(req, TAG);
     }
 
     private void setProfile() {
-        peopleForId = profileMap.get(Constants.TAG_PEOPLE_FOR);
-        info.setVisibility(View.VISIBLE);
+        try {
+            peopleForId = profileMap.get(Constants.TAG_PEOPLE_FOR);
+            info.setVisibility(View.VISIBLE);
 
-        info.setText(profileMap.get(Constants.TAG_USERNAME) + ", " + profileMap.get(Constants.TAG_AGE));
+            info.setText(profileMap.get(Constants.TAG_NEW_USERNAME) + ", " + profileMap.get(Constants.TAG_AGE));
 
-        // Removed for testing
-        //        info.setVisibility(View.GONE);
-        txtName.setText(profileMap.get(Constants.TAG_USERNAME));
+//        info.setText(pref.getString(Constants.TAG_USERNAME,"")+ ", " + pref.getString(Constants.TAG_AGE,""));
+            // Removed for testing
+            //        info.setVisibility(View.GONE);
+            txtName.setText(profileMap.get(Constants.TAG_NEW_USERNAME));
+            //      txtName.setText(pref.getString(Constants.TAG_USERNAME,""));
 
-        if (profileMap.get(Constants.TAG_BIO).equals("")) {
-            bio.setVisibility(View.GONE);
-        } else {
-            bio.setText(Html.fromHtml(profileMap.get(Constants.TAG_BIO)));
-            bio.setVisibility(View.GONE);
-        }
-
-        if (profileMap.get(Constants.TAG_SHOW_LOCATION).equals("true") && !profileMap.get(Constants.TAG_USERID).equals(GetSet.getUserId())) {
-            location.setVisibility(View.GONE);
-        } else {
-            location.setText("Lives in " + profileMap.get(Constants.TAG_LOCATION));
-            txtLocation.setText("Lives in " + profileMap.get(Constants.TAG_LOCATION));
-            location.setVisibility(View.GONE);
-        }
-
-        if (!profileMap.get(Constants.TAG_INTEREST).equals("")) {
-            try {
-                JSONArray ints = new JSONArray(profileMap.get(Constants.TAG_INTEREST));
-                selectedList = new ArrayList<>();
-                for (int i = 0; i < ints.length(); i++) {
-                    selectedList.add(ints.optString(i, ""));
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            } catch (NullPointerException e) {
-                e.printStackTrace();
-            } catch (Exception e) {
-                e.printStackTrace();
+            if (profileMap.get(Constants.TAG_BIO).equals("")) {
+                bio.setVisibility(View.GONE);
+            } else {
+                bio.setText(Html.fromHtml(profileMap.get(Constants.TAG_BIO)));
+                bio.setVisibility(View.GONE);
             }
+            Log.d(TAG,"jigar the profile image url is "+profileMap.get(Constants.TAG_IMAGE));
+            Picasso.with(getApplicationContext())
+                    .load(profileMap.get(Constants.TAG_IMAGE))
+                    .placeholder(R.drawable.user_placeholder)
+                    .error(R.drawable.user_placeholder)
+                    .into(profilePic);
+
+//            if (profileMap.get(Constants.TAG_SHOW_LOCATION).equals("true") && !profileMap.get(Constants.TAG_USERID).equals(GetSet.getUserId())) {
+//                location.setVisibility(View.GONE);
+//            } else {
+//                location.setText("Lives in " + profileMap.get(Constants.TAG_LOCATION));
+//                txtLocation.setText("Lives in " + profileMap.get(Constants.TAG_LOCATION));
+//                location.setVisibility(View.GONE);
+//            }
+
+//            if (!profileMap.get(Constants.TAG_INTEREST).equals("")) {
+//                try {
+//                    JSONArray ints = new JSONArray(profileMap.get(Constants.TAG_INTEREST));
+//                    selectedList = new ArrayList<>();
+//                    for (int i = 0; i < ints.length(); i++) {
+//                        selectedList.add(ints.optString(i, ""));
+//                    }
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                } catch (NullPointerException e) {
+//                    e.printStackTrace();
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+
+//            interest.setText(selectedList.size() + " interest");
+//
+//            StringBuilder stringBuilder = new StringBuilder();
+//            for (int i = 0; i < selectedList.size(); i++) {
+//                stringBuilder.append(selectedList.get(i));
+//                stringBuilder.append(",");
+//            }
+//            if (stringBuilder.length() > 1)
+//                stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+//            txtInterests.setText("" + stringBuilder);
+//
+//            if (!profileMap.get(Constants.TAG_IMAGE).equals("")) {
+//                try {
+//                    JSONArray imgs = new JSONArray(profileMap.get(Constants.TAG_IMAGE));
+//                    for (int i = 0; i < imgs.length(); i++) {
+//                        imagesAry.add(imgs.optString(i, ""));
+//                    }
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                } catch (NullPointerException e) {
+//                    e.printStackTrace();
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//
+//            if (imagesAry.size() == 0) {
+//                imagesAry.add(profileMap.get(Constants.TAG_IMAGE));
+//            }
+//
+//
+//
+//            premiumLay.setVisibility(View.VISIBLE);
+//            if (profileMap.get(Constants.TAG_PREMIUM_MEMBER).equals("true") && profileMap.get(Constants.TAG_USERID).equals(GetSet.getUserId())) {
+//                btnPremium.setVisibility(View.GONE);
+//                premiumBanner.setVisibility(View.VISIBLE);
+//                membershipValid.setVisibility(View.VISIBLE);
+//                try {
+//                    if (!profileMap.get(Constants.TAG_MEMBERSHIP_VALID).equals(null) && !profileMap.get(Constants.TAG_MEMBERSHIP_VALID).equals("")) {
+//                        long date = Long.parseLong(profileMap.get(Constants.TAG_MEMBERSHIP_VALID)) * 1000;
+//                        membershipValid.setText(getString(R.string.your_premium_end_on) + " " + getDate(date));
+//                    }
+//                } catch (NumberFormatException e) {
+//                    e.printStackTrace();
+//                }
+//            } else {
+//                btnPremium.setVisibility(View.VISIBLE);
+//                premiumBanner.setVisibility(View.GONE);
+//                membershipValid.setVisibility(View.GONE);
+//            }
+        }catch (Exception ex)
+        {
+            Log.d(TAG,"jigar the error in setting profile is "+ex);
         }
 
-        interest.setText(selectedList.size() + " interest");
-
-        StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < selectedList.size(); i++) {
-            stringBuilder.append(selectedList.get(i));
-            stringBuilder.append(",");
-        }
-        if (stringBuilder.length() > 1)
-            stringBuilder.deleteCharAt(stringBuilder.length() - 1);
-        txtInterests.setText("" + stringBuilder);
-        if (!profileMap.get(Constants.TAG_IMAGES).equals("")) {
-            try {
-                JSONArray imgs = new JSONArray(profileMap.get(Constants.TAG_IMAGES));
-                for (int i = 0; i < imgs.length(); i++) {
-                    imagesAry.add(imgs.optString(i, ""));
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            } catch (NullPointerException e) {
-                e.printStackTrace();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        if (imagesAry.size() == 0) {
-            imagesAry.add(profileMap.get(Constants.TAG_USERIMAGE));
-        }
-
-
-        Picasso.with(getApplicationContext())
-                .load(profileMap.get(Constants.TAG_USERIMAGE))
-                .placeholder(R.drawable.user_placeholder)
-                .error(R.drawable.user_placeholder)
-                .into(profilePic);
-
-        premiumLay.setVisibility(View.VISIBLE);
-        if (profileMap.get(Constants.TAG_PREMIUM_MEMBER).equals("true") && profileMap.get(Constants.TAG_USERID).equals(GetSet.getUserId())) {
-            btnPremium.setVisibility(View.GONE);
-            premiumBanner.setVisibility(View.VISIBLE);
-            membershipValid.setVisibility(View.VISIBLE);
-            try {
-                if (!profileMap.get(Constants.TAG_MEMBERSHIP_VALID).equals(null) && !profileMap.get(Constants.TAG_MEMBERSHIP_VALID).equals("")) {
-                    long date = Long.parseLong(profileMap.get(Constants.TAG_MEMBERSHIP_VALID)) * 1000;
-                    membershipValid.setText(getString(R.string.your_premium_end_on) + " " + getDate(date));
-                }
-            } catch (NumberFormatException e) {
-                e.printStackTrace();
-            }
-        } else {
-            btnPremium.setVisibility(View.VISIBLE);
-            premiumBanner.setVisibility(View.GONE);
-            membershipValid.setVisibility(View.GONE);
-        }
     }
 
     @Override
@@ -432,22 +454,22 @@ public class ProfileActivity extends AppCompatActivity implements NetworkReceive
                 }
                 break;
             case R.id.basicInfoLay:
-                Intent intent = new Intent(ProfileActivity.this, EditProfileActivity.class);
-                intent.putExtra("strFriendID", userId);
-                startActivity(intent);
+//                Intent intent = new Intent(ProfileActivity.this, EditProfileActivity.class);
+//                intent.putExtra("strFriendID", userId);
+//                startActivity(intent);
                 break;
             case R.id.interestLay:
-                openInterestDialog();
+//                openInterestDialog();
                 break;
             case R.id.locationLay:
-                if (profileMap.get(Constants.TAG_PREMIUM_MEMBER).equals("true") && profileMap.get(Constants.TAG_USERID).equals(GetSet.getUserId())) {
-                    Intent i = new Intent(ProfileActivity.this, LocationActivity.class);
-                    i.putExtra("isFrom", "myProfile");
-                    startActivity(i);
-                } else {
-                    Intent p = new Intent(ProfileActivity.this, PremiumDialog.class);
-                    startActivity(p);
-                }
+//                if (profileMap.get(Constants.TAG_PREMIUM_MEMBER).equals("true") && profileMap.get(Constants.TAG_USERID).equals(GetSet.getUserId())) {
+//                    Intent i = new Intent(ProfileActivity.this, LocationActivity.class);
+//                    i.putExtra("isFrom", "myProfile");
+//                    startActivity(i);
+//                } else {
+//                    Intent p = new Intent(ProfileActivity.this, PremiumDialog.class);
+//                    startActivity(p);
+//                }
                 break;
         }
     }
@@ -527,8 +549,10 @@ public class ProfileActivity extends AppCompatActivity implements NetworkReceive
         dialogInterest.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         dialogInterest.setContentView(R.layout.dialog_interest);
         dialogInterest.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        dialogInterest.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
+        dialogInterest.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN
+                | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
         dialogInterest.setCancelable(true);
+
 
         recyclerView = dialogInterest.findViewById(R.id.recyclerView);
         edtSearch = dialogInterest.findViewById(R.id.edtSearch);
@@ -536,7 +560,9 @@ public class ProfileActivity extends AppCompatActivity implements NetworkReceive
         btnCancel = dialogInterest.findViewById(R.id.btnCancel);
         btnSearch = dialogInterest.findViewById(R.id.btnSearch);
         progress = dialogInterest.findViewById(R.id.interestProgress);
-        btnNext.setText(R.string.save);
+
+
+    //    btnNext.setText(R.string.save);
         edtSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -582,72 +608,77 @@ public class ProfileActivity extends AppCompatActivity implements NetworkReceive
 
         progress.setVisibility(View.VISIBLE);
         progress.spin();
-        StringRequest req = new StringRequest(Request.Method.POST, Constants.API_ADMIN_DATAS,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String res) {
-                        try {
-                            interestList = new ArrayList<>();
-                            Log.v(TAG, "getSettingsRes=" + res);
-                            JSONObject response = new JSONObject(res);
-                            if (DefensiveClass.optString(response, Constants.TAG_STATUS).equalsIgnoreCase("true")) {
-                                JSONObject result = response.optJSONObject(Constants.TAG_RESULT);
-                                JSONArray interest = result.getJSONArray(Constants.TAG_INTERESTS);
+        interestAdapter = new InterestAdapter(getApplicationContext(), interestList);
+        recyclerView.setAdapter(interestAdapter);
+        interestAdapter.notifyDataSetChanged();
 
-                                for (int i = 0; i < interest.length(); i++) {
-                                    JSONObject temp = interest.getJSONObject(i);
-                                    HashMap<String, String> map = new HashMap<String, String>();
-                                    map.put(Constants.TAG_ID, DefensiveClass.optString(temp, Constants.TAG_ID));
-                                    map.put(Constants.TAG_NAME, DefensiveClass.optString(temp, Constants.TAG_NAME));
-                                    interestList.add(map);
-                                }
+//
+//        StringRequest req = new StringRequest(Request.Method.POST, Constants.API_ADMIN_DATAS,
+//                new Response.Listener<String>() {
+//                    @Override
+//                    public void onResponse(String res) {
+//                        try {
+//                            interestList = new ArrayList<>();
+//                            Log.v(TAG, "getSettingsRes=" + res);
+//                            JSONObject response = new JSONObject(res);
+//                            if (DefensiveClass.optString(response, Constants.TAG_STATUS).equalsIgnoreCase("true")) {
+//                                JSONObject result = response.optJSONObject(Constants.TAG_RESULT);
+//                                JSONArray interest = result.getJSONArray(Constants.TAG_INTERESTS);
+//
+//                                for (int i = 0; i < interest.length(); i++) {
+//                                    JSONObject temp = interest.getJSONObject(i);
+//                                    HashMap<String, String> map = new HashMap<String, String>();
+//                                    map.put(Constants.TAG_ID, DefensiveClass.optString(temp, Constants.TAG_ID));
+//                                    map.put(Constants.TAG_NAME, DefensiveClass.optString(temp, Constants.TAG_NAME));
+//                                    interestList.add(map);
+//                                }
+//
+//                                interestAdapter = new InterestAdapter(getApplicationContext(), interestList);
+//                                recyclerView.setAdapter(interestAdapter);
+//                                interestAdapter.notifyDataSetChanged();
+//                                progress.setVisibility(View.GONE);
+//                                progress.stopSpinning();
+//                            } else if (DefensiveClass.optString(response, Constants.TAG_STATUS).equalsIgnoreCase("error")) {
+//                                CommonFunctions.disabledialog(getApplicationContext(), "Error", response.getString("message"));
+//                            } else {
+//                                progress.setVisibility(View.GONE);
+//                                progress.stopSpinning();
+//                            }
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                        } catch (NullPointerException e) {
+//                            e.printStackTrace();
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                }, new Response.ErrorListener() {
+//
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                VolleyLog.d(TAG, "Error: " + error.getMessage());
+//            }
+//
+//        }) {
+//
+//            @Override
+//            public Map<String, String> getHeaders() throws AuthFailureError {
+//                Map<String, String> map = new HashMap<String, String>();
+//                map.put(Constants.TAG_AUTHORIZATION, pref.getString(Constants.TAG_AUTHORIZATION, ""));
+//                return map;
+//            }
+//
+//            @Override
+//            protected Map<String, String> getParams() {
+//                Map<String, String> map = new HashMap<String, String>();
+//                map.put(Constants.TAG_USERID, GetSet.getUserId());
+//                Log.v(TAG, "getSettingsParams=" + map);
+//                return map;
+//            }
+//        };
+//        HowzuApplication.getInstance().addToRequestQueue(req, TAG);
 
-                                interestAdapter = new InterestAdapter(getApplicationContext(), interestList);
-                                recyclerView.setAdapter(interestAdapter);
-                                interestAdapter.notifyDataSetChanged();
-                                progress.setVisibility(View.GONE);
-                                progress.stopSpinning();
-                            } else if (DefensiveClass.optString(response, Constants.TAG_STATUS).equalsIgnoreCase("error")) {
-                                CommonFunctions.disabledialog(getApplicationContext(), "Error", response.getString("message"));
-                            } else {
-                                progress.setVisibility(View.GONE);
-                                progress.stopSpinning();
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        } catch (NullPointerException e) {
-                            e.printStackTrace();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                VolleyLog.d(TAG, "Error: " + error.getMessage());
-            }
-
-        }) {
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> map = new HashMap<String, String>();
-                map.put(Constants.TAG_AUTHORIZATION, pref.getString(Constants.TAG_AUTHORIZATION, ""));
-                return map;
-            }
-
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> map = new HashMap<String, String>();
-                map.put(Constants.TAG_USERID, GetSet.getUserId());
-                Log.v(TAG, "getSettingsParams=" + map);
-                return map;
-            }
-        };
-        HowzuApplication.getInstance().addToRequestQueue(req, TAG);
-
-        dialogInterest.show();
+        //dialogInterest.show();
 
     }
 

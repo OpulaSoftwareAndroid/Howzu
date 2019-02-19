@@ -132,6 +132,12 @@
                 <ImageView
                     android:layout_width="45dp"
                     android:layout_height="45dp"
+                    android:id="@+id/imageViewAddComments"
+                    android:layout_margin="3dp"
+                    android:src="@drawable/ic_like" />
+                <ImageView
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
                     android:id="@+id/imageViewShowComments"
                     android:layout_margin="3dp"
                     android:src="@drawable/ic_comment" />
@@ -148,6 +154,7 @@
             </LinearLayout>
         </RelativeLayout>
 
+
         <LinearLayout
             android:id="@+id/bottomLay"
             android:layout_width="match_parent"
@@ -155,8 +162,7 @@
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="80dp"
             android:gravity="center_horizontal"
-            android:orientation="horizontal"
-            android:visibility="gone">
+            android:orientation="horizontal">
 
             <ImageView
                 android:id="@+id/reload"
@@ -204,16 +210,19 @@
 
         </LinearLayout>
 
+
         <com.github.tommykw.tagview.TagView
             android:id="@+id/tagview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="20dp"
-            android:gravity="center"
             android:background="@color/black"
             app:background_color="@color/black"
-            app:corner_radius="2dp"
-            app:horizontal_spacing="4dp"
+            app:background="@drawable/black_curve_background"
+            android:layout_marginBottom="20dp"
+            android:gravity="center"
+            android:layout_margin="20dp"
+            app:corner_radius="8dp"
+            app:horizontal_spacing="14dp"
             app:left_drawable="@drawable/float_left_drawable_sized"
             app:left_drawable_padding="4dp"
             app:sort_type="asc"
@@ -221,7 +230,7 @@
             app:stroke_width="1dp"
             app:text_color="@color/white"
             app:text_font_size="6sp"
-            app:vertical_spacing="@dimen/spacing_small" />
+            app:vertical_spacing="14dp" />
 
         <!--<com.hitasoft.app.customclass.BubbleLayout-->
             <!--android:id="@+id/bubble_layout"-->
@@ -234,5 +243,9 @@
 
 
     </RelativeLayout>
+
+
+
+
 
 </RelativeLayout>

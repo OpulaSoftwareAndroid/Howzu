@@ -77,6 +77,7 @@ public class MainScreenActivity extends AppCompatActivity implements View.OnClic
     Dialog dialog;
     LinearLayout peopleNear, findPeople, visitors, message, friends, request, liked, menuItemMatchMaker,linearLayoutMenuItemNotification;
     BadgeView chatBadge, visitBadge, requestBadge,friendsBadge;
+    ImageView imageViewLogout;
     AdView mAdView;
     Fragment mContent;
     DrawerLayout mDrawerLayout;
@@ -107,7 +108,6 @@ public class MainScreenActivity extends AppCompatActivity implements View.OnClic
 //        mLocationClient.registerLocationListener (this);
 //        mLocationClient.start ();
         setUpNavigationDrawer();
-
         pref = getApplicationContext().getSharedPreferences("ChatPref",
                 MODE_PRIVATE);
         editor = pref.edit();
@@ -123,7 +123,6 @@ public class MainScreenActivity extends AppCompatActivity implements View.OnClic
         dialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.WHITE));
         dialog.setCancelable(false);
-
         dialog.setContentView(R.layout.dialog_progress);
 
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
@@ -211,7 +210,14 @@ public class MainScreenActivity extends AppCompatActivity implements View.OnClic
 //        becomePremium = findViewById(R.id.become_premium);
         setting = findViewById(R.id.setting);
         linearLayoutMenuItemNotification = findViewById(R.id.linearLayoutMenuItemNotification);
+         imageViewLogout= findViewById(R.id.imageViewLogout);
 
+         imageViewLogout.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View view) {
+                 setUserLogout();
+             }
+         });
         batch = findViewById(R.id.premium_batch);
         requestCount = findViewById(R.id.request_count);
         messageCount = findViewById(R.id.message_count);
@@ -222,6 +228,7 @@ public class MainScreenActivity extends AppCompatActivity implements View.OnClic
         searchLay = findViewById(R.id.search_lay);
 
         //mAdView = (AdView) findViewById(R.id.adView);
+        System.out.println("jigar the first user image we have is "+GetSet.getImageUrl());
 
         Picasso.with(this).load(GetSet.getImageUrl())
                 .placeholder(R.drawable.user_placeholder)
@@ -342,6 +349,15 @@ public class MainScreenActivity extends AppCompatActivity implements View.OnClic
     //    switchContent(new HomeFragment());
     }
 
+    public  void setUserLogout()
+    {
+        Intent intent=new Intent(MainScreenActivity.this,MainNewLoginActivity.class);
+        editor.remove(Constants.TAG_USERID);
+        editor.commit();
+        GetSet.reset();
+        startActivity(intent);
+
+    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (mDrawerToggle.onOptionsItemSelected(item)) {
@@ -882,7 +898,7 @@ public class MainScreenActivity extends AppCompatActivity implements View.OnClic
         switch (v.getId()) {
             case R.id.profile_lay:
                 mDrawerLayout.closeDrawers();
-                Intent p = new Intent(MainScreenActivity.this, MainViewProfileDetailActivity.class);
+                Intent p = new Intent(MainScreenActivity.this, ProfileActivity.class);
                 p.putExtra("from", "myprofile");
                 p.putExtra("strFriendID", GetSet.getUserId());
                 startActivity(p);
@@ -940,17 +956,16 @@ public class MainScreenActivity extends AppCompatActivity implements View.OnClic
                 if (!currentFragment.equals("Matchmaker Feature")) {
                     Bundle bundle=new Bundle();
                     // STATIC UNTIL USER BY DETAIL RESPONSE DOES NOT HAVE MATCH MAKER ID
+                    GetSet.setFriendId( pref.getString(Constants.TAG_LOGGED_USER_SPONSOR_ID,""));
                     bundle.putString(Constants.TAG_FRIEND_ID, pref.getString(Constants.TAG_LOGGED_USER_SPONSOR_ID,""));  //match maker id
                     bundle.putString(Constants.TAG_REGISTERED_ID, GetSet.getUserId());  // register id
-//                    GetSet.setUserId(tempMap.get(Constants.TAG_REGISTERED_ID));
+                    //                    GetSet.setUserId(tempMap.get(Constants.TAG_REGISTERED_ID));
 //                    GetSet.setFriendId(tempMap.get(Constants.TAG_SPONSOR_ID));
-
                     switchContent(new MatchMakerFragment());
-//                    GetSet.setFriendId("96639683");
+                    //                    GetSet.setFriendId("96639683");
 //                    GetSet.setFriendId("96639683");
 
 //                    strFriendID=GetSet.getFriendId();
-
                 }
                 break;
             case R.id.filterbtn:

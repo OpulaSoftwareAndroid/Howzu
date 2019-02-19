@@ -81,25 +81,29 @@ import static com.hitasoft.app.utils.Constants.TAG_IMAGE;
  * Created by hitasoft on 23/11/16.
  */
 
-public class MainViewProfileDetailActivity extends AppCompatActivity implements View.OnClickListener
+public class  MainViewProfileDetailActivity extends AppCompatActivity implements View.OnClickListener
         , NetworkReceiver.ConnectivityReceiverListener
 {
     String TAG = "MainViewProfileDetailActivity";
 
-    FloatingActionButton fab, fab2, batch;
+    FloatingActionButton fab, fab2, floatingButtonStartChat;
     AppBarLayout appbar;
     Display display;
     Toolbar toolbar;
+    ArrayList<HashMap<String, String>> matchesAry = new ArrayList<HashMap<String, String>>(), searchAry = new ArrayList<HashMap<String, String>>();
+    HashMap<String, String> data = new HashMap<String, String>();
 
     CollapsingToolbarLayout collapsingToolbar;
     CoordinatorLayout coordinatorLayout;
     NestedScrollView scrollView;
     LaybelLayout laybelLayout;
+    LinearLayout linearLayoutSendFriendRequest;
     ViewPager viewPager;
     CirclePageIndicator pageIndicator;
     ViewPagerAdapter viewPagerAdapter;
     ImageView backbtn, optionbtn;
             //, match, unmatch;
+    ImageView imageViewStartChat;
     TextView setting, userName, bio, location, interest, info, membershipValid, becomePremium, toolbarTitle;
     LinearLayout  interestLay, premiumLay;
     FrameLayout gradientFrame;
@@ -156,7 +160,7 @@ public class MainViewProfileDetailActivity extends AppCompatActivity implements 
         coordinatorLayout = findViewById(R.id.main_content);
         backbtn = findViewById(R.id.backbtn);
         setting = findViewById(R.id.setting);
-        batch = findViewById(R.id.batch);
+        floatingButtonStartChat = findViewById(R.id.floatingButtonStartChat);
         optionbtn = findViewById(R.id.optionbtn);
         userName = findViewById(R.id.userName);
         bio = findViewById(R.id.textViewProfileLocation);
@@ -178,7 +182,13 @@ public class MainViewProfileDetailActivity extends AppCompatActivity implements 
         viewPager = findViewById(R.id.view_pager);
         pageIndicator = findViewById(R.id.pager_indicator);
         toolbarTitle = findViewById(R.id.toolbarTitle);
-
+        linearLayoutSendFriendRequest=findViewById(R.id.linearLayoutSendFriendRequest);
+        linearLayoutSendFriendRequest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sendFriendRequest();
+            }
+        });
         arrayListInterestStatic=new ArrayList<String>();
         arrayListInterestStatic.add("Foodie");
         arrayListInterestStatic.add("Gaming");
@@ -201,14 +211,23 @@ public class MainViewProfileDetailActivity extends AppCompatActivity implements 
         from = getIntent().getExtras().getString(Constants.TAG_PROFILE_VISITOR_ID_LIKE_TOKEN);
         strVisitorFriendID = getIntent().getExtras().getString(Constants.TAG_FRIEND_ID);
         strFriendID = getIntent().getExtras().getString(Constants.TAG_REGISTERED_ID);
-
-//        p.putExtra(Constants.TAG_FRIEND_ID, GetSet.getUseridLikeToken());
+        //        p.putExtra(Constants.TAG_FRIEND_ID, GetSet.getUseridLikeToken());
 //        p.putExtra(Constants.TAG_PROFILE_VISITOR_ID, peoplesAry.get(itemPosition).get(Constants.TAG_ID));
 
         //userImage = getIntent().getExtras().getString("userImage");
         System.out.println("jigar the intent strfriend id is "+strVisitorFriendID);
         System.out.println("jigar the intent visitor who visit id is "+from);
 
+        floatingButtonStartChat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                createNewChat();
+//                Intent intent=new Intent(MainViewProfileDetailActivity.this,ChatActivity.class);
+//                startActivity(intent);
+
+            }
+        });
 //        if(strFriendID==null)
 //        {
 //           strFriendID=GetSet.getUserId();
@@ -229,7 +248,7 @@ public class MainViewProfileDetailActivity extends AppCompatActivity implements 
         fab2.setVisibility(View.INVISIBLE);
         fab.hide();
         fab2.hide();
-        batch.setVisibility(View.INVISIBLE);
+        floatingButtonStartChat.setVisibility(View.INVISIBLE);
         gradientFrame.setVisibility(View.GONE);
         //iconsLay.setVisibility(View.GONE);
         premiumLay.setVisibility(View.GONE);
@@ -261,6 +280,166 @@ public class MainViewProfileDetailActivity extends AppCompatActivity implements 
         dialog.setCanceledOnTouchOutside(false);
     }
 
+    public void sendFriendRequest()
+    {
+        StringRequest sendmatch = new StringRequest(Request.Method.POST, Constants.API_NEW_MATCH_AND_FRIEND_REQUEST,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String res) {
+                        Log.d(TAG, "matchRes=" + res);
+                        System.out.println("jigar the on like profile in json is "+res);
+
+                        try {
+                            JSONObject json = new JSONObject(res);
+                            String response = json.getString(Constants.TAG_STATUS);
+                            if (response.equalsIgnoreCase("true")) {
+
+                            } else if (response.equalsIgnoreCase("error")) {
+                                CommonFunctions.disabledialog(MainViewProfileDetailActivity.this, "Error", json.getString("message"));
+                            } else {
+
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        } catch (NullPointerException e) {
+                            e.printStackTrace();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d(TAG, "Error: " + error.getMessage());
+            }
+        }) {
+
+//            @Override
+//            public Map<String, String> getHeaders() throws AuthFailureError {
+//                Map<String, String> map = new HashMap<String, String>();
+//                map.put(Constants.TAG_AUTHORIZATION, pref.getString(Constants.TAG_AUTHORIZATION, ""));
+//                return map;
+//            }
+
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put(Constants.TAG_REGISTERED_ID, GetSet.getUserId());
+                params.put(Constants.TAG_FRIEND_ID, strFriendID);
+                Log.v(TAG, "matchParams=" + params);
+                return params;
+            }
+        };
+
+        HowzuApplication.getInstance().addToRequestQueue(sendmatch, "");
+
+    }
+    private void createNewChat() {
+        StringRequest req = new StringRequest(Request.Method.POST, Constants.API_CREATE_CHAT,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String res) {
+                        try {
+                            Log.v(TAG, "jigar the create Chat Response " + res);
+                            JSONObject json = new JSONObject(res);
+                            String response = DefensiveClass.optString(json, Constants.TAG_STATUS);
+                            if (response.equalsIgnoreCase("true")) {
+
+//                                data.put(Constants.TAG_CHAT_ID, DefensiveClass.optString(json, Constants.TAG_CHAT_ID));
+                                data.put(Constants.TAG_CHAT_ID, "3");
+                                data.put(Constants.TAG_BLOCKED_BY_ME, DefensiveClass.optInt(json, Constants.TAG_BLOCKED_BY_ME));
+                                data.put(Constants.TAG_BLOCK, DefensiveClass.optInt(json, Constants.TAG_BLOCK));
+                                data.put(Constants.TAG_USER_STATUS, DefensiveClass.optInt(json, Constants.TAG_USER_STATUS));
+                                data.put(Constants.TAG_ONLINE, DefensiveClass.optInt(json, Constants.TAG_ONLINE));
+                                data.put(Constants.TAG_LAST_ONLINE, DefensiveClass.optInt(json, Constants.TAG_LAST_ONLINE));
+                                Log.v(TAG, "jigar the json chat before image is " + imagesAry.get(0));
+//                                Log.v(TAG, "jigar the json chat profile image is " +  haspMapProfileDetails.get(Constants.TAG_PROFILE_IMAGE));
+                                data.put(Constants.TAG_USERIMAGE, imagesAry.get(0));
+                                data.put(Constants.TAG_USERNAME, haspMapProfileDetails.get(Constants.TAG_NEW_USERNAME));
+                                data.put(Constants.TAG_USERID, from);
+
+                                Log.v(TAG, "jigar the json response is map data is " + data);
+
+                                Intent intent=new Intent(MainViewProfileDetailActivity.this,ChatActivity.class);
+                                intent.putExtra("data", data);
+                                intent.putExtra("position", 0);
+                                intent.putExtra("from", "profile");
+                                startActivity(intent);
+
+//                                if (data.get(Constants.TAG_BLOCKED_BY_ME).equals("true")) {
+//                                    chatStatus.setVisibility(View.VISIBLE);
+//                                    chatStatus.setText(getString(R.string.you_blocked));
+//                                    editText.setEnabled(false);
+//                                    send.setOnClickListener(null);
+//                                    attachbtn.setOnClickListener(null);
+//                                } else if (data.get(Constants.TAG_USER_STATUS).equals("0")) {
+//                                    Picasso.with(ChatActivity.this).load(R.drawable.user_placeholder).transform(new CircleTransform()).into(userimage);
+//                                    chatStatus.setVisibility(View.VISIBLE);
+//                                    chatStatus.setText(getString(R.string.account_deactivated));
+//                                    editText.setEnabled(false);
+//                                    send.setOnClickListener(null);
+//                                    attachbtn.setOnClickListener(null);
+//                                    optionbtn.setOnClickListener(null);
+//                                } else {
+//                                    chatStatus.setVisibility(View.GONE);
+//                                }
+//
+//                                try {
+//                                    if (data.get(Constants.TAG_ONLINE).equals("1")) {
+//                                        online.setText("Online");
+//                                        online.setSelected(false);
+//                                    } else {
+//                                        online.setText("Last seen at " + getTime(Long.parseLong(data.get(Constants.TAG_LAST_ONLINE)), Constants.TAG_LAST_SEEN));
+//                                        online.setSelected(true);
+//                                    }
+//                                } catch (NumberFormatException e) {
+//                                    e.printStackTrace();
+//                                }
+
+                            }
+                        } catch (JSONException e) {
+                            Log.v(TAG, "jigar the json exception create Chat" + e);
+
+                            e.printStackTrace();
+                        } catch (NullPointerException e) {
+                            Log.v(TAG, "jigar the null pointer exception create Chat" + e);
+
+                            e.printStackTrace();
+                        } catch (Exception e) {
+                            Log.v(TAG, "jigar the main exception create Chat" + e);
+
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d(TAG, "jigar the volley Error in chat create is " + error.getMessage());
+            }
+
+        }) {
+
+//            @Override
+//            public Map<String, String> getHeaders() throws AuthFailureError {
+//                Map<String, String> map = new HashMap<String, String>();
+//                map.put(Constants.TAG_AUTHORIZATION, pref.getString(Constants.TAG_AUTHORIZATION, ""));
+//                return map;
+//            }
+
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> map = new HashMap<String, String>();
+                map.put(Constants.TAG_USERID, GetSet.getUseridLikeToken());
+                map.put(Constants.TAG_FRIEND_ID, from);
+                Log.v(TAG, "jigar the create chat params are " + map);
+                return map;
+            }
+        };
+
+        HowzuApplication.getInstance().addToRequestQueue(req, TAG);
+    }
 
     @Override
     public void onNetworkConnectionChanged(boolean isConnected) {
@@ -479,16 +658,16 @@ public class MainViewProfileDetailActivity extends AppCompatActivity implements 
             premiumLay.setVisibility(View.VISIBLE);
             becomePremium.setVisibility(View.GONE);
             membershipValid.setVisibility(View.VISIBLE);
-            batch.setVisibility(View.VISIBLE);
-            batch.postDelayed(new Runnable() {
+            floatingButtonStartChat.setVisibility(View.VISIBLE);
+            floatingButtonStartChat.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     if (!fab.isShown()) {
-                        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) batch.getLayoutParams();
+                        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) floatingButtonStartChat.getLayoutParams();
                         params.setMargins(0, HowzuApplication.dpToPx(MainViewProfileDetailActivity.this, 80), HowzuApplication.dpToPx(MainViewProfileDetailActivity.this, 15), 0);
-                        batch.setLayoutParams(params);
+                        floatingButtonStartChat.setLayoutParams(params);
                     }
-                    batch.show();
+                    floatingButtonStartChat.show();
                 }
             }, 50);
             try {
@@ -502,7 +681,7 @@ public class MainViewProfileDetailActivity extends AppCompatActivity implements 
             }
         } else {
             premiumLay.setVisibility(View.GONE);
-            batch.setVisibility(View.INVISIBLE);
+            floatingButtonStartChat.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -516,7 +695,7 @@ public class MainViewProfileDetailActivity extends AppCompatActivity implements 
                     Log.v("expanded", "expanded");
                     if (haspMapProfileDetails.get(Constants.TAG_PREMIUM_FROM).equals("0"))
                     {
-                        batch.show();
+                        floatingButtonStartChat.show();
                     }
                     if (showFab) {
                         fab.show(fabListener);
@@ -568,7 +747,7 @@ public class MainViewProfileDetailActivity extends AppCompatActivity implements 
                         toolbarTitle.setText(haspMapProfileDetails.get(Constants.TAG_NEW_USERNAME) + ", " + haspMapProfileDetails.get(Constants.TAG_AGE));
                     }
                     if (haspMapProfileDetails.get(Constants.TAG_PREMIUM_FROM).equals("0")) {
-                        batch.hide();
+                        floatingButtonStartChat.hide();
                     }
                     if (showFab) {
                         fab.hide(fabListener);
@@ -993,9 +1172,9 @@ public class MainViewProfileDetailActivity extends AppCompatActivity implements 
                                     Log.v(TAG, "if");
                                     sendMatch = "1";
                                     if (haspMapProfileDetails.get(Constants.TAG_PREMIUM_FROM).equals("0")) {
-                                        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) batch.getLayoutParams();
+                                        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) floatingButtonStartChat.getLayoutParams();
                                         params.setMargins(0, HowzuApplication.dpToPx(MainViewProfileDetailActivity.this, 80), HowzuApplication.dpToPx(MainViewProfileDetailActivity.this, 75), 0);
-                                        batch.setLayoutParams(params);
+                                        floatingButtonStartChat.setLayoutParams(params);
                                     }
                                     showFab = true;
                                     fab.postDelayed(new Runnable() {
@@ -1008,9 +1187,9 @@ public class MainViewProfileDetailActivity extends AppCompatActivity implements 
                                     Log.v(TAG, "else if");
                                     sendMatch = "1";
                                     if (haspMapProfileDetails.get(Constants.TAG_PREMIUM_FROM).equals("0")) {
-                                        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) batch.getLayoutParams();
+                                        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) floatingButtonStartChat.getLayoutParams();
                                         params.setMargins(0, HowzuApplication.dpToPx(MainViewProfileDetailActivity.this, 80), HowzuApplication.dpToPx(MainViewProfileDetailActivity.this, 75), 0);
-                                        batch.setLayoutParams(params);
+                                        floatingButtonStartChat.setLayoutParams(params);
                                     }
                                     showFab = true;
                                     fab2.postDelayed(new Runnable() {

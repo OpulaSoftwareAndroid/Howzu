@@ -164,6 +164,7 @@ public class NotificationActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
 
+
                     if(album.getNotificationType().equals(Constants.TAG_TYPE_FRIEND_REQUEST))
                     {
                         setFriendRequestAccepted(String.valueOf(album.getNotificationID()),Constants.TAG_REQUEST_ACCEPTED);

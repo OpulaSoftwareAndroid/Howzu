@@ -23,6 +23,7 @@ import com.hitasoft.app.utils.CommonFunctions;
 import com.hitasoft.app.utils.Constants;
 import com.hitasoft.app.utils.GetSet;
 import com.hitasoft.app.webservice.RestClient;
+import com.squareup.picasso.Picasso;
 import com.yarolegovich.discretescrollview.DSVOrientation;
 import com.yarolegovich.discretescrollview.DiscreteScrollView;
 import com.yarolegovich.discretescrollview.InfiniteScrollAdapter;
@@ -72,6 +73,8 @@ public class LikedFragment extends Fragment implements DiscreteScrollView.OnItem
                 @Override
                 public void onResponse(Call<LikedPeopleModel> call, Response<LikedPeopleModel> response) {
                     CommonFunctions.hideProgressDialog(getContext());
+                    Log.d(TAG,"jigar the json like profile response  in this is "+response.body().toString());
+
                     if (response.body() != null) {
                         if (response.body().getStatus() == 1) {
                             peopleList = (ArrayList<LikedPeopleModel.Info>) response.body().getInfo();
@@ -91,10 +94,10 @@ public class LikedFragment extends Fragment implements DiscreteScrollView.OnItem
                         CommonFunctions.hideProgressDialog(getContext());
                         Toast.makeText(getContext(), getString(R.string.network_error), Toast.LENGTH_SHORT).show();
                     } catch (Exception e) {
+                        Log.d(TAG,"jigar the error in this is "+t);
                         e.printStackTrace();
                     }
                 }
-
 
             });
         } else {
@@ -127,38 +130,52 @@ public class LikedFragment extends Fragment implements DiscreteScrollView.OnItem
         public void onBindViewHolder(ViewHolder holder, int position) {
             LikedPeopleModel.Info model = data.get(position);
 
-            if (data.get(position).getImage().equalsIgnoreCase("http://www.ilovemisskey.com/uploads/user/")) {
-                Glide.with(getActivity()).load(data.get(position).getImage())
-                        .listener(new RequestListener<String, GlideDrawable>() {
-                            @Override
-                            public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                                holder.user_name.setTextColor(getResources().getColor(R.color.black));
-                                holder.bio.setTextColor(getResources().getColor(R.color.black));
-                                return false;
-                            }
-
-                            @Override
-                            public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                                return false;
-                            }
-                        }).placeholder(R.drawable.user_placeholder)
+//            if (data.get(position)
+//                    .getImage()
+//                    .equalsIgnoreCase("http://www.ilovemisskey.com/uploads/user/"))
+            {
+                Picasso.with(getActivity())
+                        .load(data.get(position).getImage())
+                        .error(R.drawable.user_placeholder)
+                        .centerCrop()
+                        .fit().centerCrop()
                         .into(holder.imageViewProfileImage);
-            } else {
-                Glide.with(getActivity()).load(data.get(position).getImage())
-                        .listener(new RequestListener<String, GlideDrawable>() {
-                            @Override
-                            public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                                return false;
-                            }
+//                Glide.with(getActivity()).load()
+//                        .listener(new RequestListener<String, GlideDrawable>() {
+//                            @Override
+//                            public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+//                                holder.user_name.setTextColor(getResources().getColor(R.color.black));
+//                                holder.bio.setTextColor(getResources().getColor(R.color.black));
+//                                return false;
+//                            }
+//
+//                            @Override
+//                            public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+//                                return false;
+//                            }
+//                        }).placeholder(R.drawable.user_placeholder)
+//                        .into(holder.imageViewProfileImage);
+            }
+//            else
 
-                            @Override
-                            public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                                return false;
-                            }
-                        })
-                        .into(holder.imageViewProfileImage);
+                {
+
+//                Glide.with(getActivity()).load(data.get(position).getImage())
+//                        .listener(new RequestListener<String, GlideDrawable>() {
+//                            @Override
+//                            public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+//                                return false;
+//                            }
+//
+//                            @Override
+//                            public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+//                                return false;
+//                            }
+//                        })
+//                        .into(holder.imageViewProfileImage);
             }
             System.out.println("jigar the friend id is "+data.get(position).getMatchMaker());
+            System.out.println("jigar the user id like in liked list token is "+data.get(position).getUserIdLikeToken());
 
           //  if(data.get(position).getMatchMaker().equals("0"))
                 if(data.get(position).getMatchMaker()==0.0)
@@ -176,28 +193,31 @@ public class LikedFragment extends Fragment implements DiscreteScrollView.OnItem
                 public void onClick(View view) {
                     System.out.println("jigar the friend id is "+data.get(position).getMatchMaker());
                     GetSet.setFriendId(String.valueOf(data.get(position).getMatchMaker()));
-
                     switchContent(new MatchMakerFragment());
                 }
             });
 
+            //---------------------------------------------------------------------------------------------------------------------------------
+//---------------------------------Commented until data of user id from GET PROFILE come with data of token ---------------------------------------------------------------
             holder.imageViewProfileImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
 
-                    Intent intent = new Intent(getActivity().getBaseContext(),
-                            MainViewProfileDetailActivity.class);
-                    //                    from = getIntent().getExtras().getString("from");
-//                    userId = getIntent().getExtras().getString("strFriendID");
-                    System.out.println("jigar the clicked friend id is "+data.get(position).getRegisterId());
-                    intent.putExtra(Constants.TAG_INTENT_FROM,Constants.TAG_INTENT_PROFILE_PAGE);
-                    intent.putExtra(Constants.TAG_FRIEND_ID,data.get(position).getRegisterId());
-                    getActivity().startActivity(intent);
+                    Intent p = new Intent(getActivity(), MainViewProfileDetailActivity.class);
+                    p.putExtra("from", "home");
+                    p.putExtra(Constants.TAG_FRIEND_ID, String.valueOf(GetSet.getUserId()));
+                    p.putExtra(Constants.TAG_PROFILE_VISITOR_ID_LIKE_TOKEN,String.valueOf(data.get(position).getUserIdLikeToken()));
+                    p.putExtra(Constants.TAG_REGISTERED_ID, String.valueOf(data.get(position).getRegisterId()));
+                    startActivity(p);
+
+                    //
+//                    System.out.println("jigar the clicked user id is "+GetSet.getUserId());
+//                    //                    userId = getIntent().getExtras().getString("strFriendID");
+//                    System.out.println("jigar the clicked friend id is "+data.get(position).getRegisterId());
+//                    System.out.println("jigar the clicked friend like token id is "+data.get(position).getUserIdLikeToken());
+//                    System.out.println("jigar the clicked user like token id is "+data.get(position).getUserIdLikeToken());
                 }
             });
-
-
-
 
         }
         public void switchContent(Fragment fragment) {

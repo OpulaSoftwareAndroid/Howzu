@@ -47,6 +47,10 @@ public class LikedPeopleModel {
         @Expose
         private Integer notificationId;
 
+        @SerializedName("userid")
+        @Expose
+        private String userId;
+
         @SerializedName("register_id")
         @Expose
         private String registerId;
@@ -96,6 +100,16 @@ public class LikedPeopleModel {
         public void setRegisterId(String registerId) {
             this.registerId = registerId;
         }
+
+        public String getUserIdLikeToken() {
+            return userId;
+        }
+
+        public void setUserIdLikeToken(String userId) {
+            this.userId = userId;
+        }
+
+
 
         public String getFriendId() {
             return friendId;
