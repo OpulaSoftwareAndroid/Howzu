@@ -80,13 +80,12 @@ public class MainScreenActivity extends AppCompatActivity implements View.OnClic
     ImageView imageViewLogout;
     AdView mAdView;
     Fragment mContent;
+
     DrawerLayout mDrawerLayout;
     ActionBarDrawerToggle mDrawerToggle;
-
     public static boolean resumeHome = false, resumeMessage = false;
     public static String currentFragment = "";
     boolean premiumClicked = false;
-
     String strUserID;
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -146,10 +145,8 @@ public class MainScreenActivity extends AppCompatActivity implements View.OnClic
         {
             getUserDetailByID();
         }
-//        getUserDetailByID();
 
         System.out.println("jigar the main screen user id is "+strUserID);
-
         if (pref.getBoolean(Constants.ISLOGGED, false)) {
             GetSet.setLogged(true);
             GetSet.setUserId(pref.getString(Constants.TAG_USERID, null));
@@ -440,7 +437,7 @@ public class MainScreenActivity extends AppCompatActivity implements View.OnClic
     @Override
     protected void onStart() {
         super.onStart();
-        // Monitor launch times and interval from installation
+        // Monitor launch times and interval strVisitingIdLikeToken installation
         RateThisApp.onStart(this);
         // If the criteria is satisfied, "Rate this app" dialog will be shown
         RateThisApp.showRateDialogIfNeeded(this);
@@ -899,7 +896,7 @@ public class MainScreenActivity extends AppCompatActivity implements View.OnClic
             case R.id.profile_lay:
                 mDrawerLayout.closeDrawers();
                 Intent p = new Intent(MainScreenActivity.this, ProfileActivity.class);
-                p.putExtra("from", "myprofile");
+                p.putExtra("strVisitingIdLikeToken", "myprofile");
                 p.putExtra("strFriendID", GetSet.getUserId());
                 startActivity(p);
                 break;

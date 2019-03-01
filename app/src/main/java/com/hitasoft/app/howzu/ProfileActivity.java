@@ -61,6 +61,7 @@ import org.json.JSONObject;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -98,8 +99,8 @@ public class ProfileActivity extends AppCompatActivity implements NetworkReceive
     private String imagesJson = "";
     Dialog dialogInterest;
     private InterestAdapter interestAdapter;
-    TextView btnNext;
-
+    TextView btnNext,btnFinish;
+    List<String> arrayListResponseInterestNumber;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -127,8 +128,7 @@ public class ProfileActivity extends AppCompatActivity implements NetworkReceive
         pref = getApplicationContext().getSharedPreferences("ChatPref",
                 MODE_PRIVATE);
         editor = pref.edit();
-
-        getProfile();
+        getInterestList();
 //        setProfile();
         backbtn.setOnClickListener(this);
         btnPremium.setOnClickListener(this);
@@ -216,6 +216,78 @@ public class ProfileActivity extends AppCompatActivity implements NetworkReceive
         }
     }
 
+    public void getInterestList()
+    {
+        StringRequest req = new StringRequest(Request.Method.POST, Constants.API_GET_INTEREST,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String res) {
+                        try {
+                            Log.v(TAG, "getSettingsRes=" + res);
+                            System.out.println("jigar the response on  interest arrayListComments is " + res);
+                            JSONObject response = new JSONObject(res);
+                            if (DefensiveClass.optString(response, Constants.TAG_STATUS).equalsIgnoreCase("1")) {
+                                String strStatus = response.getString(Constants.TAG_STATUS);
+                                String strMsg = response.getString(Constants.TAG_MSG);
+
+                                if (strStatus.equals("1") && strMsg.equals(Constants.TAG_SUCCESS)) {
+                                    JSONArray interest = response.getJSONArray(Constants.TAG_INFO);
+
+                                    for (int i = 0; i < interest.length(); i++) {
+                                        JSONObject temp = interest.getJSONObject(i);
+                                        HashMap<String, String> map = new HashMap<String, String>();
+                                        map.put(Constants.TAG_ID, DefensiveClass.optString(temp, Constants.TAG_ID));
+                                        map.put(Constants.TAG_NAME, DefensiveClass.optString(temp, Constants.TAG_NAME));
+                                        interestList.add(map);
+
+                                    }
+                                }
+                                getProfile();
+                                interestAdapter.notifyDataSetChanged();
+//                                interestProgress.setVisibility(View.GONE);
+//                                interestProgress.stopSpinning();
+
+                            } else if (DefensiveClass.optString(response, Constants.TAG_STATUS).equalsIgnoreCase("error")) {
+                                CommonFunctions.disabledialog(getApplication(), "Error", response.getString("message"));
+                            } else {
+//                                interestProgress.setVisibility(View.GONE);
+//                                interestProgress.stopSpinning();
+                            }
+                        } catch (JSONException e) {
+                            System.out.println("jigar the json error in response is " + e);
+
+                            e.printStackTrace();
+                        } catch (NullPointerException e) {
+                            e.printStackTrace();
+                        } catch (Exception e) {
+                            System.out.println("jigar the other error exception is " + e);
+
+                            e.printStackTrace();
+                        }
+                        getProfile();
+
+                    }
+                }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d(TAG, "Error: " + error.getMessage());
+                getProfile();
+
+            }
+
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> map = new HashMap<String, String>();
+                Log.v(TAG, "getSettingsParams=" + map);
+                return map;
+            }
+        };
+        HowzuApplication.getInstance().addToRequestQueue(req, TAG);
+
+    }
+
     private void getProfile() {
         progress.setVisibility(View.VISIBLE);
 //        StringRequest req = new StringRequest(Request.Method.POST, Constants.API_PROFILE,
@@ -244,24 +316,69 @@ public class ProfileActivity extends AppCompatActivity implements NetworkReceive
                         //        profileMap.put(Constants.TAG_INFO, DefensiveClass.optString(values, Constants.TAG_INFO));
                                 profileMap.put(Constants.TAG_INTEREST, DefensiveClass.optString(values, Constants.TAG_INTEREST));
                                 profileMap.put(Constants.TAG_IMAGE, DefensiveClass.optString(values, Constants.TAG_IMAGE));
-                     //           profileMap.put(Constants.TAG_IMAGES, DefensiveClass.optString(values, Constants.TAG_IMAGES));
-             //                   profileMap.put(Constants.TAG_SHOW_AGE, DefensiveClass.optString(values, Constants.TAG_SHOW_AGE));
-               //                 profileMap.put(Constants.TAG_SHOW_LOCATION, DefensiveClass.optString(values, Constants.TAG_SHOW_LOCATION));
-                 //               profileMap.put(Constants.TAG_INVISIBLE, DefensiveClass.optString(values, Constants.TAG_INVISIBLE));
-                   //             profileMap.put(Constants.TAG_REPORT, DefensiveClass.optString(values, Constants.TAG_REPORT));
+                                profileMap.put(Constants.TAG_INTEREST_PLAN, DefensiveClass.optString(values, Constants.TAG_INTEREST_PLAN));
+                                profileMap.put(Constants.TAG_PREMIUM_MEMBER_STATUS, DefensiveClass.optString(values, Constants.TAG_PREMIUM_MEMBER_STATUS));
+
+//                                profileMap.put(Constants.TAG_INTEREST_PLAN, "2,3,5");
+
+                      //           profileMap.put(Constants.TAG_IMAGES, DefensiveClass.optString(values, Constants.TAG_IMAGES));
+                     //             profileMap.put(Constants.TAG_SHOW_AGE, DefensiveClass.optString(values, Constants.TAG_SHOW_AGE));
+                     //                 profileMap.put(Constants.TAG_SHOW_LOCATION, DefensiveClass.optString(values, Constants.TAG_SHOW_LOCATION));
+                     //               profileMap.put(Constants.TAG_INVISIBLE, DefensiveClass.optString(values, Constants.TAG_INVISIBLE));
+                     //             profileMap.put(Constants.TAG_REPORT, DefensiveClass.optString(values, Constants.TAG_REPORT));
                      //           profileMap.put(Constants.TAG_PREMIUM_MEMBER, DefensiveClass.optString(values, Constants.TAG_PREMIUM_MEMBER));
-                       //         profileMap.put(Constants.TAG_MEMBERSHIP_VALID, DefensiveClass.optString(values, Constants.TAG_MEMBERSHIP_VALID));
+                                //         profileMap.put(Constants.TAG_MEMBERSHIP_VALID, DefensiveClass.optString(values, Constants.TAG_MEMBERSHIP_VALID));
                         //        profileMap.put(Constants.TAG_SEND_MATCH, sendMatch);
+
                                 profileMap.put(Constants.TAG_PEOPLE_FOR, DefensiveClass.optString(values, Constants.TAG_PEOPLE_FOR));
-
                                 Log.v(TAG, "jigar the json profile mpa have  in user profile details we have =" + profileMap);
-
                                 progress.setVisibility(View.GONE);
                                 progress.stopSpinning();
                                 mainLay.setVisibility(View.VISIBLE);
                                // checkUser();
                                 setProfile();
+                                Log.d(TAG,"jigar the interest list before if having is "+profileMap.get(Constants.TAG_INTEREST_PLAN));
 
+                                String strInterestName="";
+                                if (!profileMap.get(Constants.TAG_INTEREST_PLAN).equals("")) {
+                                    try {
+                                        arrayListResponseInterestNumber = new ArrayList<String>(Arrays.asList(profileMap.get(Constants.TAG_INTEREST_PLAN).split(",")));
+                                     //   JSONArray ints = new JSONArray(profileMap.get(Constants.TAG_INTEREST_PLAN));
+
+                                        ArrayList arrayListInterestNumber=new ArrayList();
+                                        selectedList = new ArrayList<>();
+                                        for (int i = 0; i < arrayListResponseInterestNumber.size(); i++) {
+                                            Log.d(TAG,"jigar the interest list having is "+arrayListResponseInterestNumber.get(i));
+                                            Log.d(TAG,"jigar the interest list size "+interestList.size());
+                                            Log.d(TAG,"jigar the interest list value have  " +
+                                                    "size "+interestList.get(Integer.parseInt(arrayListResponseInterestNumber.get(i))).get(Constants.TAG_NAME));
+
+
+                                            if(strInterestName.equals(""))
+                                            {
+                                                strInterestName=interestList.get(Integer.parseInt(arrayListResponseInterestNumber.get(i))-1).get(Constants.TAG_NAME);
+
+                                            }else {
+                                                strInterestName=strInterestName+","+interestList.get(Integer.parseInt(arrayListResponseInterestNumber.get(i))-1).get(Constants.TAG_NAME);
+
+                                            }
+                                            selectedList.add(arrayListResponseInterestNumber.get(i));
+                                        }
+                                        Log.d(TAG,"jigar the interest selected list have is "+selectedList.toString());
+
+                                    } catch (NullPointerException e) {
+                                        Log.d(TAG,"jigar the error null pointer interest is "+e);
+
+                                        e.printStackTrace();
+                                    } catch (Exception e) {
+                                        Log.d(TAG,"jigar the exception null pointer interest is "+e);
+                                        e.printStackTrace();
+                                    }
+                                }
+
+                                String sourceString = "Interest :      <b> <font color='#f72f64'>" + strInterestName+ " </font> </b> ";
+                                interest.setText(Html.fromHtml(sourceString));
+//                                interest.setText( " Interest "+strInterestName )
                             } else if (strStatus.equalsIgnoreCase("0")) {
                                 CommonFunctions.disabledialog(ProfileActivity.this, "Error", json.getString("message"));
                             }
@@ -284,9 +401,7 @@ public class ProfileActivity extends AppCompatActivity implements NetworkReceive
         Log.v(TAG, "jigar the volley exception user profile details we have =" + error);
                 VolleyLog.d(TAG, "jigar the volley error in user profile details we have =" + error);
                 error.printStackTrace();
-
             }
-
         }) {
 //
 //            @Override
@@ -303,7 +418,10 @@ public class ProfileActivity extends AppCompatActivity implements NetworkReceive
                 Map<String, String> map = new HashMap<String, String>();
           //      if (GetSet.getUserId().equals(userId)) {
 
-                    map.put(Constants.TAG_REGISTERED_ID, GetSet.getUserId());
+              String strUserLoggedID = pref.getString(Constants.TAG_USERID,"");
+                Log.v(TAG, "jigar the user profile id is " + strUserLoggedID);
+
+                map.put(Constants.TAG_REGISTERED_ID, strUserLoggedID);
            //         map.put(Constants.TAG_FRIEND_ID, userId);
             //    }
 //                map.put(Constants.TAG_TIMESTAMP, String.valueOf(System.currentTimeMillis() / 1000L));
@@ -341,7 +459,7 @@ public class ProfileActivity extends AppCompatActivity implements NetworkReceive
                     .placeholder(R.drawable.user_placeholder)
                     .error(R.drawable.user_placeholder)
                     .into(profilePic);
-
+            txtLocate.setText("Location : "+ profileMap.get(Constants.TAG_LOCATION));
 //            if (profileMap.get(Constants.TAG_SHOW_LOCATION).equals("true") && !profileMap.get(Constants.TAG_USERID).equals(GetSet.getUserId())) {
 //                location.setVisibility(View.GONE);
 //            } else {
@@ -349,24 +467,7 @@ public class ProfileActivity extends AppCompatActivity implements NetworkReceive
 //                txtLocation.setText("Lives in " + profileMap.get(Constants.TAG_LOCATION));
 //                location.setVisibility(View.GONE);
 //            }
-
-//            if (!profileMap.get(Constants.TAG_INTEREST).equals("")) {
-//                try {
-//                    JSONArray ints = new JSONArray(profileMap.get(Constants.TAG_INTEREST));
-//                    selectedList = new ArrayList<>();
-//                    for (int i = 0; i < ints.length(); i++) {
-//                        selectedList.add(ints.optString(i, ""));
-//                    }
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                } catch (NullPointerException e) {
-//                    e.printStackTrace();
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            }
-
-//            interest.setText(selectedList.size() + " interest");
+            Log.d(TAG,"jigar the profile interest list have is "+profileMap.get(Constants.TAG_INTEREST_PLAN));
 //
 //            StringBuilder stringBuilder = new StringBuilder();
 //            for (int i = 0; i < selectedList.size(); i++) {
@@ -454,22 +555,30 @@ public class ProfileActivity extends AppCompatActivity implements NetworkReceive
                 }
                 break;
             case R.id.basicInfoLay:
-//                Intent intent = new Intent(ProfileActivity.this, EditProfileActivity.class);
-//                intent.putExtra("strFriendID", userId);
-//                startActivity(intent);
+                Intent intent = new Intent(ProfileActivity.this, EditProfileActivity.class);
+                intent.putExtra(Constants.TAG_NEW_USERNAME,profileMap.get(Constants.TAG_NEW_USERNAME) );
+                intent.putExtra(Constants.TAG_EMAIL,profileMap.get(Constants.TAG_EMAIL) );
+                intent.putExtra(Constants.TAG_AGE,profileMap.get(Constants.TAG_AGE) );
+                intent.putExtra(Constants.TAG_GENDER,profileMap.get(Constants.TAG_GENDER) );
+                intent.putExtra(Constants.TAG_BIO,profileMap.get(Constants.TAG_BIO) );
+                Log.d(TAG,"jigar the profile before edit is : "+profileMap.get(Constants.TAG_GENDER));
+                intent.putExtra("strFriendID", userId);
+                startActivity(intent);
                 break;
             case R.id.interestLay:
-//                openInterestDialog();
+                openInterestDialog();
                 break;
             case R.id.locationLay:
-//                if (profileMap.get(Constants.TAG_PREMIUM_MEMBER).equals("true") && profileMap.get(Constants.TAG_USERID).equals(GetSet.getUserId())) {
-//                    Intent i = new Intent(ProfileActivity.this, LocationActivity.class);
-//                    i.putExtra("isFrom", "myProfile");
-//                    startActivity(i);
-//                } else {
-//                    Intent p = new Intent(ProfileActivity.this, PremiumDialog.class);
-//                    startActivity(p);
-//                }
+                if (profileMap.get(Constants.TAG_PREMIUM_MEMBER_STATUS).equals("1")
+                //        && profileMap.get(Constants.TAG_ID).equals(GetSet.getUserId())
+                ) {
+                    Intent i = new Intent(ProfileActivity.this, LocationActivity.class);
+                    i.putExtra("isFrom", "myProfile");
+                    startActivity(i);
+                } else {
+                    Intent p = new Intent(ProfileActivity.this, PremiumDialog.class);
+                    startActivity(p);
+                }
                 break;
         }
     }
@@ -544,6 +653,8 @@ public class ProfileActivity extends AppCompatActivity implements NetworkReceive
         RecyclerView recyclerView;
         EditText edtSearch;
 
+        Log.d(TAG,"jigar the open dialog have select items are "+arrayListResponseInterestNumber.toString());
+
         dialogInterest = new Dialog(ProfileActivity.this);
         dialogInterest.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialogInterest.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
@@ -557,10 +668,13 @@ public class ProfileActivity extends AppCompatActivity implements NetworkReceive
         recyclerView = dialogInterest.findViewById(R.id.recyclerView);
         edtSearch = dialogInterest.findViewById(R.id.edtSearch);
         btnNext = dialogInterest.findViewById(R.id.btnNext);
+        btnFinish = dialogInterest.findViewById(R.id.btnFinish);
         btnCancel = dialogInterest.findViewById(R.id.btnCancel);
         btnSearch = dialogInterest.findViewById(R.id.btnSearch);
         progress = dialogInterest.findViewById(R.id.interestProgress);
 
+        interestAdapter = new InterestAdapter(getApplication(), interestList);
+        recyclerView.setAdapter(interestAdapter);
 
     //    btnNext.setText(R.string.save);
         edtSearch.addTextChangedListener(new TextWatcher() {
@@ -592,25 +706,11 @@ public class ProfileActivity extends AppCompatActivity implements NetworkReceive
             }
         });
 
-        btnNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (HowzuApplication.isNetworkAvailable(ProfileActivity.this)) {
-                    if (selectedList.size() > 0)
-                        updateProfile();
-                    else
-                        Toast.makeText(getApplicationContext(), "Select anyone interest", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getApplicationContext(), getString(R.string.network_failure), Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
 
         progress.setVisibility(View.VISIBLE);
         progress.spin();
-        interestAdapter = new InterestAdapter(getApplicationContext(), interestList);
-        recyclerView.setAdapter(interestAdapter);
-        interestAdapter.notifyDataSetChanged();
+
+        dialogInterest.show();
 
 //
 //        StringRequest req = new StringRequest(Request.Method.POST, Constants.API_ADMIN_DATAS,
@@ -680,6 +780,27 @@ public class ProfileActivity extends AppCompatActivity implements NetworkReceive
 
         //dialogInterest.show();
 
+        btnFinish.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (HowzuApplication.isNetworkAvailable(ProfileActivity.this)) {
+                    if (selectedList.size() > 0)
+                        updateProfile();
+                    else
+                        Toast.makeText(getApplicationContext(), "Select anyone interest", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), getString(R.string.network_failure), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        if (!dialogInterest.isShowing()) {
+            dialogInterest.show();
+        }
+        progress.setVisibility(View.GONE);
+        progress.stopSpinning();
+
+
+
     }
 
     public void updateProfile() {
@@ -691,11 +812,11 @@ public class ProfileActivity extends AppCompatActivity implements NetworkReceive
                             pd.dismiss();
                         }
                         try {
-                            Log.v(TAG, "saveSettingsRes=" + res);
+                            Log.v(TAG, "jigar the profile interest submit response we have =" + res);
                             JSONObject json = new JSONObject(res);
                             if (DefensiveClass.optString(json, Constants.TAG_STATUS).equalsIgnoreCase("true")) {
                                 editor.putString(Constants.TAG_PEOPLE_FOR, peopleForId);
-                                editor.putString(Constants.TAG_INTEREST, strInterets);
+                                editor.putString(Constants.TAG_INTEREST_PLAN, strInterets);
                                 editor.commit();
                                 if (dialogInterest != null) {
                                     dialogInterest.dismiss();
@@ -719,26 +840,31 @@ public class ProfileActivity extends AppCompatActivity implements NetworkReceive
                 if (pd != null && pd.isShowing()) {
                     pd.dismiss();
                 }
+                Log.v(TAG, "jigar the volley error profile interest submit response we have =" +error);
+
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
             }
 
         }) {
 
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> map = new HashMap<String, String>();
-                map.put(Constants.TAG_AUTHORIZATION, pref.getString(Constants.TAG_AUTHORIZATION, ""));
-                return map;
-            }
+//            @Override
+//            public Map<String, String> getHeaders() throws AuthFailureError {
+//                Map<String, String> map = new HashMap<String, String>();
+//                map.put(Constants.TAG_AUTHORIZATION, pref.getString(Constants.TAG_AUTHORIZATION, ""));
+//                return map;
+//            }
 
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> map = new HashMap<String, String>();
-                map.put(Constants.TAG_USERID, GetSet.getUserId());
+//                map.put(Constants.TAG_USERID, GetSet.getUseridLikeToken());
+                map.put(Constants.TAG_USERID, pref.getString(Constants.TAG_TOKEN_LIKE_USER_ID, null));
                 JSONArray intjson = new JSONArray(selectedList);
                 strInterets = String.valueOf(intjson);
-                map.put(Constants.TAG_INTERESTS, strInterets);
-                Log.v(TAG, "saveSettingsParams=" + map);
+                map.put(Constants.TAG_INTEREST_PLAN, strInterets);
+//                Log.v(TAG, "saveSettingsParams=" + map);
+                Log.v(TAG, "jigar the profile interest paramter we have is  " + map);
+
                 return map;
             }
         };
@@ -784,6 +910,21 @@ public class ProfileActivity extends AppCompatActivity implements NetworkReceive
                 holder.txtInterest.setTextColor(ContextCompat.getColor(mContext, R.color.primaryText));
             }
 
+            Log.d(TAG,"jigar the list each element is "+interest.get(Constants.TAG_ID));
+
+            if(arrayListResponseInterestNumber.contains(interest.get(Constants.TAG_ID)))
+            {
+                Log.d(TAG,"jigar the inside the check bcz"+ interest.get(Constants.TAG_ID)+" list response is "+arrayListResponseInterestNumber.toString());
+
+                holder.btnInterest.performClick();
+                holder.txtInterest.setTextColor(ContextCompat.getColor(mContext, R.color.colorPrimary));
+
+//                setUI(holder.btnInterest, holder.txtInterest, holder.btnInterest.isChecked(), position);
+
+            }
+
+
+
             holder.btnInterest.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -826,12 +967,20 @@ public class ProfileActivity extends AppCompatActivity implements NetworkReceive
         private void setUI(CheckBox btnInterest, TextView txtInterest, boolean checked, int position) {
             btnInterest.setChecked(checked);
             if (checked) {
-                selectedList.add(Items.get(position).get(Constants.TAG_NAME));
+                selectedList.add(Items.get(position).get(Constants.TAG_ID));
                 txtInterest.setTextColor(ContextCompat.getColor(mContext, R.color.colorPrimary));
             } else {
-                selectedList.remove(Items.get(position).get(Constants.TAG_NAME));
+                selectedList.remove(Items.get(position).get(Constants.TAG_ID));
                 txtInterest.setTextColor(ContextCompat.getColor(mContext, R.color.primaryText));
             }
+//
+//            if (checked) {
+//                selectedList.add(Items.get(position).get(Constants.TAG_NAME));
+//                txtInterest.setTextColor(ContextCompat.getColor(mContext, R.color.colorPrimary));
+//            } else {
+//                selectedList.remove(Items.get(position).get(Constants.TAG_NAME));
+//                txtInterest.setTextColor(ContextCompat.getColor(mContext, R.color.primaryText));
+//            }
             if (btnNext != null) {
                 btnNext.setVisibility(View.VISIBLE);
             }

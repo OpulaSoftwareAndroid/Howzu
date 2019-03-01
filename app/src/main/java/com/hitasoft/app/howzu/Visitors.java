@@ -312,7 +312,7 @@ public class Visitors extends Fragment implements View.OnClickListener {
                     case R.id.user_image:
                         if (GetSet.isPremium()) {
                             Intent p = new Intent(getActivity(), MainViewProfileDetailActivity.class);
-                            p.putExtra("from", "visitors");
+                            p.putExtra("strVisitingIdLikeToken", "visitors");
                             p.putExtra("strFriendID", visitorList.get(getAdapterPosition()).get(Constants.TAG_USERID));
                             startActivity(p);
                         } else {

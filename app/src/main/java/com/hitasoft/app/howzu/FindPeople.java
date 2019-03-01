@@ -319,14 +319,14 @@ public class FindPeople extends Fragment implements View.OnClickListener {
                 switch (v.getId()) {
                     case R.id.user_image:
                         Intent p = new Intent(getActivity(), MainViewProfileDetailActivity.class);
-                        p.putExtra("from", "home");
+                        p.putExtra("strVisitingIdLikeToken", "home");
                         // here friend id means user own id
                         // and register id means friend id whos profile we are visiting
                         p.putExtra(Constants.TAG_FRIEND_ID, GetSet.getUseridLikeToken());
                         p.putExtra(Constants.TAG_PROFILE_VISITOR_ID_LIKE_TOKEN,  peopleList.get(getAdapterPosition()).get(Constants.TAG_USERID));
                         p.putExtra(Constants.TAG_REGISTERED_ID, peopleList.get(getAdapterPosition()).get(Constants.TAG_REGISTERED_ID));
 
-                        p.putExtra("from", "other");
+                        p.putExtra("strVisitingIdLikeToken", "other");
                         p.putExtra("strFriendID", peopleList.get(getAdapterPosition()).get(Constants.TAG_USERID));
                         startActivity(p);
                         break;

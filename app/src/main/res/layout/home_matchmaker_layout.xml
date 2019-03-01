@@ -2,7 +2,15 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
     android:fillViewport="true">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:id="@+id/linearLayoutMainHome"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -18,8 +26,7 @@
             <android.support.v4.view.ViewPager
                 android:id="@+id/viewPager"
                 android:layout_width="match_parent"
-                android:layout_height="350dp"
-                android:background="@drawable/user_placeholder" />
+                android:layout_height="350dp" />
 
             <LinearLayout
                 android:id="@+id/SliderDots"
@@ -221,6 +228,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="12dp"
                     android:layout_marginTop="12dp"
+                    android:id="@+id/linearLayoutMyMemberLabel"
                     android:layout_marginRight="12dp"
                     android:visibility="visible">
 
@@ -369,7 +377,7 @@
                         </LinearLayout>
 
                         <LinearLayout
-                            android:id="@+id/lin_two"
+                            android:id="@+id/linearLayoutSendVideoDate"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
@@ -400,7 +408,7 @@
                         </LinearLayout>
 
                         <LinearLayout
-                            android:id="@+id/lin_three"
+                            android:id="@+id/linearLayoutSendDinnerRequest"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
@@ -435,5 +443,6 @@
             </LinearLayout>
 
         </FrameLayout>
+    </LinearLayout>
     </LinearLayout>
 </ScrollView>

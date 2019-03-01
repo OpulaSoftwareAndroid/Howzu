@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -52,9 +53,11 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
     public static ProgressDialog pd;
     private ProgressWheel progress;
     SharedPreferences pref;
+    String strUserName,strUserAge,strUserGender,strUserBio;
     SharedPreferences.Editor editor;
     HashMap<String, String> profileMap = new HashMap<String, String>();
     String userId;
+
     private String gender;
 
     @Override
@@ -67,15 +70,22 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
-
-        findViews();
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
         pref = getApplicationContext().getSharedPreferences("ChatPref",
                 MODE_PRIVATE);
         editor = pref.edit();
         userId = getIntent().getExtras().getString("strFriendID");
+        strUserName=getIntent().getExtras().getString(Constants.TAG_NEW_USERNAME);
+        strUserAge=getIntent().getExtras().getString(Constants.TAG_AGE);
+        strUserGender=getIntent().getExtras().getString(Constants.TAG_GENDER);
+        strUserBio=getIntent().getExtras().getString(Constants.TAG_BIO);
+//        strUserEmail=getIntent().getExtras().getString(Constants.TAG_EMAIL);
+        Log.d(TAG,"jigar the profile after edit is"+strUserGender);
 
-        getProfile();
+        findViews();
+
+      //  getProfile();
     }
 
     private void findViews() {
@@ -84,27 +94,50 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         pd.setMessage(getString(R.string.please_wait));
         pd.setCanceledOnTouchOutside(false);
         pd.setCancelable(false);
-
+        LinearLayout linearLayoutEmailIDDetails=findViewById(R.id.linearLayoutEmailIDDetails);
+        linearLayoutEmailIDDetails.setVisibility(View.GONE);
         progress = (ProgressWheel) findViewById(R.id.progress);
         actionbar = (RelativeLayout) findViewById(R.id.actionbar);
         backbtn = (ImageView) findViewById(R.id.backbtn);
         toolbarTitle = (CustomTextView) findViewById(R.id.toolbarTitle);
         edtName = (CustomEditText) findViewById(R.id.edtName);
         txtEmail = (CustomTextView) findViewById(R.id.txtEmail);
+        txtEmail.setVisibility(View.GONE);
         btnSave = (CustomTextView) findViewById(R.id.btnSave);
         edtAge = (CustomEditText) findViewById(R.id.edtAge);
         btnMale = (AppCompatRadioButton) findViewById(R.id.btnMale);
         btnFemale = (AppCompatRadioButton) findViewById(R.id.btnFemale);
         aboutLay = (TextInputLayout) findViewById(R.id.aboutLay);
         edtAbout = (CustomEditText) findViewById(R.id.edtAbout);
-        requestFocus(edtName);
-        edtName.setSelection(0);
+//        requestFocus(edtName);
+//        edtName.setSelection(0);
         toolbarTitle.setText(R.string.edit_profile);
         btnMale.setOnClickListener(this);
         btnFemale.setOnClickListener(this);
         backbtn.setOnClickListener(this);
         btnSave.setOnClickListener(this);
+        edtName.setText(strUserName);
+//        txtEmail.setText(strUserEmail);
+        txtEmail.setVisibility(View.GONE);
+        edtAge.setText(strUserAge);
+        gender = strUserGender;
+
+//        edtAbout.setText("" + profileMap.get(Constants.TAG_BIO));
+        requestFocus(edtName);
+        edtName.setSelection(("" + edtName.getText()).length());
+
+        edtAbout.setText(strUserBio);
+        if (gender.equalsIgnoreCase("male")) {
+            btnMale.setChecked(true);
+            btnFemale.setChecked(false);
+            btnFemale.setVisibility(View.GONE);
+        } else {
+            btnMale.setChecked(false);
+            btnFemale.setChecked(true);
+            btnMale.setVisibility(View.GONE);
+        }
         // register connection status listener
+
         HowzuApplication.getInstance().setConnectivityListener(this);
     }
 
@@ -170,12 +203,12 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
 
         }) {
 
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> map = new HashMap<String, String>();
-                map.put(Constants.TAG_AUTHORIZATION, pref.getString(Constants.TAG_AUTHORIZATION, ""));
-                return map;
-            }
+//            @Override
+//            public Map<String, String> getHeaders() throws AuthFailureError {
+//                Map<String, String> map = new HashMap<String, String>();
+//                map.put(Constants.TAG_AUTHORIZATION, pref.getString(Constants.TAG_AUTHORIZATION, ""));
+//                return map;
+//            }
 
             @Override
             protected Map<String, String> getParams() {
@@ -206,9 +239,11 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         if (gender.equalsIgnoreCase("male")) {
             btnMale.setChecked(true);
             btnFemale.setChecked(false);
+            btnFemale.setVisibility(View.GONE);
         } else {
             btnMale.setChecked(false);
             btnFemale.setChecked(true);
+            btnMale.setVisibility(View.GONE);
         }
     }
 
@@ -240,10 +275,12 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
                 } else if (Integer.parseInt(edtAge.getText().toString()) < 18) {
                     edtAge.setError("Please fill valid age");
                     requestFocus(edtAge);
-                } else if (Integer.parseInt(edtAge.getText().toString()) > Integer.parseInt(GetSet.getMaxAge())) {
-                    edtAge.setError("Please enter age between 18 and " + GetSet.getMaxAge());
-                    requestFocus(edtAge);
-                } else {
+                }
+//                else if (Integer.parseInt(edtAge.getText().toString()) > Integer.parseInt(GetSet.getMaxAge())) {
+//                    edtAge.setError("Please enter age between 18 and " + GetSet.getMaxAge());
+//                    requestFocus(edtAge);
+//                }
+                else {
                     saveProfile();
                 }
                 break;
@@ -259,25 +296,32 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
                             pd.dismiss();
                         }
                         try {
-                            Log.v(TAG, "saveSettingsRes=" + res);
+                            Log.v(TAG, "jigar the save Settings response have =" + res);
+
                             JSONObject json = new JSONObject(res);
                             if (DefensiveClass.optString(json, Constants.TAG_STATUS).equalsIgnoreCase("true")) {
-                                GetSet.setUserName(edtName.getText().toString());
-                                editor.putString(Constants.TAG_USERID, GetSet.getUserId());
-                                editor.putString(Constants.TAG_USERNAME, GetSet.getUserName());
-                                editor.putString(Constants.TAG_GENDER, gender);
-                                editor.putString(Constants.TAG_AGE, edtAge.getText().toString());
-                                editor.putString(Constants.TAG_BIO, !TextUtils.isEmpty("" + edtAbout.getText()) ? "" + edtAbout.getText() : "");
-                                editor.commit();
+//                                GetSet.setUserName(edtName.getText().toString());
+//                                editor.putString(Constants.TAG_TOKEN_LIKE_USER_ID, GetSet.getUseridLikeToken());
+//                                editor.putString(Constants.TAG_USERNAME, GetSet.getUserName());
+//                                editor.putString(Constants.TAG_GENDER, gender);
+//                                editor.putString(Constants.TAG_AGE, edtAge.getText().toString());
+//                                editor.putString(Constants.TAG_BIO, !TextUtils.isEmpty("" + edtAbout.getText()) ? "" + edtAbout.getText() : "");
+//                                editor.commit();
                                 onBackPressed();
                             } else if (DefensiveClass.optString(json, Constants.TAG_STATUS).equalsIgnoreCase("error")) {
                                 CommonFunctions.disabledialog(EditProfileActivity.this, "Error", json.getString("message"));
                             }
                         } catch (JSONException e) {
+                            Log.v(TAG, "jigar the json save Settings response have " +e);
+
                             e.printStackTrace();
                         } catch (NullPointerException e) {
+                            Log.v(TAG, "jigar the null pointer save Settings response have " +e);
+
                             e.printStackTrace();
                         } catch (Exception e) {
+                            Log.v(TAG, "jigar the main exception save Settings response have " +e);
+
                             e.printStackTrace();
                         }
                     }
@@ -288,27 +332,28 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
                 if (pd != null && pd.isShowing()) {
                     pd.dismiss();
                 }
-                VolleyLog.d(TAG, "Error: " + error.getMessage());
+                VolleyLog.d(TAG, "jigar the volley save Error: " + error.getMessage());
             }
 
         }) {
 
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> map = new HashMap<String, String>();
-                map.put(Constants.TAG_AUTHORIZATION, pref.getString(Constants.TAG_AUTHORIZATION, ""));
-                return map;
-            }
+//            @Override
+//            public Map<String, String> getHeaders() throws AuthFailureError {
+//                Map<String, String> map = new HashMap<String, String>();
+//                map.put(Constants.TAG_AUTHORIZATION, pref.getString(Constants.TAG_AUTHORIZATION, ""));
+//                return map;
+//            }
 
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> map = new HashMap<String, String>();
-                map.put(Constants.TAG_USERID, GetSet.getUserId());
+
+                map.put(Constants.TAG_USERID, pref.getString(Constants.TAG_TOKEN_LIKE_USER_ID, null));
                 map.put(Constants.TAG_USERNAME, edtName.getText().toString());
                 map.put(Constants.TAG_AGE, edtAge.getText().toString());
                 map.put(Constants.TAG_GENDER, gender);
                 map.put(Constants.TAG_BIO, !TextUtils.isEmpty("" + edtAbout.getText()) ? "" + edtAbout.getText() : "");
-                Log.v(TAG, "saveSettingsParams=" + map);
+                Log.v(TAG, "jigar the save Settings Params=" + map);
                 return map;
             }
         };
@@ -348,7 +393,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         finish();
         ProfileActivity.activity.finish();
         Intent e = new Intent(EditProfileActivity.this, ProfileActivity.class);
-        e.putExtra("from", "myprofile");
+        e.putExtra("strVisitingIdLikeToken", "myprofile");
         e.putExtra("strFriendID", GetSet.getUserId());
         e.putExtra("sendMatch", "");
         startActivity(e);

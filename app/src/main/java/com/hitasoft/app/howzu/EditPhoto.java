@@ -193,7 +193,7 @@ public class EditPhoto extends AppCompatActivity implements View.OnClickListener
         finish();
         ProfileActivity.activity.finish();
         Intent e = new Intent(EditPhoto.this, ProfileActivity.class);
-        e.putExtra("from", "myprofile");
+        e.putExtra("strVisitingIdLikeToken", "myprofile");
         e.putExtra("strFriendID", GetSet.getUserId());
         e.putExtra("sendMatch", "");
         startActivity(e);
@@ -577,11 +577,11 @@ public class EditPhoto extends AppCompatActivity implements View.OnClickListener
                                     editor.putString(Constants.TAG_USERIMAGE, userImage);
                                     editor.commit();
                                 }
-                                /*if (from.equals("delete") || from.equals("default")){
+                                /*if (strVisitingIdLikeToken.equals("delete") || strVisitingIdLikeToken.equals("default")){
                                     finish();
                                     MainViewProfileDetailActivity.activity.finish();
                                     Intent e = new Intent(EditPhoto.this, MainViewProfileDetailActivity.class);
-                                    e.putExtra("from", "myprofile");
+                                    e.putExtra("strVisitingIdLikeToken", "myprofile");
                                     e.putExtra("strFriendID", GetSet.getUserId());
                                     e.putExtra("sendMatch", "");
                                     startActivity(e);
@@ -702,7 +702,7 @@ public class EditPhoto extends AppCompatActivity implements View.OnClickListener
                 finish();
                 ProfileActivity.activity.finish();
                 Intent e = new Intent(EditPhoto.this, ProfileActivity.class);
-                e.putExtra("from", "myprofile");
+                e.putExtra("strVisitingIdLikeToken", "myprofile");
                 e.putExtra("strFriendID", GetSet.getUserId());
                 e.putExtra("sendMatch", "");
                 startActivity(e);

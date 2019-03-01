@@ -145,9 +145,9 @@ public class MainNewLoginActivity extends AppCompatActivity implements View.OnCl
 
 
     public void userLogin() {
-        CommonFunctions.showProgressDialog2(MainNewLoginActivity.this);
+        CommonFunctions.showProgressDialog(MainNewLoginActivity.this);
         if (CommonFunctions.isNetwork(Objects.requireNonNull(this))) {
-            CommonFunctions.showProgressDialog2(this);
+            CommonFunctions.showProgressDialog(this);
             StringRequest loginReq = new StringRequest(Request.Method.POST, Constants.API_SIGNIN,
                     new Response.Listener<String>() {
                         @Override
@@ -159,7 +159,7 @@ public class MainNewLoginActivity extends AppCompatActivity implements View.OnCl
                                 String status = results.getString("status");
                                 if (status.equalsIgnoreCase("true")) {
 
-                                    CommonFunctions.hideProgressDialog2(MainNewLoginActivity.this);
+                                    CommonFunctions.hideProgressDialog(MainNewLoginActivity.this);
                                     JSONObject values = results.getJSONObject(Constants.TAG_PEOPLES);
 
 
@@ -253,7 +253,7 @@ public class MainNewLoginActivity extends AppCompatActivity implements View.OnCl
                                 {
                                     String strMessage=results.getString(Constants.TAG_MESSAGE);
                                     Toast.makeText(MainNewLoginActivity.this,strMessage,Toast.LENGTH_LONG).show();
-                                    CommonFunctions.hideProgressDialog2(MainNewLoginActivity.this);
+                                    CommonFunctions.hideProgressDialog(MainNewLoginActivity.this);
                                 }
 
 
@@ -319,7 +319,7 @@ public class MainNewLoginActivity extends AppCompatActivity implements View.OnCl
             HowzuApplication.getInstance().addToRequestQueue(loginReq, "");
         } else {
             Toast.makeText(this, getString(R.string.network_error), Toast.LENGTH_SHORT).show();
-            CommonFunctions.hideProgressDialog2(MainNewLoginActivity.this);
+            CommonFunctions.hideProgressDialog(MainNewLoginActivity.this);
 
 
         }

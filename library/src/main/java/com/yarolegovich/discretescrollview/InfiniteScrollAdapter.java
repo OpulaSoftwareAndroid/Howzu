@@ -53,7 +53,8 @@ public class InfiniteScrollAdapter<T extends RecyclerView.ViewHolder> extends Re
 
     @Override
     public void onBindViewHolder(@NonNull T holder, int position) {
-        if (isResetRequired(position)) {
+        if (isResetRequired(position))
+        {
             int resetPosition = CENTER + mapPositionToReal(layoutManager.getCurrentPosition());
             setPosition(resetPosition);
             return;

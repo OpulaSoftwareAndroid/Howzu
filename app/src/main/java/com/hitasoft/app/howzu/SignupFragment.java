@@ -206,7 +206,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
             ActivityCompat.requestPermissions(getActivity(), new String[]{ACCESS_COARSE_LOCATION},
                     PERMISSION_ACCESS_COARSE_LOCATION);
         } else {
-            // setLocationSettings("from start");
+            // setLocationSettings("strVisitingIdLikeToken start");
         }
 
         dialog = new ProgressDialog(getActivity());
@@ -1357,7 +1357,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                                 editor.commit();
 
                                 if (dialogType.equalsIgnoreCase("updatePeopleFor")) {
-                                    /*Set User Image from FACEBOOK*/
+                                    /*Set User Image strVisitingIdLikeToken FACEBOOK*/
                                     if (facebookId != null && !facebookId.equalsIgnoreCase("")) {
                                         GetSet.setImageUrl(profileImage);
                                         editor.putString(Constants.TAG_USERIMAGE, profileImage);

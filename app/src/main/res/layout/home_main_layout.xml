@@ -129,18 +129,19 @@
                     android:paddingLeft="4dp"
                     android:src="@drawable/ic_leftarrow" />
 
-                <ImageView
-                    android:layout_width="45dp"
-                    android:layout_height="45dp"
-                    android:id="@+id/imageViewAddComments"
-                    android:layout_margin="3dp"
-                    android:src="@drawable/ic_like" />
+                <!--<ImageView-->
+                    <!--android:layout_width="45dp"-->
+                    <!--android:layout_height="45dp"-->
+                    <!--android:id="@+id/imageViewAddComments"-->
+                    <!--android:layout_margin="3dp"-->
+                    <!--android:src="@drawable/ic_like" />-->
                 <ImageView
                     android:layout_width="45dp"
                     android:layout_height="45dp"
                     android:id="@+id/imageViewShowComments"
                     android:layout_margin="3dp"
                     android:src="@drawable/ic_comment" />
+
 
                 <Switch
                     android:id="@+id/chkNotification"
@@ -214,16 +215,14 @@
         <com.github.tommykw.tagview.TagView
             android:id="@+id/tagview"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/black"
+            android:layout_height="wrap_content"
             app:background_color="@color/black"
             app:background="@drawable/black_curve_background"
-            android:layout_marginBottom="20dp"
             android:gravity="center"
-            android:layout_margin="20dp"
+            android:layout_margin="10dp"
             app:corner_radius="8dp"
             app:horizontal_spacing="14dp"
-            app:left_drawable="@drawable/float_left_drawable_sized"
+            app:left_drawable="@drawable/comment_logo"
             app:left_drawable_padding="4dp"
             app:sort_type="asc"
             app:stroke_color="@color/gray"
@@ -232,20 +231,55 @@
             app:text_font_size="6sp"
             app:vertical_spacing="14dp" />
 
-        <!--<com.hitasoft.app.customclass.BubbleLayout-->
-            <!--android:id="@+id/bubble_layout"-->
+<LinearLayout
+    android:layout_width="match_parent"
+    android:background="@color/dark_transparent"
+    android:id="@+id/linearLayoutMainChips"
+    android:layout_centerInParent="true"
+    android:gravity="center"
+    android:layout_height="200dp">
+        <com.pchmn.materialchips.ChipsInput
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/chips_input"
+            app:labelColor="@android:color/white"
+            android:cursorVisible="false"
+            android:layout_margin="20dp"
+            app:avatarIcon="@drawable/avatar"
+            app:chip_labelColor="@color/white"
+            android:editable="false"
+            app:chip_hasAvatarIcon="true"
+            app:textColor="@color/white"
+            app:chip_backgroundColor="@color/black"
+            android:inputType="none"
+            android:layout_centerInParent="true"
+            app:backgroundColor="@android:color/holo_blue_light"
+            app:deletable="true"
+            app:deleteIconColor="@android:color/white" />
+</LinearLayout>
+        <!--<com.pchmn.materialchips.ChipView-->
             <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-             <!--app:bubbleview_maxSpeed="3dp"-->
-            <!--app:bubbleview_minSpeed="1dp"-->
-            <!--app:bubbleview_padding="10dp" />-->
-
+            <!--android:layout_height="wrap_content"-->
+            <!--android:id="@+id/chip_view"-->
+            <!--app:labelColor="@android:color/white"-->
+            <!--app:avatarIcon="@drawable/avatar"-->
+            <!--app:backgroundColor="@android:color/holo_blue_light"-->
+            <!--app:deletable="true"-->
+            <!--app:deleteIconColor="@android:color/white" />-->
 
 
     </RelativeLayout>
 
 
 
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_alignParentBottom="true"
+    android:layout_height="wrap_content">
+    <include
+        android:id="@+id/layoutBottomCommentSheet"
+        layout="@layout/bottom_comment_sheet" />
 
+</LinearLayout>
 
 </RelativeLayout>

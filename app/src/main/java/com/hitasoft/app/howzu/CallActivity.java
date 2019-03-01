@@ -225,6 +225,9 @@ public class CallActivity extends AppCompatActivity implements View.OnClickListe
         type = getIntent().getExtras().getString("type");
         from = getIntent().getExtras().getString("from");
 
+        Log.d(TAG,"jigar the call activity type have "+type);
+        Log.d(TAG,"jigar the call activity from have "+from);
+
         if (!checkPermissions()) {
             ActivityCompat.requestPermissions(CallActivity.this, new String[]{CAMERA, RECORD_AUDIO, READ_PHONE_STATE, WAKE_LOCK}, 101);
         } else {
@@ -277,12 +280,14 @@ public class CallActivity extends AppCompatActivity implements View.OnClickListe
                 imgUrl = getIntent().getExtras().getString(Constants.TAG_IMAGE_URL);
                 toID = getIntent().getExtras().getString(Constants.TAG_USERID);
             } catch (Exception e) {
+                Log.d(TAG,"jigar the exception main call activity type have "+e);
+
                 e.printStackTrace();
             }
 
             PowerManager pm = (PowerManager) getApplicationContext().getSystemService(Context.POWER_SERVICE);
             boolean isScreenOn = pm.isScreenOn();
-            Log.e("screen on", "screen on" + isScreenOn);
+            Log.e("jigar screen on", "screen on" + isScreenOn);
             if (!isScreenOn) {
                 wl = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP | PowerManager.ON_AFTER_RELEASE, "MyLock");
                 wl.acquire(35 * 1000L /*10 minutes*/);
@@ -324,6 +329,7 @@ public class CallActivity extends AppCompatActivity implements View.OnClickListe
             imgUrl = data.get(Constants.TAG_USERIMAGE);
 
             arrow.setVisibility(View.VISIBLE);
+            Log.d(TAG,"jigar the main call data activity type have "+data.toString());
 
 
             toneGenerator = new ToneGenerator(AudioManager.STREAM_VOICE_CALL, 100);
@@ -343,7 +349,7 @@ public class CallActivity extends AppCompatActivity implements View.OnClickListe
                     .error(R.drawable.user_placeholder)
                     .into(bgImg);
 
-            Log.d(TAG, "getsetImgURl: " + GetSet.getImageUrl());
+            Log.d(TAG, "jigar getsetImgURl: " + GetSet.getImageUrl());
             Picasso.with(this)
                     .load(GetSet.getImageUrl())
                     .placeholder(R.drawable.user_placeholder)
@@ -497,7 +503,7 @@ public class CallActivity extends AppCompatActivity implements View.OnClickListe
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String res) {
-                        Log.v(TAG, "sendChatRes" + res);
+                        Log.v(TAG, "jigar the calling api response we have " + res);
                         try {
                             JSONObject json = new JSONObject(res);
                             String response = DefensiveClass.optString(json, Constants.TAG_STATUS);
@@ -507,10 +513,16 @@ public class CallActivity extends AppCompatActivity implements View.OnClickListe
                                 Toast.makeText(CallActivity.this, json.getString("message"), Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
+                            Log.v(TAG, "jigar the json error  in calling api response we have " + e);
+
                             e.printStackTrace();
                         } catch (NullPointerException e) {
+                            Log.v(TAG, "jigar the null pointer error  in calling api response we have " + e);
+
                             e.printStackTrace();
                         } catch (Exception e) {
+                            Log.v(TAG, "jigar the main exception in calling api response we have " + e);
+
                             e.printStackTrace();
                         }
                     }
@@ -519,23 +531,25 @@ public class CallActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
+                Log.v(TAG, "jigar the error in calling api response we have " + error);
+
             }
 
         }) {
 
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> map = new HashMap<String, String>();
-                map.put(Constants.TAG_AUTHORIZATION, pref.getString(Constants.TAG_AUTHORIZATION, ""));
-                Log.i(TAG, "getHeaders: " + map);
-                return map;
-            }
+//            @Override
+//            public Map<String, String> getHeaders() throws AuthFailureError {
+//                Map<String, String> map = new HashMap<String, String>();
+//                map.put(Constants.TAG_AUTHORIZATION, pref.getString(Constants.TAG_AUTHORIZATION, ""));
+//                Log.i(TAG, "getHeaders: " + map);
+//                return map;
+//            }
 
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> map = new HashMap<String, String>();
 
-                map.put(Constants.TAG_FROM_ID, GetSet.getUserId());
+                map.put(Constants.TAG_FROM_ID, GetSet.getUseridLikeToken());
                 map.put(Constants.TAG_TO_ID, data.get(Constants.TAG_USERID));
                 map.put(Constants.TAG_CHATID, data.get(Constants.TAG_CHAT_ID));
                 map.put(Constants.TAG_TIMESTAMP, String.valueOf(System.currentTimeMillis() / 1000L));
@@ -544,6 +558,8 @@ public class CallActivity extends AppCompatActivity implements View.OnClickListe
                 } else {
                     map.put(Constants.TAG_TYPE, from);
                 }
+                Log.v(TAG, "jigar the params in calling api response we have " + map);
+
                 Log.v(TAG, "sendChatParams" + map);
                 return map;
             }
@@ -559,7 +575,7 @@ public class CallActivity extends AppCompatActivity implements View.OnClickListe
         toast.show();
     }
 
-    // Disconnect from remote resources, dispose of local resources, and exit.
+    // Disconnect strVisitingIdLikeToken remote resources, dispose of local resources, and exit.
     public void disconnect() {
         isInCall = false;
         SignallingClient.getInstance().close(chatid);
@@ -639,7 +655,7 @@ public class CallActivity extends AppCompatActivity implements View.OnClickListe
 
 
     // This method is called when the audio manager reports audio device change,
-    // e.g. from wired headset to speakerphone.
+    // e.g. strVisitingIdLikeToken wired headset to speakerphone.
     private void onAudioManagerDevicesChanged(
             final AppRTCAudioManager.AudioDevice device, final Set<AppRTCAudioManager.AudioDevice> availableDevices) {
         Log.v(TAG, "onAudioManagerDevicesChanged: " + availableDevices + ", "
@@ -919,19 +935,19 @@ public class CallActivity extends AppCompatActivity implements View.OnClickListe
 
         }) {
 
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> map = new HashMap<String, String>();
-                map.put(Constants.TAG_AUTHORIZATION, pref.getString(Constants.TAG_AUTHORIZATION, ""));
-                Log.i(TAG, "getHeaders: " + map);
-                return map;
-            }
+//            @Override
+//            public Map<String, String> getHeaders() throws AuthFailureError {
+//                Map<String, String> map = new HashMap<String, String>();
+//                map.put(Constants.TAG_AUTHORIZATION, pref.getString(Constants.TAG_AUTHORIZATION, ""));
+//                Log.i(TAG, "getHeaders: " + map);
+//                return map;
+//            }
 
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> map = new HashMap<String, String>();
 
-                map.put(Constants.TAG_FROM_ID, GetSet.getUserId());
+                map.put(Constants.TAG_FROM_ID, GetSet.getUseridLikeToken());
                 if (type.equals("receive")) {
                     map.put(Constants.TAG_TO_ID, toID);
                 } else {
@@ -976,18 +992,18 @@ public class CallActivity extends AppCompatActivity implements View.OnClickListe
 
         }) {
 
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> map = new HashMap<String, String>();
-                map.put(Constants.TAG_AUTHORIZATION, pref.getString(Constants.TAG_AUTHORIZATION, ""));
-                Log.i(TAG, "getHeaders: " + map);
-                return map;
-            }
+//            @Override
+//            public Map<String, String> getHeaders() throws AuthFailureError {
+//                Map<String, String> map = new HashMap<String, String>();
+//                map.put(Constants.TAG_AUTHORIZATION, pref.getString(Constants.TAG_AUTHORIZATION, ""));
+//                Log.i(TAG, "getHeaders: " + map);
+//                return map;
+//            }
 
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> map = new HashMap<String, String>();
-                map.put(Constants.TAG_FROM_ID, GetSet.getUserId());
+                map.put(Constants.TAG_FROM_ID, GetSet.getUseridLikeToken());
                 if (from.equals("receive")) {
                     map.put(Constants.TAG_TO_ID, toID);
                 } else {

@@ -43,7 +43,7 @@ public class LikedFragment extends Fragment implements DiscreteScrollView.OnItem
     DiscreteScrollView itemPicker;
     ArrayList<LikedPeopleModel.Info> peopleList;
     InfiniteScrollAdapter infiniteAdapter;
-
+    LikedPeopleAdapter likedPeopleAdapter;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.i(TAG, "onCreateView");
@@ -78,8 +78,9 @@ public class LikedFragment extends Fragment implements DiscreteScrollView.OnItem
                     if (response.body() != null) {
                         if (response.body().getStatus() == 1) {
                             peopleList = (ArrayList<LikedPeopleModel.Info>) response.body().getInfo();
-                            infiniteAdapter = InfiniteScrollAdapter.wrap(new LikedPeopleAdapter(peopleList));
-                            itemPicker.setAdapter(infiniteAdapter);
+                        //    infiniteAdapter = InfiniteScrollAdapter.wrap(new LikedPeopleAdapter(peopleList));
+                            likedPeopleAdapter=new LikedPeopleAdapter(peopleList);
+                            itemPicker.setAdapter(likedPeopleAdapter);
                         } else {
                             Toast.makeText(getContext(), response.body().getMsg(), Toast.LENGTH_LONG).show();
                         }
@@ -198,13 +199,13 @@ public class LikedFragment extends Fragment implements DiscreteScrollView.OnItem
             });
 
             //---------------------------------------------------------------------------------------------------------------------------------
-//---------------------------------Commented until data of user id from GET PROFILE come with data of token ---------------------------------------------------------------
+//---------------------------------Commented until data of user id strVisitingIdLikeToken GET PROFILE come with data of token ---------------------------------------------------------------
             holder.imageViewProfileImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
 
                     Intent p = new Intent(getActivity(), MainViewProfileDetailActivity.class);
-                    p.putExtra("from", "home");
+                    p.putExtra("strVisitingIdLikeToken", "home");
                     p.putExtra(Constants.TAG_FRIEND_ID, String.valueOf(GetSet.getUserId()));
                     p.putExtra(Constants.TAG_PROFILE_VISITOR_ID_LIKE_TOKEN,String.valueOf(data.get(position).getUserIdLikeToken()));
                     p.putExtra(Constants.TAG_REGISTERED_ID, String.valueOf(data.get(position).getRegisterId()));

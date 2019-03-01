@@ -51,8 +51,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     @Override
     public void handleIntent(Intent intent) {
-        Log.d("FCM", "handleIntent =" + intent.getExtras());
-        Log.d("FCM", "Data" + intent.getExtras().getString("data"));
+        Log.d("jigar the FCM", "handleIntent =" + intent.getExtras());
+        Log.d("jigar the FCM data ", "Data" + intent.getExtras().getString("data"));
         try {
             long sendTime = (long) intent.getExtras().get("google.sent_time");
             //  sendTime = sendTime / 1000L;
@@ -68,7 +68,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     //firebase cloud messaging
     private void sendPushNotification(JSONObject data, long sendTime) {
         //optionally we can display the json into log
-        Log.e(TAG, "Notification JSON " + data.toString());
+        Log.e(TAG, "jigar the Notification JSON " + data.toString());
         try {
             //parsing json data
             String title = DefensiveClass.optString(data, "title");

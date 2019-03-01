@@ -124,6 +124,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:id="@+id/linearLayoutEmailIDDetails"
                 android:orientation="vertical">
 
                 <RelativeLayout
@@ -250,7 +251,7 @@
                             android:checked="true"
                             android:paddingStart="0dp"
                             android:text="Male"
-                            android:textColor="@drawable/interest_text_selector"
+                            android:textColor="@color/primaryText"
                             android:textSize="16sp"
                             android:theme="@style/PinkRadioBuButton" />
 
@@ -261,12 +262,13 @@
                             android:layout_marginStart="20dp"
                             android:checked="false"
                             android:text="Female"
-                            android:textColor="@drawable/interest_text_selector"
+                            android:textColor="@color/primaryText"
                             android:textSize="16sp"
                             android:theme="@style/PinkRadioBuButton" />
 
                     </LinearLayout>
 
+                    <!--android:textColor="@drawable/interest_text_selector"-->
                 </LinearLayout>
 
                 <View
@@ -297,6 +299,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingBottom="10dp"
+                    android:visibility="gone"
                     android:paddingTop="10dp"
                     android:text="@string/what_makes_you_stand_out"
                     android:textColor="@color/secondaryText"

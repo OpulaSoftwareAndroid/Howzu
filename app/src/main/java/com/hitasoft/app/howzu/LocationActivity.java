@@ -280,7 +280,7 @@ public class LocationActivity extends AppCompatActivity implements View.OnClickL
                                     finish();
                                     ProfileActivity.activity.finish();
                                     Intent e = new Intent(LocationActivity.this, ProfileActivity.class);
-                                    e.putExtra("from", "myprofile");
+                                    e.putExtra("strVisitingIdLikeToken", "myprofile");
                                     e.putExtra("strFriendID", GetSet.getUserId());
                                     e.putExtra("sendMatch", "");
                                     startActivity(e);

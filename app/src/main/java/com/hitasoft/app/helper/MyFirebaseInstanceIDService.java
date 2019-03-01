@@ -45,7 +45,7 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
     @Override
     public void onTokenRefresh() {
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
-        Log.d(TAG, "Refreshed token: " + refreshedToken);
+        Log.d(TAG, "jigar the firebase Refreshed token: " + refreshedToken);
         storeToken(refreshedToken);
     }
 
@@ -60,7 +60,8 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
 
         if (Constants.pref.getBoolean("isLogged", false)) {
             GetSet.setLogged(true);
-            GetSet.setUserId(Constants.pref.getString("user_id", null));
+      //      GetSet.setUserId(Constants.pref.getString("user_id", null));
+            GetSet.setUseridLikeToken(Constants.pref.getString(Constants.TAG_TOKEN_LIKE_USER_ID, null));
 
             //addDeviceId();
         }
@@ -95,18 +96,18 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
 
         }) {
 
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> map = new HashMap<String, String>();
-                map.put(Constants.TAG_AUTHORIZATION, pref.getString(Constants.TAG_AUTHORIZATION, ""));
-                Log.i(TAG, "getHeaders: " + map);
-                return map;
-            }
+//            @Override
+//            public Map<String, String> getHeaders() throws AuthFailureError {
+//                Map<String, String> map = new HashMap<String, String>();
+//                map.put(Constants.TAG_AUTHORIZATION, pref.getString(Constants.TAG_AUTHORIZATION, ""));
+//                Log.i(TAG, "getHeaders: " + map);
+//                return map;
+//            }
 
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> map = new HashMap<String, String>();
-                map.put(Constants.TAG_USERID, GetSet.getUserId());
+                map.put(Constants.TAG_USERID, GetSet.getUseridLikeToken());
                 map.put(Constants.TAG_DEVICE_TOKEN, token);
                 map.put(Constants.TAG_DEVICE_TYPE, "1");
                 map.put(Constants.TAG_DEVICE_ID, deviceId);

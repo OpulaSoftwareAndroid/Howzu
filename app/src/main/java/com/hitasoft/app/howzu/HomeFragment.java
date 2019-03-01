@@ -1,25 +1,37 @@
 package com.hitasoft.app.howzu;// Created by Hitasoft on 2/17/2015.
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
+import android.text.Editable;
+import android.text.method.KeyListener;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
+import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,10 +39,15 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,21 +60,31 @@ import com.android.volley.toolbox.StringRequest;
 //import com.baidu.mapapi.map.BaiduMap;
 import com.github.tommykw.tagview.DataTransform;
 import com.github.tommykw.tagview.TagView;
+import com.google.android.gms.vision.text.Line;
+import com.hitasoft.app.customclass.CustomEditText;
 import com.hitasoft.app.customclass.RippleBackground;
+import com.hitasoft.app.model.ContactChip;
 import com.hitasoft.app.swipecards.SwipeFlingAdapterView;
 import com.hitasoft.app.utils.CommonFunctions;
 import com.hitasoft.app.utils.Constants;
 import com.hitasoft.app.utils.DefensiveClass;
 import com.hitasoft.app.utils.GetSet;
 import com.hitasoft.app.utils.Item;
+import com.hootsuite.nachos.NachoTextView;
+import com.pchmn.materialchips.ChipView;
+import com.pchmn.materialchips.ChipsInput;
+import com.pchmn.materialchips.adapter.ChipsAdapter;
+import com.pchmn.materialchips.views.ChipsInputEditText;
 import com.squareup.picasso.Picasso;
-import com.yarolegovich.lovelydialog.LovelyTextInputDialog;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -77,6 +104,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener
     public static RelativeLayout linearLayoutSwipeProfileCard;
     public static SwipeFlingAdapterView flingContainer;
     public static ImageView reload,match,customer_care,unmatch,comments;
+    Switch switchGetComment;
     Display display;
     LinearLayout nullLay;
     TextView changeLocation;
@@ -92,17 +120,22 @@ public class HomeFragment extends Fragment implements View.OnClickListener
     SharedPreferences pref;
     SharedPreferences.Editor editor;
     List<Item> arrayListComments = new ArrayList<>();
-    Animation slideUp;
+    Animation slideRighttoLeft;
     public  LinearLayout container;
-    private static String[] labels = {"Hello Bubble", "This is bubble view", "Android", "Github", "Jared", "Bubble with different size", "Yo"};
+    LinearLayout linearLayoutMainChips;
     boolean isClickedCommentFirst=false;
     ImageView open, close;
     LinearLayout myView;
     LinearLayout lin_open;
-
-
+    BottomSheetBehavior sheetBehavior;
+    LinearLayout linearLayoutBottomSheetComment;
     //Slider
-    ImageView imageViewShowComments,imageViewAddComments,imageViewMatchMakerProfile;
+    ImageView imageViewShowComments
+            //, imageViewAddComments
+            ,imageViewMatchMakerProfile;
+    ChipsInput chipsInput;
+
+   // ChipView chip;
     TagView<Item> tags;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -126,41 +159,110 @@ public class HomeFragment extends Fragment implements View.OnClickListener
 
 
 
+        pref = getActivity().getApplicationContext().getSharedPreferences("ChatPref",
+                MODE_PRIVATE);
+        editor = pref.edit();
 
 
         imageViewMatchMakerProfile=getView().findViewById(R.id.imageViewMatchMakerProfile);
-        //        BubbleLayout layout = (BubbleLayout) getView().findViewById(R.id.bubble_layout);
-//
-//        for (String label : labels) {
-//            BubbleView bubbleView = new BubbleView(getActivity());
-//            bubbleView.setText(label);
-//            bubbleView.setGravity(Gravity.CENTER);
-//            bubbleView.setPadding(10, 10, 10, 10);
-//            bubbleView.setTextColor(getContext().getColor(R.color.white));
-//            layout.addViewSortByWidth(bubbleView);
+        imageViewMatchMakerProfile.setOnClickListener(this);
+
+
+       linearLayoutBottomSheetComment=getView().findViewById(R.id.layoutBottomCommentSheet);
+
+//        sheetBehavior = BottomSheetBehavior.strVisitingIdLikeToken(linearLayoutBottomSheetComment);
+
+        EditText customEditTextAddComment=linearLayoutBottomSheetComment.findViewById(R.id.editTextAddBottomComment);
+        linearLayoutBottomSheetComment.setVisibility(View.GONE);
+
+        switchGetComment=getView().findViewById(R.id.chkNotification);
+
+        String bIsNotificationChecked=pref.getString(Constants.TAG_STORED_NOTIFICATION,"");
+        Log.d(TAG,"jigar the switch stored have this  " + bIsNotificationChecked);
+
+        if(!pref.getString(Constants.TAG_STORED_NOTIFICATION,"").equals(""))
+        {
+            String boolIsNotificationActive = pref.getString(Constants.TAG_STORED_NOTIFICATION, "");
+            Log.d(TAG,"jigar the switch stored have this  " + boolIsNotificationActive);
+            //            switchGetComment.setChecked();
+            if(boolIsNotificationActive.equals("true"))
+            {
+                switchGetComment.setChecked(true);
+            }else
+            {
+                switchGetComment.setChecked(false);
+            }
+        }else
+        {
+            switchGetComment.setChecked(false);
+        }
+
+// get ChipsInput view
+
+// build the ContactChip list
+//        List<String> contactList = new ArrayList<>();
+//        contactList.add("hello");
+//        contactList.add("hello");
+//        contactList.add("hello");
+//        contactList.add("hello");
+
+//        for(int i=0;i<contactList.size();i++) {
+//            contactList.add(contactList.get(i));
 //        }
+// pass the ContactChip list
 
-//        TagView tagGroup = (TagView) getView().findViewById(R.id.tag_view);
-////You can add one tag
-////        tagGroup.addTag();
-////You can add multiple tag via ArrayList
-//        tagGroup.addTags(labels);
-//Via string array
-//        addTags(String[] tags);
 
-//        arrayListComments.add(new Item(1, "Looking Gorgeous"));
-//        arrayListComments.add(new Item(2, "Very Nice Pic"));
-//        arrayListComments.add(new Item(3, "Nice One"));
-//        arrayListComments.add(new Item(4, "Awesome Pic Dear"));
-//        arrayListComments.add(new Item(5, "Very Nice Pic"));
-//        arrayListComments.add(new Item(6, "Nice One Dear"));
+        switchGetComment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG,"jigar the switch have this  " + switchGetComment.isChecked());
 
+                editor.putString(Constants.TAG_STORED_NOTIFICATION,String.valueOf(switchGetComment.isChecked()));
+
+                editor.commit();
+
+                callCommentFloater();
+                Log.d(TAG,"jigar the switch stored have this  " + pref.getString(Constants.TAG_STORED_NOTIFICATION, ""));
+
+
+            }
+        });
+
+       // customEditTextAddComment.setText("hello we want edit");
+
+        customEditTextAddComment.setOnKeyListener(new View.OnKeyListener() {
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                // If the event is a key-down event on the "enter" button
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
+                        (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    // Perform action on key press
+                    if(customEditTextAddComment.getText()==null || customEditTextAddComment.getText().toString().equals("") )
+                    {
+                        Toast.makeText(getContext(), "Please Enter Valid Comment", Toast.LENGTH_SHORT).show();
+                    }else {
+                        addNewComment(customEditTextAddComment.getText().toString(), peoplesAry.get(0).get(Constants.TAG_REGISTERED_ID));
+                        customEditTextAddComment.setText("");
+                        hideKeyboardFrom(getContext(),v);
+                    }
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        linearLayoutBottomSheetComment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG,"jigar the bottom sheet is clicked  is ");
+            }
+        });
 
 //        LocalBroadcastManager.getInstance(getContext()).registerReceiver(mMessageReceiver,
 //                new IntentFilter("custom-message"));
         match = getView().findViewById(R.id.match);
         unmatch = getView().findViewById(R.id.unmatch);
         reload = getView().findViewById(R.id.reload);
+        reload.setOnClickListener(this);
         //customer_care = getView().findViewById(R.id.imageViewMatchMakerProfile);
         comments = getView().findViewById(R.id.comments);
         nullLay = getView().findViewById(R.id.nullLay);
@@ -172,8 +274,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener
         lin_open = getView().findViewById(R.id.lin_open);
         myView.setVisibility(View.INVISIBLE);
         close = getView().findViewById(R.id.close);
-        imageViewAddComments = getView().findViewById(R.id.imageViewAddComments);
+        //imageViewAddComments = getView().findViewById(R.id.imageViewAddComments);
         imageViewShowComments = getView().findViewById(R.id.imageViewShowComments);
+        linearLayoutMainChips=getView().findViewById(R.id.linearLayoutMainChips);
+        linearLayoutMainChips.setVisibility(View.GONE);
         getPeopleList();
 
         open.setOnClickListener(new View.OnClickListener() {
@@ -193,6 +297,11 @@ public class HomeFragment extends Fragment implements View.OnClickListener
                 lin_open.setVisibility(View.VISIBLE);
                 myView.setVisibility(View.INVISIBLE);
                 myView.startAnimation(slideDown);
+
+                if(linearLayoutBottomSheetComment.getVisibility()==View.VISIBLE) {
+                    linearLayoutBottomSheetComment.setVisibility(View.GONE);
+                }
+
             }
         });
 
@@ -200,137 +309,18 @@ public class HomeFragment extends Fragment implements View.OnClickListener
         imageViewShowComments.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                close.performClick();
-                Log.d(TAG,"jigar the view comment friend id is "
-                        + peoplesAry.get(0).get(Constants.TAG_REGISTERED_ID));
-//               String strNewCommentID=peoplesAry.get(0).get(Constants.TAG_REGISTERED_ID);
-//                Log.d(TAG,"jigar the view comment friend id is "
-//                        + peoplesAry.get(0).get(Constants.TAG_COMMENT));
-//                List<String> myList = new ArrayList<String>(Arrays.asList(peoplesAry.get(0).get(Constants.TAG_COMMENT).split(",")));
-//                Log.d(TAG,"jigar the view array list comment friend id is "
-//                        + myList.size());
-
-                if( peoplesAry.get(0).get(Constants.TAG_COMMENT_TEST)!=null)
-                {
-
-                    List<String> myList = new ArrayList<String>(Arrays.asList(peoplesAry.get(0).get(Constants.TAG_COMMENT_TEST).split(",")));
-                    Log.d(TAG,"jigar the view string list size comment is "
-                            +  myList.size());
-                    arrayListComments.clear();
-                    tags.setTag(null);
-
-                    for(int i=0;i<myList.size();i++)
-                    {
-                        arrayListComments.add(new Item(i,myList.get(i)));
-                    }
-                    tags.setVisibility(View.VISIBLE);
-                    tags.startAnimation(slideUp);
-
-                    tags.removeAllViewsInLayout();
-                    tags.removeAllViews();
-                    tags.refreshDrawableState();
-
-
-//                    tags.setBackgroundDrawable(getContext().getDrawable(R.drawable.black_curve_background));
-
-                    tags.setTags(arrayListComments, new DataTransform<Item>() {
-                        @NotNull
-                        @Override
-                        public String transfer(Item item) {
-                            return item.getName();
-                        }
-                    });
-
-                    tags.setClickListener(new TagView.TagClickListener<Item>() {
-                        @Override
-                        public void onTagClick(Item item) {
-
-                            item.getId();
-                        }
-
-                    });
-
-                    // close.performClick();
-                    //tags.setVisibility(View.VISIBLE);
-                    //   tags.startAnimation(slideUp);
-                    slideUp.setAnimationListener(new Animation.AnimationListener() {
-                        @Override
-                        public void onAnimationStart(Animation animation) {
-
-                        }
-
-                        @Override
-                        public void onAnimationEnd(Animation animation) {
-                            tags.setVisibility(View.GONE);
-                            arrayListComments.clear();
-
-                        }
-
-                        @Override
-                        public void onAnimationRepeat(Animation animation) {
-
-                        }
-                    });
-
-                }else
-                {
-                    Toast.makeText(getContext(),"No Comments Available",Toast.LENGTH_LONG).show();
-                }
-
-//                arrayListComments.add(new Item(i, strUserComment));
-
-
+//                close.performClick();
+                linearLayoutBottomSheetComment.setVisibility(View.VISIBLE);
             }
         });
 
-        imageViewAddComments.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        close.performClick();
 
-                        Log.d(TAG,"jigar the add comment friend id is "
-                                + peoplesAry.get(0).get(Constants.TAG_REGISTERED_ID));
-                        Log.d(TAG,"jigar the add comment user id is "+GetSet.getUserId());
-                        LovelyTextInputDialog lovelyTextInputDialog;
-                        lovelyTextInputDialog=    new LovelyTextInputDialog(getContext(), R.style.TintTheme);
-                        lovelyTextInputDialog.setTopColorRes(R.color.colorPrimary);
-                        lovelyTextInputDialog.setTitle("Comment");
-                        lovelyTextInputDialog.setMessage("Add Comment");
-                        lovelyTextInputDialog.setIcon(R.drawable.ic_comment);
-                        lovelyTextInputDialog.setInputFilter("Enter Valid Comment", new LovelyTextInputDialog.TextFilter() {
-                            @Override
-                            public boolean check(String text) {
-                                return text.matches("\\w+");
-                            }
-                        })
-                                .setNegativeButton(R.string.cancel, new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        lovelyTextInputDialog.dismiss();
-                                    }
-                                })
-                                .setConfirmButton(android.R.string.ok, new LovelyTextInputDialog.OnTextInputConfirmListener() {
-                                    @Override
-                                    public void onTextInputConfirmed(String text) {
-                                        addNewComment(text, peoplesAry.get(0).get(Constants.TAG_REGISTERED_ID));
-                                        Toast.makeText(getContext(), text, Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-
-                        lovelyTextInputDialog.show();
-                    }
-                });
-
-
-        getPeopleList();
+        //getPeopleList();
 
         display = getActivity().getWindowManager().getDefaultDisplay();
         screenWidth = display.getWidth() * 90 / 100;
         screenHeight = display.getHeight() * 62 / 100;
         context = getActivity();
-        pref = getActivity().getApplicationContext().getSharedPreferences("ChatPref",
-                MODE_PRIVATE);
-        editor = pref.edit();
         //   flingContainer.setVisibility(View.GONE);
         //   flingContainer.getLayoutParams().height = screenWidth + 50;
      //   bottomLay.setVisibility(View.GONE);
@@ -347,15 +337,51 @@ public class HomeFragment extends Fragment implements View.OnClickListener
         flingContainer.setAdapter(peopleAdapter);
         peopleAdapter.notifyDataSetChanged();
         tags = getView().findViewById(R.id.tagview);
-        tags.getBackground().setAlpha(80);
-        slideUp = AnimationUtils.loadAnimation(getContext(), R.anim.from_bottom_to_top);
-        slideUp.setDuration(5000);
+    //     chip = getView().findViewById(R.id.chip_view);
+        chipsInput = getView(). findViewById(R.id.chips_input);
+        List<ContactChip> mContactList;
+
+        mContactList = new ArrayList<>();
+
+//        for(int i=0;i<5;i++) {
+//            ContactChip contactChip = new ContactChip(""+i, "hello "+i, "9827891");
+//            // add contact to the list
+//            mContactList.add(contactChip);
+//        }
+//       chipsInput.setFilterableList(mContactList);
+
+        //  tags.getBackground().setAlpha(80);
+        slideRighttoLeft = AnimationUtils.loadAnimation(getContext(), R.anim.fab_slide_in_from_right);
+        slideRighttoLeft.setDuration(5000);
+
+      //   Animation slideInRight = AnimationUtils.loadAnimation(getContext(), R.anim.fab_slide_in_from_right);
+//       tags.startAnimation(slideRighttoLeft);
+
+
+        slideRighttoLeft.setDuration(5000);
+        slideRighttoLeft.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                tags.startAnimation(slideRighttoLeft);
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
 
         float bottomOfScreen = getResources().getDisplayMetrics()
                 .heightPixels - (tags.getHeight() * 4);
         //bottomOfScreen is where you want to animate to
 
-        tags.setVisibility(View.GONE);
+        //tags.setVisibility(View.GONE);
 
         //        handler.postDelayed(new Runnable() {
 //            @Override
@@ -385,7 +411,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener
 
             @Override
             public void removeFirstObjectInAdapter() {
-                // this is the simplest way to delete an object from the Adapter (/AdapterView)
+                // this is the simplest way to delete an object strVisitingIdLikeToken the Adapter (/AdapterView)
                 try {
                     undoClicked = false;
                     removedUserId = peoplesAry.get(0).get(Constants.TAG_REGISTERED_ID);
@@ -498,7 +524,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener
             @Override
             public void onItemClicked(int itemPosition, Object dataObject) {
                 Intent p = new Intent(getActivity(), MainViewProfileDetailActivity.class);
-                p.putExtra("from", "home");
+                p.putExtra("strVisitingIdLikeToken", "home");
                 // here friend id means user own id
                 // and register id means friend id whos profile we are visiting
                 p.putExtra(Constants.TAG_FRIEND_ID, GetSet.getUseridLikeToken());
@@ -709,17 +735,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener
                         holder.userName.setText(tempMap.get(Constants.TAG_NAME) + ", " + tempMap.get(Constants.TAG_AGE));
                     }
 
-                //if (tempMap.get(Constants.TAG_SHOW_LOCATION).equals("true") && !tempMap.get(Constants.TAG_USERID).equals(GetSet.getUserId()))
-
-
-                    //
-//                    holder.textViewProfileLocation.setVisibility(View.INVISIBLE);
-//                    holder.textViewProfileLocation.setText("");
-//                }
-//                //else
-//                    {
-//                    holder.textViewProfileLocation.setVisibility(View.VISIBLE);
-//                    holder.textViewProfileLocation.setText(tempMap.get(Constants.TAG_LOCATION));
 
                 {
                     String ItemName = tempMap.get(Constants.TAG_SPONSOR_ID);
@@ -757,114 +772,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener
                         }
                     }
                 });
-//                holder.imageViewAddComments.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//
-//
-//                        Log.d(TAG,"jigar the add comment friend id is "+tempMap.get(Constants.TAG_REGISTERED_ID));
-//                        Log.d(TAG,"jigar the add comment user id is "+GetSet.getUserId());
-//                        LovelyTextInputDialog lovelyTextInputDialog;
-//                        lovelyTextInputDialog=    new LovelyTextInputDialog(getContext(), R.style.TintTheme);
-//                        lovelyTextInputDialog.setTopColorRes(R.color.colorPrimary);
-//                        lovelyTextInputDialog.setTitle("Comment");
-//                        lovelyTextInputDialog.setMessage("Add Comment");
-//                        lovelyTextInputDialog.setIcon(R.drawable.ic_comment);
-//                        lovelyTextInputDialog.setInputFilter("Enter Valid Comment", new LovelyTextInputDialog.TextFilter() {
-//                            @Override
-//                            public boolean check(String text) {
-//                                return text.matches("\\w+");
-//                            }
-//                        })
-//                                .setNegativeButton(R.string.cancel, new View.OnClickListener() {
-//                                    @Override
-//                                    public void onClick(View view) {
-//                                        lovelyTextInputDialog.dismiss();
-//                                    }
-//                                })
-//                                .setConfirmButton(android.R.string.ok, new LovelyTextInputDialog.OnTextInputConfirmListener() {
-//                                    @Override
-//                                    public void onTextInputConfirmed(String text) {
-//                                        addNewComment(text,tempMap.get(Constants.TAG_REGISTERED_ID));
-//                                        Toast.makeText(getContext(), text, Toast.LENGTH_SHORT).show();
-//                                    }
-//                                });
-//
-//                        lovelyTextInputDialog.show();
-//                    }
-//                });
-//
-//                holder. imageViewShowComments.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//                        arrayListComments.clear();
-//                        //getProfileCommentList();
-//
-//                    }
-//                });
-//
-//                holder.open.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//                        //                     Animation slideUp = AnimationUtils.loadAnimation(getContext(), R.anim.left_swipe);
-////                        holder.myView.setVisibility(View.VISIBLE);
-////                        holder.lin_open.setVisibility(View.INVISIBLE);
-//
-//
-//                            if(holder.open.getVisibility() == View.INVISIBLE){
-//                                holder.open.setVisibility(View.VISIBLE);
-//                            } else {
-//                                holder.open.setVisibility(View.INVISIBLE);
-//                            }
-////                        if(holder.myView.getVisibility()!=View.INVISIBLE) {
-////
-////                            holder.bottomLay.clearAnimation();
-////                            holder.myView.clearAnimation();
-////                            holder.lin_open.clearAnimation();
-////                            holder.open.clearAnimation();
-////                            holder.close.clearAnimation();
-////
-////                            holder.bottomLay.setVisibility(View.VISIBLE);
-////                            holder.myView.setVisibility(View.VISIBLE);
-////                            holder.lin_open.setVisibility(View.VISIBLE);
-////                            holder.open.setVisibility(View.VISIBLE);
-////                            holder.close.setVisibility(View.INVISIBLE);
-////                        }else
-////                        {
-////                            holder.bottomLay.setVisibility(View.INVISIBLE);
-////                            holder.myView.setVisibility(View.INVISIBLE);
-////                            holder.lin_open.setVisibility(View.INVISIBLE);
-////                            holder.open.setVisibility(View.INVISIBLE);
-////                            holder.close.setVisibility(View.VISIBLE);
-////
-////                        }
-//                        System.out.println("jigar the i open clicked and visibleity is "+holder.open.getVisibility());
-//
-/////                        holder.myView.startAnimation(slideUp);
-//
-//                    }
-//                });
-//
-//                holder.close.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//                        //         Animation slideDown = AnimationUtils.loadAnimation(getContext(), R.anim.rigt_swipe);
-//                        System.out.println("jigar the i close clicked "+holder.myView.getVisibility());
-////                        if(holder.myView.getVisibility()==View.INVISIBLE)
-////                        {
-////                            holder.bottomLay.setVisibility(View.INVISIBLE);
-////                            holder.lin_open.setVisibility(View.VISIBLE);
-////                            holder.myView.setVisibility(View.VISIBLE);
-////
-////
-////                        }else {
-////                            holder.bottomLay.setVisibility(View.VISIBLE);
-////                            holder.lin_open.setVisibility(View.VISIBLE);
-////                            holder.myView.setVisibility(View.INVISIBLE);
-////                            //              holder.myView.startAnimation(slideDown);
-////                        }
-//                    }
-//                });
 
             } catch (NullPointerException e) {
                 Log.d(TAG,"jigar the nulll pointer exception in list is "+e);
@@ -880,6 +787,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener
         public void refreshAdapter(ArrayList<HashMap<String, String>> peoplesAry) {
             this.peoples = peoplesAry;
             this.notifyDataSetChanged();
+
         }
 
         class ViewHolder {
@@ -894,113 +802,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener
 
 
 
-//    StringRequest getPeople = new StringRequest(Request.Method.POST, Constants.API_GET_PEOPLE,
-//            new Response.Listener<String>() {
-//                @Override
-//                public void onResponse(String res) {
-//                    Log.v(TAG, "getPeopleRes: " + res);
-//                    try {
-//                        JSONObject response = new JSONObject(res);
-//                        loadmore = true;
-//                        if (DefensiveClass.optString(response, Constants.TAG_STATUS).equalsIgnoreCase("true")) {
-//                            JSONArray peoples = response.optJSONArray(Constants.TAG_PEOPLES);
-//                            peoplesAry.clear();
-//                            for (int i = 0; i < peoples.length(); i++) {
-//                                JSONObject values = peoples.optJSONObject(i);
-//                                HashMap<String, String> map = new HashMap<String, String>();
-//                                map.put(Constants.TAG_USERID, DefensiveClass.optInt(values, Constants.TAG_USERID));
-//                                map.put(Constants.TAG_USERNAME, DefensiveClass.optString(values, Constants.TAG_USERNAME));
-//                                map.put(Constants.TAG_SEND_MATCH, DefensiveClass.optString(values, Constants.TAG_SEND_MATCH));
-//                                map.put(Constants.TAG_AGE, DefensiveClass.optString(values, Constants.TAG_AGE));
-//                                map.put(Constants.TAG_BIO, DefensiveClass.optString(values, Constants.TAG_BIO));
-//                                map.put(Constants.TAG_LAT, DefensiveClass.optString(values, Constants.TAG_LAT));
-//                                map.put(Constants.TAG_LON, DefensiveClass.optString(values, Constants.TAG_LON));
-//                                map.put(Constants.TAG_USERIMAGE, DefensiveClass.optString(values, Constants.TAG_USERIMAGE));
-//                                map.put(Constants.TAG_ONLINE, DefensiveClass.optInt(values, Constants.TAG_ONLINE));
-//                                map.put(Constants.TAG_SHOW_AGE, DefensiveClass.optString(values, Constants.TAG_SHOW_AGE));
-//                                map.put(Constants.TAG_SHOW_LOCATION, DefensiveClass.optString(values, Constants.TAG_SHOW_LOCATION));
-//                                map.put(Constants.TAG_LOCATION, DefensiveClass.optString(values, Constants.TAG_LOCATION));
-//                                peoplesAry.add(map);
-//                            }
-//
-//                            Log.v(TAG, "peoplesAry" + peoplesAry);
-//
-//                        } else if (DefensiveClass.optString(response, Constants.TAG_STATUS).equalsIgnoreCase("error")) {
-//                            CommonFunctions.disabledialog(getActivity(), "Error", response.getString("message"));
-//                        } else if (DefensiveClass.optString(response, Constants.TAG_STATUS).equalsIgnoreCase("false") &&
-//                                (DefensiveClass.optString(response, Constants.TAG_MESSAGE).equalsIgnoreCase("There's no one new around you"))) {
-//                            peoplesAry.clear();
-//                        }
-//                        if (peopleAdapter != null) {
-//                            peopleAdapter.refreshAdapter(peoplesAry);
-//                        } else {
-//                            peopleAdapter = new PeopleAdapter(getActivity(), peoplesAry);
-//                            flingContainer.setAdapter(peopleAdapter);
-//                            peopleAdapter.notifyDataSetChanged();
-//                        }
-//
-//                        if (peoplesAry.size() > 0) {
-//                            rippleBackground.stopRippleAnimation();
-//                            rippleBackground.setVisibility(View.GONE);
-//                            linearLayoutSwipeProfileCard.setVisibility(View.VISIBLE);
-//                            bottomLay.setVisibility(View.VISIBLE);
-//                            nullLay.setVisibility(View.GONE);
-//                        } else {
-//                            nullLay.setVisibility(View.VISIBLE);
-//                        }
-//
-//                    } catch (JSONException e) {
-//                        e.printStackTrace();
-//                    } catch (NullPointerException e) {
-//                        e.printStackTrace();
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }, new Response.ErrorListener() {
-//
-//        @Override
-//        public void onErrorResponse(VolleyError error) {
-//            VolleyLog.d(TAG, "Error: " + error.getMessage());
-//            VolleyLog.d(TAG, "jigar the error is in the home fragment method call : " + error.getMessage());
-//            Log.d(TAG, "jigar the error is in the home fragment method call : " + error.getMessage());
-//
-//
-//            linearLayoutSwipeProfileCard.setVisibility(View.GONE);
-//            rippleBackground.setVisibility(View.VISIBLE);
-//            rippleBackground.startRippleAnimation();
-//            if (peoplesAry.size() > 0) {
-//                rippleBackground.stopRippleAnimation();
-//                rippleBackground.setVisibility(View.GONE);
-//                linearLayoutSwipeProfileCard.setVisibility(View.VISIBLE);
-//                bottomLay.setVisibility(View.VISIBLE);
-//                nullLay.setVisibility(View.GONE);
-//            } else {
-//                nullLay.setVisibility(View.VISIBLE);
-//            }
-//        }
-//
-//    }) {
-//
-//        @Override
-//        public Map<String, String> getHeaders() throws AuthFailureError {
-//            Map<String, String> map = new HashMap<String, String>();
-//            map.put(Constants.TAG_AUTHORIZATION, pref.getString(Constants.TAG_AUTHORIZATION, ""));
-//            return map;
-//        }
-//
-//        @Override
-//        protected Map<String, String> getParams() {
-//            Map<String, String> params = new HashMap<String, String>();
-////            params.put(Constants.TAG_USERID, GetSet.getUserId());
-//            params.put(Constants.TAG_USERID, "87c7a170-1d47-11e9-95a3-8b2fc6cd19c1");
-//            params.put(Constants.TAG_OFFSET, "0");
-//            params.put(Constants.TAG_LIMIT, "20");
-//            params.put(Constants.TAG_TIMESTAMP, String.valueOf(System.currentTimeMillis() / 1000L));
-//            Log.v(TAG, "getPeopleParams=" + params);
-//            return params;
-//        }
-//    };
 
 
     public void match(final String followId) {
@@ -1037,12 +838,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener
             }
         }) {
 
-//            @Override
-//            public Map<String, String> getHeaders() throws AuthFailureError {
-//                Map<String, String> map = new HashMap<String, String>();
-//                map.put(Constants.TAG_AUTHORIZATION, pref.getString(Constants.TAG_AUTHORIZATION, ""));
-//                return map;
-//            }
 
             @Override
             protected Map<String, String> getParams() {
@@ -1113,7 +908,20 @@ public class HomeFragment extends Fragment implements View.OnClickListener
 
         HowzuApplication.getInstance().addToRequestQueue(sendunmatch, "");
     }
-
+//    public static void hideKeyboard(Activity activity) {
+//        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+//        //Find the currently focused view, so we can grab the correct window token from it.
+//        View view = activity.getCurrentFocus();
+//        //If no view currently has focus, create a new one, just so we can grab a window token from it
+//        if (view == null) {
+//            view = new View(activity);
+//        }
+//        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+//    }
+    public static void hideKeyboardFrom(Context context, View view) {
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
     @SuppressLint("Range")
     public static void decline() {
         unmatch.startAnimation(AnimationUtils.loadAnimation(HomeFragment.context, R.anim.button_bounce));
@@ -1185,10 +993,29 @@ public class HomeFragment extends Fragment implements View.OnClickListener
                 break;
 
                 case  R.id.imageViewMatchMakerProfile:
-                FragmentManager fm = getFragmentManager();
-                MatchMakerFragment fragm = (MatchMakerFragment) fm.findFragmentById(R.id.menuItemMatchmakerFeature);
-                fragm.getTargetFragment();
+                    if(!peoplesAry.get(0).get(Constants.TAG_SPONSOR_ID).equals("0"))
+                    {
+                        GetSet.setUserId(peoplesAry.get(0).get(Constants.TAG_REGISTERED_ID));
+                        GetSet.setFriendId(peoplesAry.get(0).get(Constants.TAG_SPONSOR_ID));
 
+                        final FragmentTransaction ft = getFragmentManager().beginTransaction();
+                        ft.replace(R.id.content_frame, new MatchMakerFragment(), "MatchMakerFragment");
+                        ft.commit();
+
+                        //                            FragmentManager fm = getFragmentManager();
+//                            MatchMakerFragment fragm = (MatchMakerFragment) fm.findFragmentById(R.id.menuItemMatchMaker);
+//                            fragm.getTargetFragment();
+
+                    }else
+                    {
+                        Toast.makeText(getContext(),"Profile Doesn't Have Match Maker",Toast.LENGTH_LONG ).show();
+
+                    }
+//                FragmentManager fm = getFragmentManager();
+//                MatchMakerFragment fragm = (MatchMakerFragment) fm.findFragmentById(R.id.menuItemMatchmakerFeature);
+//                fragm.getTargetFragment();
+
+                    break;
             case R.id.change_location:
                 if (GetSet.isPremium()) {
                     HashMap<String, String> fbdata = new HashMap<>();
@@ -1295,7 +1122,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener
                                 } else {
                                     String StrMessage = json.getString(Constants.TAG_MSG);
                                     Toast.makeText(getActivity(), StrMessage, Toast.LENGTH_LONG).show();
-                                    tags.setVisibility(View.GONE);
+                     //               tags.setVisibility(View.GONE);
                                     //close.performClick();
                                     CommonFunctions.hideProgressDialog(getActivity());
                                 }
@@ -1446,7 +1273,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener
                                 } else {
                                     String StrMessage = json.getString(Constants.TAG_MSG);
                                     Toast.makeText(getActivity(), StrMessage, Toast.LENGTH_LONG).show();
-                                    tags.setVisibility(View.GONE);
+                       //             tags.setVisibility(View.GONE);
                                     //close.performClick();
                                     CommonFunctions.hideProgressDialog(getActivity());
                                 }
@@ -1520,22 +1347,22 @@ public class HomeFragment extends Fragment implements View.OnClickListener
                     HashMap<String, String> map = new HashMap<String, String>();
 
                     JSONObject jsonObjectMemberMainInfo = jsonArrayProfileInfo.getJSONObject(i);
-
                     String strCommentUserName = jsonObjectMemberMainInfo.getString(Constants.TAG_COMMENT_USER_NAME);
                     String strCommentID = jsonObjectMemberMainInfo.getString(Constants.TAG_COMMENT_ID);
                     String strCommentUserImage = jsonObjectMemberMainInfo.getString(Constants.TAG_COMMENT_USER_IMAGE);
                     String strUserComment = jsonObjectMemberMainInfo.getString(Constants.TAG_COMMENT);
-                    arrayListComments.add(new Item(i, strUserComment));
-                    System.out.println("jigar the commenter name is " + strCommentUserName);
+                    //        arrayListComments.add(new Item(i, strUserComment));
+                    //      System.out.println("jigar the commenter name is " + strCommentUserName);
 
-             //       peoplesAry.add(map);
+                    //       peoplesAry.add(map);
+
+//                System.out.println("jigar the commenter list have is " + arrayListComments.toString());
+//                System.out.println("jigar the commenter list size is " + arrayListComments.size());
                 }
-                System.out.println("jigar the commenter list have is " + arrayListComments.toString());
-                System.out.println("jigar the commenter list size is " + arrayListComments.size());
             }
             tags.removeAllViewsInLayout();
             tags.removeAllViews();
-            tags.setVisibility(View.GONE);
+     //       tags.setVisibility(View.GONE);
             tags.setTags(arrayListComments, new DataTransform<Item>() {
                 @NotNull
                 @Override
@@ -1554,26 +1381,26 @@ public class HomeFragment extends Fragment implements View.OnClickListener
             });
 
            // close.performClick();
-            tags.setVisibility(View.VISIBLE);
-            tags.startAnimation(slideUp);
-            slideUp.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {
-
-                }
-
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    tags.setVisibility(View.GONE);
-                    arrayListComments.clear();
-
-                }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-
-                }
-            });
+         //   tags.setVisibility(View.VISIBLE);
+//            tags.startAnimation(slideRighttoLeft);
+//            slideRighttoLeft.setAnimationListener(new Animation.AnimationListener() {
+//                @Override
+//                public void onAnimationStart(Animation animation) {
+//
+//                }
+//
+//                @Override
+//                public void onAnimationEnd(Animation animation) {
+//        //            tags.setVisibility(View.GONE);
+//                    arrayListComments.clear();
+//
+//                }
+//
+//                @Override
+//                public void onAnimationRepeat(Animation animation) {
+//
+//                }
+//            });
 
 //                tags.animate()
 //                        .translationY(bottomOfScreen)
@@ -1603,12 +1430,15 @@ public class HomeFragment extends Fragment implements View.OnClickListener
                                 JSONObject json = new JSONObject(res);
                                 String strStatus = json.getString(Constants.TAG_STATUS);
                                 if (strStatus.equals("1")) {
-                                    setFindPeoplePageData(res);
+                             //       setFindPeoplePageData(res);
+                                    String StrMessage = json.getString(Constants.TAG_MSG);
+                                    Toast.makeText(getActivity(), "Your Comment Added", Toast.LENGTH_LONG).show();
+                                    linearLayoutBottomSheetComment.setVisibility(View.GONE);
                                     CommonFunctions.hideProgressDialog(getActivity());
                                 } else {
                                     String StrMessage = json.getString(Constants.TAG_MSG);
                                     Toast.makeText(getActivity(), StrMessage, Toast.LENGTH_LONG).show();
-                                    tags.setVisibility(View.GONE);
+                         //           tags.setVisibility(View.GONE);
                                     //close.performClick();
                                     CommonFunctions.hideProgressDialog(getActivity());
                                 }
@@ -1702,6 +1532,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener
                     if(jsonArrayCommentList.length()>0)
                     {
                         String strTempComment="";
+                        String strTempCommentImage="";
 
                         for(int j=0;j<jsonArrayCommentList.length();j++)
                         {
@@ -1713,7 +1544,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener
                                     String strCommentUserImage = jsonObjectCommentMainInfo.getString(Constants.TAG_COMMENT_USER_IMAGE);
                                     String strUserComment = jsonObjectCommentMainInfo.getString(Constants.TAG_COMMENT);
                                     //arrayListComments.add(new Item(i, strUserComment));
-                                    System.out.println("jigar the commenter name is " + strCommentUserName);
+                          //          System.out.println("jigar the commenter name is " + strCommentUserName);
 
                                     if(strTempComment.equals(""))
                                     {
@@ -1722,6 +1553,15 @@ public class HomeFragment extends Fragment implements View.OnClickListener
                                     {
                                         strTempComment=strTempComment+","+strUserComment;
                                     }
+
+                            if(strTempCommentImage.equals(""))
+                            {
+                                strTempCommentImage=strCommentUserImage;
+                            }else
+                            {
+                                strTempCommentImage=strTempCommentImage+","+strCommentUserImage;
+                            }
+
 //                                           peoplesAry.add(map);
          //                       }
 //                                System.out.println("jigar the commenter list have is " + arrayListComments.toString());
@@ -1733,6 +1573,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener
                         //
                      //   map.put(Constants.TAG_COMMENT, Arrays.toString(arrayListComments.toArray()));
                         map.put(Constants.TAG_COMMENT_TEST, strTempComment);
+                        map.put(Constants.TAG_COMMENT_TEST_IMAGE, strTempCommentImage);
 
                         //       map.put(Constants.TAG_COMMENT, strTempComment);
 
@@ -1749,7 +1590,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener
                     map.put(Constants.TAG_LOCATION, strMemberLocation);
 
                     peoplesAry.add(map);
+
                 }
+                callCommentFloater();
+
             }
 //            else if (DefensiveClass.optString(response, Constants.TAG_STATUS).equalsIgnoreCase("error")) {
 //                CommonFunctions.disabledialog(getActivity(), "Error", response.getString("message"));
@@ -1775,7 +1619,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener
                 nullLay.setVisibility(View.VISIBLE);
             }
 
-
 //                for (int i = 0; i < jsonObject)
 //                    HashMap<String, String> map = new HashMap<String, String>();
 //                map.put(Constants.TAG_USERID, DefensiveClass.optInt(values, Constants.TAG_USERID));
@@ -1788,4 +1631,231 @@ public class HomeFragment extends Fragment implements View.OnClickListener
     }
 
 
+    public  void  callCommentFloater()
+    {
+        if(switchGetComment.isChecked())
+        {
+            DisplayMetrics displaymetrics = new DisplayMetrics();
+            getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+            int height = displaymetrics.heightPixels;
+            int width = displaymetrics.widthPixels;
+
+            Log.d(TAG,"jigar the width is "+ width);
+            Log.d(TAG,"jigar the height is "+ height);
+
+            Log.d(TAG,"jigar the view comment friend id is "
+                    + peoplesAry.get(0).get(Constants.TAG_REGISTERED_ID));
+
+            //               String strNewCommentID=peoplesAry.get(0).get(Constants.TAG_REGISTERED_ID);
+//                Log.d(TAG,"jigar the view comment friend id is "
+//                        + peoplesAry.get(0).get(Constants.TAG_COMMENT));
+//                List<String> myList = new ArrayList<String>(Arrays.asList(peoplesAry.get(0).get(Constants.TAG_COMMENT).split(",")));
+//                Log.d(TAG,"jigar the view array list comment friend id is "
+//                        + myList.size());
+
+            if( peoplesAry.get(0).get(Constants.TAG_COMMENT_TEST)!=null)
+            {
+
+                List<String> myList = new ArrayList<String>(Arrays.asList(peoplesAry.get(0).get(Constants.TAG_COMMENT_TEST).split(",")));
+                List<String> myListImage = new ArrayList<String>(Arrays.asList(peoplesAry.get(0).get(Constants.TAG_COMMENT_TEST_IMAGE).split(",")));
+
+                Log.d(TAG,"jigar the view string list size comment is "
+                        +  myList.size());
+                Log.d(TAG,"jigar the view image URL list size comment is "
+                        +  myListImage.size());
+
+                arrayListComments.clear();
+                tags.setTag(null);
+
+                for(int i=0;i<myList.size();i++)
+                {
+
+                    {
+                        Log.d(TAG,"jigar the view image URL each comment is "
+                                +  myListImage.get(i));
+
+                        arrayListComments.add(new Item(i, myList.get(i),myListImage.get(i)));
+
+
+                    }
+
+                }
+//                tags.removeAllViewsInLayout();
+//                tags.removeAllViews();
+                tags.setVisibility(View.GONE);
+                ArrayList <String>arrayList=new ArrayList<>();
+                arrayList.add("hello1");
+                arrayList.add("hello2");
+                arrayList.add("hello3");
+                arrayList.add("hello4");
+
+                //              tags.setVisibility(View.GONE);
+                new CountDownTimer(10000, 10) {
+                    int index = 0;
+
+
+                    @Override
+                    public void onTick(long millisUntilFinished) {
+                        if (index < arrayListComments.size()) {
+                            try {
+                                URL url = new URL(arrayListComments.get(index).getImage());
+//                            chipsInput.addChip(Uri.parse(url.toURI().toString()),arrayListComments.get(index).getName(),"contactList");
+                                chipsInput.addChip(arrayListComments.get(index).getName(),"contactList");
+
+//                            ChipView chipView1 = new ChipView(getContext());
+//                            chipView1.setLayoutParams(new LinearLayout.LayoutParams(
+//                                    LinearLayout.LayoutParams.MATCH_PARENT,
+//                                    LinearLayout.LayoutParams.MATCH_PARENT));
+//                            chipView1.setLabel(arrayListComments.get(index).getName());
+//                            chipView1.setPadding(2,2,2,2);
+//                            chipView1.setHasAvatarIcon(true);
+//                            chip.addView(chipView1);
+                            } catch (MalformedURLException e) {
+                                e.printStackTrace();
+                            }
+//                            catch (URISyntaxException e) {
+//                                e.printStackTrace();
+//                            }
+
+                            index++;
+
+                        } else {
+                            cancel();
+                        }
+                    }
+
+                    @Override
+                    public void onFinish() {
+
+                    }
+                }.start();
+                linearLayoutMainChips.setVisibility(View.VISIBLE);
+
+                chipsInput.getEditText().setOnEditorActionListener(new TextView.OnEditorActionListener() {
+
+                    @Override
+                    public boolean onEditorAction(TextView v, int actionId,
+                                                  KeyEvent event) {
+                        chipsInput.getEditText().setCursorVisible(false);
+                        if (event != null&& (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
+                            InputMethodManager in = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                            in.hideSoftInputFromWindow(chipsInput.getEditText().getApplicationWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
+                        }
+                        return false;
+                    }
+                });
+
+                ObjectAnimator objectAnimator= ObjectAnimator.ofFloat(chipsInput, "translationX", width+300, -width);
+                objectAnimator.setDuration(5000);
+                objectAnimator.start();
+
+
+                objectAnimator.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+                        super.onAnimationCancel(animation);
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        linearLayoutMainChips.setVisibility(View.GONE);
+
+                        super.onAnimationEnd(animation);
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
+                        super.onAnimationRepeat(animation);
+                    }
+
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+//                        chipsInput.getEditText().setEnabled(false);
+//                        chipsInput.getEditText().setVisibility(View.GONE);
+
+                        super.onAnimationStart(animation);
+                    }
+
+                    @Override
+                    public void onAnimationPause(Animator animation) {
+                        super.onAnimationPause(animation);
+                    }
+
+                    @Override
+                    public void onAnimationResume(Animator animation) {
+                        super.onAnimationResume(animation);
+                    }
+                });
+//                chipsInput.addChip("hello","contactList");
+//                chipsInput.addChip("hello1","contactList");
+//                chipsInput.addChip("hello2","contactList");
+//                chipsInput.addChip("hello3","contactList");
+//                chipsInput.addChip("hello4","contactList");
+//                chipsInput.addChip("hello5","contactList");
+
+
+                //    tags.startAnimation(slideRighttoLeft);
+//                    tags.setBackgroundDrawable(getContext().getDrawable(R.drawable.black_curve_background));
+
+//                tags.setTags(arrayListComments, new DataTransform<Item>() {
+//                    @NotNull
+//                    @Override
+//                    public String transfer(Item item) {
+//                        return item.getName();
+//                    }
+//                });
+//
+//                tags.setClickListener(new TagView.TagClickListener<Item>() {
+//                    @Override
+//                    public void onTagClick(Item item) {
+//
+//                        item.getId();
+//                    }
+//
+//                });
+//                tags.refreshDrawableState();
+//                tags.invalidate();
+//                tags.requestLayout();
+//                tags.setVisibility(View.GONE);
+//
+//                linearLayoutSwipeProfileCard.invalidate();
+//                linearLayoutSwipeProfileCard.requestLayout();
+
+                // close.performClick();
+                //tags.setVisibility(View.VISIBLE);
+                //   tags.startAnimation(slideUp);
+
+//                slideRighttoLeft.setAnimationListener(new Animation.AnimationListener() {
+//                    @Override
+//                    public void onAnimationStart(Animation animation) {
+//
+//                        Log.d(TAG,"jigar the animation start from left to right ");
+//                    }
+//
+//                    @Override
+//                    public void onAnimationEnd(Animation animation) {
+//                        //       tags.setVisibility(View.GONE);
+//                        Log.d(TAG,"jigar the animation end from left to right ");
+//
+//                        arrayListComments.clear();
+//
+//                    }
+//
+//                    @Override
+//                    public void onAnimationRepeat(Animation animation) {
+//
+//                    }
+//                });
+
+            }else
+            {
+                Toast.makeText(getContext(),"No Comments Available",Toast.LENGTH_LONG).show();
+            }
+
+//                arrayListComments.add(new Item(i, strUserComment));
+
+
+
+        }
+    }
 }

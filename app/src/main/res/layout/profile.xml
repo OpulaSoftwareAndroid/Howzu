@@ -158,7 +158,7 @@
                     android:layout_height="wrap_content"
                     android:layout_toLeftOf="@+id/optionbtn"
                     android:includeFontPadding="false"
-                    android:text="Developer at Hitasoft"
+                    android:text=""
                     android:textColor="@color/secondaryText"
                     android:textSize="16sp"
                     android:visibility="visible"
@@ -365,7 +365,7 @@
                     </LinearLayout>
 
                     <LinearLayout
-                        android:id="@+id/lin_two"
+                        android:id="@+id/linearLayoutSendVideoDate"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -396,7 +396,7 @@
                     </LinearLayout>
 
                     <LinearLayout
-                        android:id="@+id/lin_three"
+                        android:id="@+id/linearLayoutSendDinnerRequest"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"

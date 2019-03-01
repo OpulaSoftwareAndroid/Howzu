@@ -1,6 +1,14 @@
 package com.hitasoft.app.howzu;
 
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Point;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
@@ -12,6 +20,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +31,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -63,10 +73,12 @@ import retrofit2.Callback;
 public class MatchMakerFragment extends Fragment implements View.OnClickListener {
     String TAG = "MatchMakerFragment";
     ViewPager viewPager;
-    LinearLayout sliderDotspanel, lin_without_matchmaker, lin_one, lin_two, lin_three, lin_matchmaker_comment, lin_dating, linearLayoutBio;
+    LinearLayout sliderDotspanel, lin_without_matchmaker, linearLayoutMainHome,lin_one, lin_two, lin_three, lin_matchmaker_comment, lin_dating, linearLayoutBio;
     private int dotscount;
     private ImageView[] dots;
     LaybelLayout laybelLayout;
+    LinearLayout linearLayoutMyMemberLabel;
+    RelativeLayout relativeLayoutViewPager;
     boolean loading = false;
     ArrayList<String> interestsAry = new ArrayList<>();
     RecyclerView recycler_my_members, recycler_without_matchmaker;
@@ -102,6 +114,7 @@ public class MatchMakerFragment extends Fragment implements View.OnClickListener
         arrayListInterestStatic.add("Movies");
         arrayListInterestStatic.add("Bike Riding");
 
+
         if(getArguments()!=null) {
            strFriendID = getArguments().getString(Constants.TAG_FRIEND_ID);
            strUserID = getArguments().getString(Constants.TAG_REGISTERED_ID);
@@ -112,6 +125,7 @@ public class MatchMakerFragment extends Fragment implements View.OnClickListener
 
         //        strFriendID="81384754";
         //        strUserID="81384754";
+
 
         System.out.println("jigar the friend id when enter to matchmaker fragment "+strFriendID);
         System.out.println("jigar the user id when enter to matchmaker fragment "+strUserID);
@@ -156,13 +170,14 @@ public class MatchMakerFragment extends Fragment implements View.OnClickListener
         recycler_without_matchmaker = view.findViewById(R.id.recycler_without_matchmaker);
         help_more = view.findViewById(R.id.help_more);
         imageViewMatchMakerProfile=view.findViewById(R.id.imageViewMatchMakerProfile);
-
-                lin_without_matchmaker = view.findViewById(R.id.lin_without_matchmaker);
+        linearLayoutMainHome=view.findViewById(R.id.linearLayoutMainHome);
+        relativeLayoutViewPager=view.findViewById(R.id.activity_main);
+        lin_without_matchmaker = view.findViewById(R.id.lin_without_matchmaker);
         lin_one = view.findViewById(R.id.linearLayoutSendFriendRequest);
-        lin_two = view.findViewById(R.id.lin_two);
-        lin_three = view.findViewById(R.id.lin_three);
+        lin_two = view.findViewById(R.id.linearLayoutSendVideoDate);
+        lin_three = view.findViewById(R.id.linearLayoutSendDinnerRequest);
         lin_matchmaker_comment = view.findViewById(R.id.lin_matchmaker_comment);
-
+        linearLayoutMyMemberLabel=view.findViewById(R.id.linearLayoutMyMemberLabel);
         txtDinner = view.findViewById(R.id.txtDinner);
         txtVideo = view.findViewById(R.id.txtVideo);
         txtAsk = view.findViewById(R.id.txtAsk);
@@ -363,8 +378,10 @@ public class MatchMakerFragment extends Fragment implements View.OnClickListener
 
                 JSONArray jsonArrayMatchMakerMember=jsonObjectMainInfo.getJSONArray(Constants.TAG_MATCH_MAKER_MEMBER);
                 if(jsonArrayMatchMakerMember.length()>0)
-
                 {
+
+                    linearLayoutMyMemberLabel.setVisibility(View.VISIBLE);
+
                     for(int i=0;i<jsonArrayMatchMakerMember.length();i++) {
                         HashMap<String, String> haspMapMatchMakerDetails = new HashMap<String, String>();
 
@@ -385,6 +402,9 @@ public class MatchMakerFragment extends Fragment implements View.OnClickListener
 
                     matchMakerMemberAdapter.notifyDataSetChanged();
 
+                }else
+                {
+                    linearLayoutMyMemberLabel.setVisibility(View.GONE);
                 }
                 JSONArray jsonArrayNonMatchMakerMember=jsonObjectMainInfo.getJSONArray(Constants.TAG_NON_MATCH_MAKER_MEMBER);
                 if(jsonArrayNonMatchMakerMember.length()>0)
@@ -536,7 +556,7 @@ public class MatchMakerFragment extends Fragment implements View.OnClickListener
 
                 break;
 
-            case R.id.lin_two:
+            case R.id.linearLayoutSendVideoDate:
 
                 lin_two.setBackgroundResource(R.drawable.gray_bg);
                 lin_one.setBackgroundResource(R.drawable.gray_bg_border);
@@ -581,7 +601,7 @@ public class MatchMakerFragment extends Fragment implements View.OnClickListener
 
                 break;
 
-            case R.id.lin_three:
+            case R.id.linearLayoutSendDinnerRequest:
 
                 lin_three.setBackgroundResource(R.drawable.gray_bg);
                 lin_two.setBackgroundResource(R.drawable.gray_bg_border);
@@ -728,7 +748,7 @@ public class MatchMakerFragment extends Fragment implements View.OnClickListener
 //                        //We need to get the instance of the LayoutInflater, use the context of this activity
 //                        LayoutInflater inflater = (LayoutInflater) getActivity()
 //                                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//                        //Inflate the view from a predefined XML layout
+//                        //Inflate the view strVisitingIdLikeToken a predefined XML layout
 //                        View layout = inflater.inflate(R.layout.popup,
 //                                (ViewGroup) view.findViewById(R.id.popup_element));
 //                        // create a 300px width and 470px height PopupWindow
@@ -747,7 +767,7 @@ public class MatchMakerFragment extends Fragment implements View.OnClickListener
 
                         //creating a popup menu
                         PopupMenu popup = new PopupMenu(getContext(), holder.profile_pic);
-                        //inflating menu from xml resource
+                        //inflating menu strVisitingIdLikeToken xml resource
                         popup.getMenuInflater().inflate(R.menu.options_menu, popup.getMenu());
                         //adding click listener
 //                    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -768,7 +788,25 @@ public class MatchMakerFragment extends Fragment implements View.OnClickListener
 //                        }
 //                    });
                         //displaying the popup
-                        popup.show();
+                        //popup.show();
+                        int[] location = new int[2];
+                        int currentRowId = position;
+                        View currentRow = holder.profile_pic;
+//                        // Get the x, y location and store it in the location[] array
+//                        // location[0] = x, location[1] = y.
+                        holder.profile_pic.getLocationOnScreen(location);
+//
+                        //Initialize the Point with x, and y positions
+                        Point  point = new Point();
+//                          point.x=140;
+//                        point.y=140;
+                        Log.d(TAG,"jigar the location of profile pic y is "+location[1]);
+
+
+                        point.x = location[0];
+                        point.y = location[1]-holder.profile_pic.getHeight()-320;
+//                        showStatusPopup(TasksListActivity.this, point);
+                        showStatusPopup(getActivity(),point);
                         return false;
                     }
                 });
@@ -776,6 +814,61 @@ public class MatchMakerFragment extends Fragment implements View.OnClickListener
             {
 
             }
+        }
+
+        private void showStatusPopup(final Activity context, Point p) {
+
+            PopupWindow changeStatusPopUp;
+            // Inflate the popup_layout.xml
+//            linearLayoutMainHome.setBackground(getResources().getDrawable(R.drawable.transparent_dark_rectangle));
+//            relativeLayoutViewPager.setBackground(getResources().getDrawable(R.drawable.transparent_dark_rectangle));
+
+            LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View layout = layoutInflater.inflate(R.layout.pop_up_window, null);
+            // Creating the PopupWindow
+            LinearLayout viewGroup = (LinearLayout) layout.findViewById(R.id.llSortChangePopup);
+
+            changeStatusPopUp = new PopupWindow(context);
+            changeStatusPopUp.setContentView(layout);
+            changeStatusPopUp.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
+            changeStatusPopUp.setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
+            changeStatusPopUp.setFocusable(true);
+
+         //   new DrawView(mContext);
+            Log.d(TAG,"jigar the height of linear layout is "+changeStatusPopUp.getHeight());
+
+            // Some offset to align the popup a bit to the left, and a bit down, relative to button's position.
+            int OFFSET_X = 20;
+//            int OFFSET_Y = -(changeStatusPopUp.getHeight()+10);
+            int OFFSET_Y =  changeStatusPopUp.getHeight();
+            changeStatusPopUp.setBackgroundDrawable(new BitmapDrawable());
+            //Clear the default translucent background
+          //  changeStatusPopUp.setBackgroundDrawable(getResources().getDrawable(R.drawable.transparent_dark_roundcorner));
+//            if(changeStatusPopUp.getHeight()<p.y) {
+//                // Displaying the popup at the specified location, + offsets.
+//                changeStatusPopUp.showAtLocation(layout, Gravity.NO_GRAVITY, p.x + OFFSET_X, (p.y) + OFFSET_Y);
+//            }else
+            {
+                changeStatusPopUp.showAtLocation(layout, Gravity.NO_GRAVITY, p.x + OFFSET_X, p.y - OFFSET_Y);
+
+            }
+            changeStatusPopUp.setOnDismissListener(new PopupWindow.OnDismissListener() {
+                @Override
+                public void onDismiss() {
+//                    linearLayoutMainHome.setBackgroundResource(0);
+//                    relativeLayoutViewPager.setBackgroundResource(0);
+
+                }
+            });
+
+            viewGroup.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    changeStatusPopUp.dismiss();
+//                    linearLayoutMainHome.setBackgroundResource(0);
+//                    relativeLayoutViewPager.setBackgroundResource(0);
+                }
+            });
         }
 
 
@@ -786,7 +879,25 @@ public class MatchMakerFragment extends Fragment implements View.OnClickListener
 
 
     }
+    public class DrawView extends View {
+        Paint paint = new Paint();
+        Paint transparentPaint = new Paint();
+        public DrawView(Context context) {
+            super(context);
+        }
 
+        @Override
+        public void onDraw(Canvas canvas) {
+            //first fill everything with your covering color
+            paint.setColor(getResources().getColor(R.color.black));
+            canvas.drawRect(0, 0, canvas.getWidth(), canvas.getHeight(), paint);
+            //now clear out the area you want to see through
+            transparentPaint.setAlpha(0xFF);
+            transparentPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
+            Rect rect=new Rect(300  ,300, 300, 300);//make this your rect!
+            canvas.drawRect(rect,transparentPaint);
+        }
+    }
     class NotMatchMakerMemberAdapter extends RecyclerView.Adapter<NotMatchMakerMemberAdapter.MyViewHolder> {
 
         private Context mContext;
@@ -829,7 +940,6 @@ public class MatchMakerFragment extends Fragment implements View.OnClickListener
             Picasso.with(getActivity())
                     .load(album.get(Constants.TAG_IMAGE))
                     .error(R.drawable.user_placeholder)
-                    .centerCrop()
                     .fit().centerCrop()
                     .into(holder.profile_pic);
             //            if (album.get(Constants.TAG_IMAGE).equalsIgnoreCase("http://www.ilovemisskey.com/uploads/user/")) {
@@ -861,12 +971,93 @@ public class MatchMakerFragment extends Fragment implements View.OnClickListener
 //                        })
 //                        .into(holder.profile_pic);
 //            }
+
+
+
+            holder.profile_pic.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    int[] location = new int[2];
+                    int currentRowId = position;
+                    View currentRow = holder.profile_pic;
+//                        // Get the x, y location and store it in the location[] array
+//                        // location[0] = x, location[1] = y.
+                    holder.profile_pic.getLocationOnScreen(location);
+//
+                    //Initialize the Point with x, and y positions
+                    Point  point = new Point();
+//                          point.x=140;
+//                        point.y=140;
+                    Log.d(TAG,"jigar the location of profile pic y is "+location[1]);
+
+
+                    point.x = location[0];
+                    point.y = location[1]-holder.profile_pic.getHeight()-90;
+//                        showStatusPopup(TasksListActivity.this, point);
+                    showStatusPopup(getActivity(),point);
+                    return false;
+                }
+            });
         }
 
 
         @Override
         public int getItemCount() {
             return albumList.size();
+        }
+        private void showStatusPopup(final Activity context, Point p) {
+
+            PopupWindow changeStatusPopUp;
+            // Inflate the popup_layout.xml
+//            linearLayoutMainHome.setBackground(getResources().getDrawable(R.drawable.transparent_dark_rectangle));
+//            relativeLayoutViewPager.setBackground(getResources().getDrawable(R.drawable.transparent_dark_rectangle));
+
+            LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View layout = layoutInflater.inflate(R.layout.pop_up_non_member_window, null);
+            // Creating the PopupWindow
+            LinearLayout viewGroup = (LinearLayout) layout.findViewById(R.id.llSortChangePopup);
+
+            changeStatusPopUp = new PopupWindow(context);
+            changeStatusPopUp.setContentView(layout);
+            changeStatusPopUp.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
+            changeStatusPopUp.setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
+            changeStatusPopUp.setFocusable(true);
+
+            //   new DrawView(mContext);
+            Log.d(TAG,"jigar the height of linear layout is "+changeStatusPopUp.getHeight());
+
+            // Some offset to align the popup a bit to the left, and a bit down, relative to button's position.
+            int OFFSET_X = 20;
+//            int OFFSET_Y = -(changeStatusPopUp.getHeight()+10);
+            int OFFSET_Y =  changeStatusPopUp.getHeight();
+            changeStatusPopUp.setBackgroundDrawable(new BitmapDrawable());
+            //Clear the default translucent background
+            //  changeStatusPopUp.setBackgroundDrawable(getResources().getDrawable(R.drawable.transparent_dark_roundcorner));
+//            if(changeStatusPopUp.getHeight()<p.y) {
+//                // Displaying the popup at the specified location, + offsets.
+//                changeStatusPopUp.showAtLocation(layout, Gravity.NO_GRAVITY, p.x + OFFSET_X, (p.y) + OFFSET_Y);
+//            }else
+            {
+                changeStatusPopUp.showAtLocation(layout, Gravity.NO_GRAVITY, p.x + OFFSET_X, p.y - OFFSET_Y);
+
+            }
+            changeStatusPopUp.setOnDismissListener(new PopupWindow.OnDismissListener() {
+                @Override
+                public void onDismiss() {
+//                    linearLayoutMainHome.setBackgroundResource(0);
+//                    relativeLayoutViewPager.setBackgroundResource(0);
+
+                }
+            });
+
+            viewGroup.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    changeStatusPopUp.dismiss();
+//                    linearLayoutMainHome.setBackgroundResource(0);
+//                    relativeLayoutViewPager.setBackgroundResource(0);
+                }
+            });
         }
 
 
@@ -964,6 +1155,7 @@ public class MatchMakerFragment extends Fragment implements View.OnClickListener
             Picasso.with(getActivity())
                     .load(img_list.get(position))
                     .error(R.drawable.user_placeholder)
+                    .fit()
                     .into(imageView);
 //            if (img_list.get(position).equalsIgnoreCase("http://www.ilovemisskey.com/uploads/user/"))
             {

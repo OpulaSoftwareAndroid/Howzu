@@ -7,7 +7,7 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:itemBackground">@android:color/transparent</item>
-
+        <item name="android:popupMenuStyle">@style/PopupMenu</item>
     </style>
     <style name="TintTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="colorAccent">@color/colorPrimary</item>
@@ -24,12 +24,13 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:textColorSecondary">@color/secondaryText</item>
         <item name="android:itemTextAppearance">@style/itemTextStyle.AppTheme</item>
-
+        <item name="android:popupMenuStyle">@style/PopupMenu</item>
         <!--<item name="android:dropDownSpinnerStyle">@style/SpinnerTheme </item>-->
     </style>
 
+
     <style name="PopupMenu" parent="@android:style/Widget.PopupMenu">
-        <!--<item name="android:popupBackground">@android:color/transparent</item>-->
+        <item name="android:popupBackground">@android:color/transparent</item>
     </style>
 
     <style name="itemTextStyle.AppTheme" parent="@android:style/TextAppearance.Widget.IconMenu.Item">

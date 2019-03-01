@@ -67,6 +67,7 @@ public class HowzuApplication extends Application {
 
             mSocket = IO.socket(Constants.SOCKET_URL);
         } catch (URISyntaxException e) {
+            Log.d(TAG,"jigar the howzu application URI socket exception is "+e);
             throw new RuntimeException(e);
         }
     }
@@ -221,7 +222,9 @@ public class HowzuApplication extends Application {
 
         if (Constants.pref.getBoolean("isLogged", false)) {
             GetSet.setLogged(true);
-            GetSet.setUserId(Constants.pref.getString("user_id", null));
+//            GetSet.setUserId(Constants.pref.getString("user_id", null));
+            GetSet.setUseridLikeToken(Constants.pref.getString("user_id", null));
+
             GetSet.setUserName(Constants.pref.getString("user_name", null));
             GetSet.setImageUrl(Constants.pref.getString("user_image", null));
             GetSet.setLocation(Constants.pref.getString("location", null));

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/llSortChangePopup"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:orientation="vertical" >
+
+    <!--<TextView-->
+        <!--android:id="@+id/tvDistance"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+
+        <!--android:layout_weight="1.0"-->
+        <!--android:layout_marginLeft="20dp"-->
+        <!--android:paddingTop="5dp"-->
+        <!--android:gravity="center_vertical"-->
+        <!--android:textColor="@color/blue" />-->
+    <!--android:text="Delete"-->
+
+    <ImageView
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginBottom="10dp"
+        android:src="@drawable/ic_matchmaker_delete"
+        android:contentDescription="@drawable/ic_matchmaker_delete"/>
+
+    <!--<TextView-->
+        <!--android:id="@+id/tvPriority"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+
+        <!--android:layout_weight="1.0"-->
+        <!--android:layout_marginLeft="20dp"-->
+        <!--android:gravity="center_vertical"-->
+        <!--android:clickable="true"-->
+        <!--android:onClick="popupSortOnClick"-->
+        <!--android:textColor="@color/blue" />-->
+
+
+    <ImageView
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginBottom="10dp"
+        android:src="@drawable/ic_matchmaker_chat"
+        android:contentDescription="@drawable/ic_matchmaker_chat"/>
+
+    <!--<TextView-->
+        <!--android:id="@+id/tvTime"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="@string/share"-->
+        <!--android:layout_weight="1.0"-->
+        <!--android:layout_marginLeft="20dp"-->
+        <!--android:gravity="center_vertical"-->
+        <!--android:clickable="true"-->
+        <!--android:onClick="popupSortOnClick"-->
+        <!--android:textColor="@color/blue" />-->
+
+    <ImageView
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginBottom="10dp"
+        android:src="@drawable/ic_matchmaker_comment"
+        android:contentDescription="@drawable/ic_matchmaker_comment"/>
+
+    <!--<TextView-->
+        <!--android:id="@+id/tvStatus"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="Hello"-->
+        <!--android:layout_weight="1.0"-->
+        <!--android:layout_marginLeft="20dp"-->
+        <!--android:gravity="center_vertical"-->
+        <!--android:textColor="@color/blue"-->
+        <!--android:clickable="true"-->
+        <!--android:onClick="popupSortOnClick"-->
+        <!--android:paddingBottom="10dp"/>-->
+
+
+    <ImageView
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginBottom="10dp"
+        android:src="@drawable/ic_matchmaker_share"
+        android:contentDescription="@drawable/ic_matchmaker_share"/>
+
+    <!--<TextView-->
+        <!--android:id="@+id/tvStatus1"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="Hello"-->
+        <!--android:layout_weight="1.0"-->
+        <!--android:layout_marginLeft="20dp"-->
+        <!--android:gravity="center_vertical"-->
+        <!--android:textColor="@color/blue"-->
+        <!--android:clickable="true"-->
+        <!--android:onClick="popupSortOnClick"-->
+        <!--android:paddingBottom="10dp"/>-->
+
+</LinearLayout>

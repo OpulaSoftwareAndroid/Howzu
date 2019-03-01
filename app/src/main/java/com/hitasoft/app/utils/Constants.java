@@ -41,6 +41,8 @@ public class Constants {
     public static final String API_GET_USER_NOTIFICATION = URL + "api/" + "notification";
     public static final String API_MATCH = URL + "api/" + "match";
     public static final String API_NEW_MATCH_AND_FRIEND_REQUEST = URL + "api/" + "sentfriendrequest";
+    public static final String API_SEND_VIDEO_CHAT_REQUEST = URL + "api/" + "videochatsentrequest";
+    public static final String API_SEND_DINNER_DATE_REQUEST = URL + "api/" + "dinnersentrequest";
     public static final String API_NEW_ACCEPT_FRIEND_REQUEST = URL + "api/" + "friendrequeststatus";
     public static final String API_NEW_ACCEPT_DECLINE_VIDEO_CHAT_REQUEST = URL + "api/" + "videochatrequeststatus";
     public static final String API_NEW_ACCEPT_DECLINE_INVITATION_REQUEST = URL + "api/" + "matchmakerrequeststatus";
@@ -102,8 +104,6 @@ public class Constants {
     public static final String API_LOGIN = URL + "api/" + "login";
     public static final String API_GET_ACCESS_TOKEN = URL + "api/" + "getaccess";
     public static final String API_GET_USER_DETAILS_BY_ID = URL + "api/" + "userdetailbyid";
-
-
     public static final String API_UPLOAD_IMAGE = URL + "api/" + "uploadimage";
     /**
      * RESIZE IMAGE
@@ -153,10 +153,8 @@ public class Constants {
     // people api
     public static final String TAG_USERNAME = "user_name";
     public static final String TAG_FIRST_NAME = "firstname";
-
     public static final String TAG_REQUEST_USERNAME = "username";
     public static final String TAG_NEW_USERNAME = "username";
-
     public static final String TAG_GENDER = "gender";
     public static final String TAG_AGE = "age";
     public static final String TAG_MOBILE_NUMBER = "mobile_no";
@@ -165,16 +163,13 @@ public class Constants {
     public static final String TAG_LON = "lon";
     public static final String TAG_LATITUDE = "latitude";
     public static final String TAG_LONGITUDE = "longitude";
-
     public static final String TAG_PURPOSE_PLAN = "purpose_plan";
     public static final String TAG_INTEREST_PLAN = "interest_plan";
     public static final String TAG_ONLINE = "online";
     public static final String TAG_ONLINE_STATUS = "onlinestatus";
-
     public static final String TAG_LOCATION = "location";
     public static final String TAG_INFO = "info";
     public static final String TAG_USER_INFO = "user";
-
     public static final String TAG_INTEREST = "interest";
     public static final String TAG_INTERESTS = "interests";
     public static final String TAG_IMAGES = "images";
@@ -189,10 +184,15 @@ public class Constants {
 
     public static final String TAG_REPORT = "report";
     public static final String TAG_PREMIUM_MEMBER = "premium_member";
+    public static final String TAG_PREMIUM_MEMBER_STATUS = "premiumstatus";
+
     public static final String TAG_PREMIUM_FROM = "premium_from";
+    public static final String TAG_VIDEO_DATE = "video_date";
+    public static final String TAG_DINNER = "dinner";
 
     public static final String TAG_SEND_MATCH = "send_match";
     public static final String TAG_SPONSOR_ID = "sponser_id";
+    public static final String TAG_STORED_NOTIFICATION = "stored_notification";
 
     // matches api
     public static final String TAG_MATCHES = "matches";
@@ -261,6 +261,7 @@ public class Constants {
     public static final String TAG_COMMENT_ID = "comment_id";
     public static final String TAG_COMMENT = "comment";
     public static final String TAG_COMMENT_TEST = "comment_test";
+    public static final String TAG_COMMENT_TEST_IMAGE = "comment_test_image";
 
     public static final String TAG_COMMENT_USER_IMAGE = "image";
 

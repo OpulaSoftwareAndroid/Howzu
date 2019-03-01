@@ -482,7 +482,8 @@ public class NotificationActivity extends AppCompatActivity {
                                     CommonFunctions.hideProgressDialog(NotificationActivity.this);
                                 } else {
                                     String StrMessage = json.getString(Constants.TAG_MSG);
-                                    Toast.makeText(NotificationActivity.this, StrMessage, Toast.LENGTH_LONG).show();
+                                    linearLayoutEmptyNotification.setVisibility(View.VISIBLE);
+                               //     Toast.makeText(NotificationActivity.this, StrMessage, Toast.LENGTH_LONG).show();
                                     CommonFunctions.hideProgressDialog(NotificationActivity.this);
                                 }
                             } catch (JSONException e) {
@@ -497,7 +498,6 @@ public class NotificationActivity extends AppCompatActivity {
                             } catch (Exception e) {
                                 System.out.println("jigar the error main exception in json is " + e);
                                 linearLayoutEmptyNotification.setVisibility(View.VISIBLE);
-
                                 e.printStackTrace();
                             }
                         }
@@ -554,33 +554,39 @@ public class NotificationActivity extends AppCompatActivity {
                 //     JSONObject jsonObjectMember=jsonObjectInfo.getJSONObject(Constants.TAG_MEMBER);
 
 
-                for (int i = 0; i < jsonArrayProfileInfo.length(); i++) {
-                    HashMap<String, String> map = new HashMap<String, String>();
+                if(jsonArrayProfileInfo.length()>0) {
+                    for (int i = 0; i < jsonArrayProfileInfo.length(); i++) {
+                        HashMap<String, String> map = new HashMap<String, String>();
 
-                    JSONObject jsonObjectMemberMainInfo = jsonArrayProfileInfo.getJSONObject(i);
+                        JSONObject jsonObjectMemberMainInfo = jsonArrayProfileInfo.getJSONObject(i);
 
-                    String strNotificationID = jsonObjectMemberMainInfo.getString(Constants.TAG_NOTIFICATION_ID);
-                    String strNotificationFriendID = jsonObjectMemberMainInfo.getString(Constants.TAG_NOTIFICATION_ID);
+                        String strNotificationID = jsonObjectMemberMainInfo.getString(Constants.TAG_NOTIFICATION_ID);
+                        String strNotificationFriendID = jsonObjectMemberMainInfo.getString(Constants.TAG_NOTIFICATION_ID);
 
-                    String strNotificationSenderName = jsonObjectMemberMainInfo.getString(Constants.TAG_NOTIFICATION_SENDER_NAME);
-                    String strNotificationMessage = jsonObjectMemberMainInfo.getString(Constants.TAG_NOTIFICATION_MESSAGE);
-                    String strNotificationType = jsonObjectMemberMainInfo.getString(Constants.TAG_NOTIFICATION_TYPE);
-                    String strNotificationImageProfileURL = jsonObjectMemberMainInfo.getString(Constants.TAG_NOTIFICATION_SENDER_PROFILE_IMAGE);
-                    String strNotificationImageMainURL = jsonObjectMemberMainInfo.getString(Constants.TAG_NOTIFICATION_SENDER_URL);
-                    String strNotificationTime = jsonObjectMemberMainInfo.getString(Constants.TAG_NOTIFICATION_TIME);
-                    strNotificationSenderName = strNotificationSenderName.substring(0,1).toUpperCase() + strNotificationSenderName.substring(1);
-                    int intNotificationID=Integer.parseInt(strNotificationID);
-                    POJONotificationDetails  pojoNotificationDetails=new POJONotificationDetails(intNotificationID,strNotificationSenderName,strNotificationMessage,strNotificationTime
-                    ,strNotificationType,strNotificationImageMainURL,strNotificationImageProfileURL,strNotificationFriendID);
-                    notificationDetailList.add(pojoNotificationDetails);
-                    System.out.println("jigar the commenter name is " + strNotificationID);
-                    recycler_notification.setAdapter(notificationAdapter);
+                        String strNotificationSenderName = jsonObjectMemberMainInfo.getString(Constants.TAG_NOTIFICATION_SENDER_NAME);
+                        String strNotificationMessage = jsonObjectMemberMainInfo.getString(Constants.TAG_NOTIFICATION_MESSAGE);
+                        String strNotificationType = jsonObjectMemberMainInfo.getString(Constants.TAG_NOTIFICATION_TYPE);
+                        String strNotificationImageProfileURL = jsonObjectMemberMainInfo.getString(Constants.TAG_NOTIFICATION_SENDER_PROFILE_IMAGE);
+                        String strNotificationImageMainURL = jsonObjectMemberMainInfo.getString(Constants.TAG_NOTIFICATION_SENDER_URL);
+                        String strNotificationTime = jsonObjectMemberMainInfo.getString(Constants.TAG_NOTIFICATION_TIME);
+                        strNotificationSenderName = strNotificationSenderName.substring(0, 1).toUpperCase() + strNotificationSenderName.substring(1);
+                        int intNotificationID = Integer.parseInt(strNotificationID);
+                        POJONotificationDetails pojoNotificationDetails = new POJONotificationDetails(intNotificationID, strNotificationSenderName, strNotificationMessage, strNotificationTime
+                                , strNotificationType, strNotificationImageMainURL, strNotificationImageProfileURL, strNotificationFriendID);
+                        notificationDetailList.add(pojoNotificationDetails);
+                        System.out.println("jigar the commenter name is " + strNotificationID);
+                        recycler_notification.setAdapter(notificationAdapter);
 
 
-                    //       peoplesAry.add(map);
-                }
-                //                System.out.println("jigar the commenter list have is " + arrayListComments.toString());
+                        //       peoplesAry.add(map);
+                    }
+                    //                System.out.println("jigar the commenter list have is " + arrayListComments.toString());
 //                System.out.println("jigar the commenter list size is " + arrayListComments.size());
+                }else
+                {
+                    linearLayoutEmptyNotification.setVisibility(View.VISIBLE);
+
+                }
             }else
                 {
                     linearLayoutEmptyNotification.setVisibility(View.VISIBLE);

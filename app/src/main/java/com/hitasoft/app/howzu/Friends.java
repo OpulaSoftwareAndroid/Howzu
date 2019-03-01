@@ -375,8 +375,8 @@ public class Friends extends Fragment implements View.OnClickListener, TextWatch
                     @Override
                     public void onClick(View view) {
                         Intent p = new Intent(getActivity(), MainViewProfileDetailActivity.class);
-                        p.putExtra("from", "home");
-                        //       p.putExtra("from", "home");
+                        p.putExtra("strVisitingIdLikeToken", "home");
+                        //       p.putExtra("strVisitingIdLikeToken", "home");
                         // here friend id means user own id
                         // and register id means friend id whos profile we are visiting
                         p.putExtra(Constants.TAG_FRIEND_ID,tempMap.get(Constants.TAG_USERID));
@@ -460,8 +460,8 @@ public class Friends extends Fragment implements View.OnClickListener, TextWatch
                 switch (v.getId()) {
                     case R.id.user_image:
                         Intent p = new Intent(getActivity(), MainViewProfileDetailActivity.class);
-                        p.putExtra("from", "friends");
-                 //       p.putExtra("from", "home");
+                        p.putExtra("strVisitingIdLikeToken", "friends");
+                 //       p.putExtra("strVisitingIdLikeToken", "home");
                         // here friend id means user own id
                         // and register id means friend id whos profile we are visiting
                         p.putExtra(Constants.TAG_FRIEND_ID, GetSet.getUseridLikeToken());

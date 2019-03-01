@@ -97,7 +97,7 @@ public class  MainViewProfileDetailActivity extends AppCompatActivity implements
     CoordinatorLayout coordinatorLayout;
     NestedScrollView scrollView;
     LaybelLayout laybelLayout;
-    LinearLayout linearLayoutSendFriendRequest;
+    LinearLayout linearLayoutSendFriendRequest,linearLayoutSendVideoDate,linearLayoutSendDinnerRequest;
     ViewPager viewPager;
     CirclePageIndicator pageIndicator;
     ViewPagerAdapter viewPagerAdapter;
@@ -111,7 +111,7 @@ public class  MainViewProfileDetailActivity extends AppCompatActivity implements
     ArrayList<String> arrayListInterestStatic;
     public static AppCompatActivity activity;
     boolean collapsed = false, showFab = false;
-    String from = "", strFriendID = "", strVisitorFriendID = "", scrollState = "expanded", sendMatch = "", userImage = "";
+    String strVisitingIdLikeToken = "", strFriendID = "", strVisitorFriendID = "", scrollState = "expanded", sendMatch = "", userImage = "";
     HashMap<String, String> haspMapProfileDetails = new HashMap<String, String>();
     ArrayList<String> interestsAry = new ArrayList<>(), imagesAry = new ArrayList<String>();
     SharedPreferences pref;
@@ -182,6 +182,7 @@ public class  MainViewProfileDetailActivity extends AppCompatActivity implements
         viewPager = findViewById(R.id.view_pager);
         pageIndicator = findViewById(R.id.pager_indicator);
         toolbarTitle = findViewById(R.id.toolbarTitle);
+
         linearLayoutSendFriendRequest=findViewById(R.id.linearLayoutSendFriendRequest);
         linearLayoutSendFriendRequest.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -189,6 +190,24 @@ public class  MainViewProfileDetailActivity extends AppCompatActivity implements
                 sendFriendRequest();
             }
         });
+        linearLayoutSendVideoDate=findViewById(R.id.linearLayoutSendVideoDate);
+        linearLayoutSendVideoDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                sendVideoDateRequest();
+            }
+        });
+
+        linearLayoutSendDinnerRequest=findViewById(R.id.linearLayoutSendDinnerRequest);
+        linearLayoutSendDinnerRequest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                sendDinnerDateRequest();
+            }
+        });
+
         arrayListInterestStatic=new ArrayList<String>();
         arrayListInterestStatic.add("Foodie");
         arrayListInterestStatic.add("Gaming");
@@ -202,13 +221,13 @@ public class  MainViewProfileDetailActivity extends AppCompatActivity implements
         pageIndicator.setStrokeColor(0);
 
         // FOR TESTING Disable INTENT---------------------------------------------------------------------------------
-//        from = getIntent().getExtras().getString(Constants.TAG_INTENT_FROM);
+//        strVisitingIdLikeToken = getIntent().getExtras().getString(Constants.TAG_INTENT_FROM);
 //        strFriendID = getIntent().getExtras().getString(Constants.TAG_FRIEND_ID);
 //        p.putExtra(Constants.TAG_FRIEND_ID, GetSet.getUseridLikeToken());
 //        p.putExtra(Constants.TAG_PROFILE_VISITOR_ID, peoplesAry.get(itemPosition).get(Constants.TAG_ID));
         // here friend id means user own id
         // and register id means friend id whos profile we are visiting
-        from = getIntent().getExtras().getString(Constants.TAG_PROFILE_VISITOR_ID_LIKE_TOKEN);
+        strVisitingIdLikeToken = getIntent().getExtras().getString(Constants.TAG_PROFILE_VISITOR_ID_LIKE_TOKEN);
         strVisitorFriendID = getIntent().getExtras().getString(Constants.TAG_FRIEND_ID);
         strFriendID = getIntent().getExtras().getString(Constants.TAG_REGISTERED_ID);
         //        p.putExtra(Constants.TAG_FRIEND_ID, GetSet.getUseridLikeToken());
@@ -216,7 +235,7 @@ public class  MainViewProfileDetailActivity extends AppCompatActivity implements
 
         //userImage = getIntent().getExtras().getString("userImage");
         System.out.println("jigar the intent strfriend id is "+strVisitorFriendID);
-        System.out.println("jigar the intent visitor who visit id is "+from);
+        System.out.println("jigar the intent visitor who visit id is "+ strVisitingIdLikeToken);
 
         floatingButtonStartChat.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -335,6 +354,134 @@ public class  MainViewProfileDetailActivity extends AppCompatActivity implements
         HowzuApplication.getInstance().addToRequestQueue(sendmatch, "");
 
     }
+
+    public void sendVideoDateRequest()
+    {
+        StringRequest sendmatch = new StringRequest(Request.Method.POST, Constants.API_SEND_VIDEO_CHAT_REQUEST,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String res) {
+                        Log.d(TAG, "matchRes=" + res);
+                        System.out.println("jigar the send video chat request response is  "+res);
+                        try {
+                            JSONObject json = new JSONObject(res);
+                            String response = json.getString(Constants.TAG_STATUS);
+                            if (response.equalsIgnoreCase("0")) {
+                                String strMessage = json.getString(Constants.TAG_MSG);
+                                Toast.makeText(MainViewProfileDetailActivity.this,strMessage,Toast.LENGTH_LONG).show();
+                            } else if (response.equalsIgnoreCase("error")) {
+                                CommonFunctions.disabledialog(MainViewProfileDetailActivity.this, "Error", json.getString("message"));
+                            } else {
+
+                            }
+                        } catch (JSONException e) {
+                            System.out.println("jigar the error in json send video chat request response is  "+e);
+
+                            e.printStackTrace();
+                        } catch (NullPointerException e) {
+                            System.out.println("jigar the error in null pointer send video chat request is  "+e);
+
+                            e.printStackTrace();
+                        } catch (Exception e) {
+                            System.out.println("jigar the error in main exception send video chat request is  "+e);
+
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d(TAG, "Error: " + error.getMessage());
+                VolleyLog.d(TAG, "jigar the volley error in send video date params " + error.getMessage());
+
+            }
+        }) {
+
+//            @Override
+//            public Map<String, String> getHeaders() throws AuthFailureError {
+//                Map<String, String> map = new HashMap<String, String>();
+//                map.put(Constants.TAG_AUTHORIZATION, pref.getString(Constants.TAG_AUTHORIZATION, ""));
+//                return map;
+//            }
+
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put(Constants.TAG_REGISTERED_ID, GetSet.getUserId());
+                params.put(Constants.TAG_FRIEND_ID, strFriendID);
+                Log.v(TAG, "jigar the send video date params " + params);
+                return params;
+            }
+        };
+
+        HowzuApplication.getInstance().addToRequestQueue(sendmatch, "");
+
+    }
+    public void sendDinnerDateRequest()
+    {
+        StringRequest sendmatch = new StringRequest(Request.Method.POST, Constants.API_SEND_DINNER_DATE_REQUEST,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String res) {
+                        Log.d(TAG, "matchRes=" + res);
+                        System.out.println("jigar the send dinner request response is  "+res);
+                        try {
+                            JSONObject json = new JSONObject(res);
+                            String response = json.getString(Constants.TAG_STATUS);
+                            if (response.equalsIgnoreCase("0")) {
+                                String strMessage = json.getString(Constants.TAG_MSG);
+                                Toast.makeText(MainViewProfileDetailActivity.this,strMessage,Toast.LENGTH_LONG).show();
+                            } else if (response.equalsIgnoreCase("error")) {
+                                CommonFunctions.disabledialog(MainViewProfileDetailActivity.this, "Error", json.getString("message"));
+                            } else {
+
+                            }
+                        } catch (JSONException e) {
+                            System.out.println("jigar the error in json dinner chat request response is  "+e);
+
+                            e.printStackTrace();
+                        } catch (NullPointerException e) {
+                            System.out.println("jigar the error in null pointer dinner chat request is  "+e);
+
+                            e.printStackTrace();
+                        } catch (Exception e) {
+                            System.out.println("jigar the error in main exception dinner chat request is  "+e);
+
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d(TAG, "Error: " + error.getMessage());
+                VolleyLog.d(TAG, "jigar the volley error in send dinner date params " + error.getMessage());
+
+            }
+        }) {
+
+//            @Override
+//            public Map<String, String> getHeaders() throws AuthFailureError {
+//                Map<String, String> map = new HashMap<String, String>();
+//                map.put(Constants.TAG_AUTHORIZATION, pref.getString(Constants.TAG_AUTHORIZATION, ""));
+//                return map;
+//            }
+
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put(Constants.TAG_REGISTERED_ID, GetSet.getUserId());
+                params.put(Constants.TAG_FRIEND_ID, strFriendID);
+                Log.v(TAG, "jigar the send dinner date params " + params);
+                return params;
+            }
+        };
+
+        HowzuApplication.getInstance().addToRequestQueue(sendmatch, "");
+
+    }
+
     private void createNewChat() {
         StringRequest req = new StringRequest(Request.Method.POST, Constants.API_CREATE_CHAT,
                 new Response.Listener<String>() {
@@ -357,14 +504,14 @@ public class  MainViewProfileDetailActivity extends AppCompatActivity implements
 //                                Log.v(TAG, "jigar the json chat profile image is " +  haspMapProfileDetails.get(Constants.TAG_PROFILE_IMAGE));
                                 data.put(Constants.TAG_USERIMAGE, imagesAry.get(0));
                                 data.put(Constants.TAG_USERNAME, haspMapProfileDetails.get(Constants.TAG_NEW_USERNAME));
-                                data.put(Constants.TAG_USERID, from);
+                                data.put(Constants.TAG_USERID, strVisitingIdLikeToken);
 
                                 Log.v(TAG, "jigar the json response is map data is " + data);
 
                                 Intent intent=new Intent(MainViewProfileDetailActivity.this,ChatActivity.class);
                                 intent.putExtra("data", data);
                                 intent.putExtra("position", 0);
-                                intent.putExtra("from", "profile");
+                                intent.putExtra("strVisitingIdLikeToken", "profile");
                                 startActivity(intent);
 
 //                                if (data.get(Constants.TAG_BLOCKED_BY_ME).equals("true")) {
@@ -432,7 +579,7 @@ public class  MainViewProfileDetailActivity extends AppCompatActivity implements
             protected Map<String, String> getParams() {
                 Map<String, String> map = new HashMap<String, String>();
                 map.put(Constants.TAG_USERID, GetSet.getUseridLikeToken());
-                map.put(Constants.TAG_FRIEND_ID, from);
+                map.put(Constants.TAG_FRIEND_ID, strVisitingIdLikeToken);
                 Log.v(TAG, "jigar the create chat params are " + map);
                 return map;
             }
@@ -484,7 +631,7 @@ public class  MainViewProfileDetailActivity extends AppCompatActivity implements
     }
 
     private void checkUser() {
-        if (from.equals("myprofile") || GetSet.getUserId().equals(strFriendID)) {
+        if (strVisitingIdLikeToken.equals("myprofile") || GetSet.getUserId().equals(strFriendID)) {
             strFriendID = GetSet.getUserId();
             setting.setVisibility(View.VISIBLE);
             fab.setImageResource(R.drawable.pen);
@@ -846,11 +993,11 @@ public class  MainViewProfileDetailActivity extends AppCompatActivity implements
 //            values = new String[]{getString(R.string.undo_report), getString(R.string.unfriend_user)};
 //        } else
 
-            if (from.equals("other") || from.equals("home")) {
+            if (strVisitingIdLikeToken.equals("other") || strVisitingIdLikeToken.equals("home")) {
             values = new String[]{getString(R.string.report_user)};
         } else if (sendMatch.equals("1")) {
             values = new String[]{getString(R.string.report_user), getString(R.string.unfriend_user)};
-        } else if (from.equals("visitors")) {
+        } else if (strVisitingIdLikeToken.equals("visitors")) {
             if (sendMatch.equals("1")) {
                 values = new String[]{getString(R.string.report_user), getString(R.string.unfriend_user)};
             } else {
@@ -1006,6 +1153,29 @@ public class  MainViewProfileDetailActivity extends AppCompatActivity implements
                                     haspMapProfileDetails.put(Constants.TAG_INVISIBLE_STATUS, jsonObjectMainUserInfo.getString(Constants.TAG_INVISIBLE_STATUS));
                                     //  haspMapProfileDetails.put(Constants.TAG_REPORT, DefensiveClass.optString(jsonObject, Constants.TAG_REPORT));
                                     haspMapProfileDetails.put(Constants.TAG_PREMIUM_FROM, jsonObjectMainUserInfo.getString(Constants.TAG_PREMIUM_FROM));
+                                    haspMapProfileDetails.put(Constants.TAG_VIDEO_DATE, jsonObjectMainUserInfo.getString(Constants.TAG_VIDEO_DATE));
+                                    haspMapProfileDetails.put(Constants.TAG_DINNER, jsonObjectMainUserInfo.getString(Constants.TAG_DINNER));
+//                                    haspMapProfileDetails.put(Constants.TAG_REPORT, jsonObjectMainUserInfo.getString(Constants.TAG_REPORT));
+                                    haspMapProfileDetails.put(Constants.TAG_REPORT, "0");
+
+                                    //                                    haspMapProfileDetails.put(Constants.TAG_VIDEO_DATE, "0");
+
+                                    if(haspMapProfileDetails.get(Constants.TAG_VIDEO_DATE).equals("1"))
+                                    {
+                                        linearLayoutSendVideoDate.setClickable(true);
+                                    }else
+                                    {
+                                        linearLayoutSendVideoDate.setClickable(false);
+
+                                    }
+
+                                    if(haspMapProfileDetails.get(Constants.TAG_DINNER).equals("1"))
+                                    {
+                                        linearLayoutSendDinnerRequest.setClickable(true);
+                                    }else
+                                    {
+                                        linearLayoutSendDinnerRequest.setClickable(false);
+                                    }
                                     //   haspMapProfileDetails.put(Constants.TAG_MEMBERSHIP_VALID, DefensiveClass.optString(jsonObject, Constants.TAG_MEMBERSHIP_VALID));
                                     //    haspMapProfileDetails.put(Constants.TAG_SEND_MATCH, sendMatch);
                                     haspMapProfileDetails.put(TAG_IMAGE, jsonObjectMainUserInfo.getString(TAG_IMAGE));
@@ -1137,7 +1307,7 @@ public class  MainViewProfileDetailActivity extends AppCompatActivity implements
                 Map<String, String> map = new HashMap<String, String>();
                 map.put(Constants.TAG_NEW_USERID, strVisitorFriendID);
 //                map.put(Constants.TAG_VISIT_USER_ID, strFriendID);
-                map.put(Constants.TAG_NEW_VISIT_USER_ID, from);
+                map.put(Constants.TAG_NEW_VISIT_USER_ID, strVisitingIdLikeToken);
 
                 System.out.println("jigar the visitor is "+ map);
 
@@ -1254,7 +1424,7 @@ public class  MainViewProfileDetailActivity extends AppCompatActivity implements
                     @Override
                     public void onResponse(String res) {
                         try {
-                            Log.v(TAG, "reportUserRes=" + res);
+                            Log.v(TAG, "jigar the report User Response we have=" + res);
                             JSONObject json = new JSONObject(res);
                             dialog.dismiss();
                             if (DefensiveClass.optString(json, Constants.TAG_STATUS).equalsIgnoreCase("true")) {
@@ -1268,9 +1438,13 @@ public class  MainViewProfileDetailActivity extends AppCompatActivity implements
                                 CommonFunctions.disabledialog(MainViewProfileDetailActivity.this, "Error", json.getString("message"));
                             }
                         } catch (JSONException e) {
+                            Log.v(TAG, "jigar the error json report User Response we have" + e);
+
                             e.printStackTrace();
                             dialog.dismiss();
                         } catch (NullPointerException e) {
+                            Log.v(TAG, "jigar the error null pointer report User Response we have" + e);
+
                             e.printStackTrace();
                             dialog.dismiss();
                         } catch (Exception e) {
@@ -1287,17 +1461,17 @@ public class  MainViewProfileDetailActivity extends AppCompatActivity implements
 
         }) {
 
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> map = new HashMap<String, String>();
-                map.put(Constants.TAG_AUTHORIZATION, pref.getString(Constants.TAG_AUTHORIZATION, ""));
-                return map;
-            }
+//            @Override
+//            public Map<String, String> getHeaders() throws AuthFailureError {
+//                Map<String, String> map = new HashMap<String, String>();
+//                map.put(Constants.TAG_AUTHORIZATION, pref.getString(Constants.TAG_AUTHORIZATION, ""));
+//                return map;
+//            }
 
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> map = new HashMap<String, String>();
-                map.put(Constants.TAG_USERID, GetSet.getUserId());
+                map.put(Constants.TAG_USERID, GetSet.getUseridLikeToken());
                 map.put(Constants.TAG_REPORT_USER_ID, strFriendID);
                 Log.v(TAG, "reportUserParams=" + map);
                 return map;
@@ -1341,18 +1515,18 @@ public class  MainViewProfileDetailActivity extends AppCompatActivity implements
 
         }) {
 
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> map = new HashMap<String, String>();
-                map.put(Constants.TAG_AUTHORIZATION, pref.getString(Constants.TAG_AUTHORIZATION, ""));
-                return map;
-            }
+//            @Override
+//            public Map<String, String> getHeaders() throws AuthFailureError {
+//                Map<String, String> map = new HashMap<String, String>();
+//                map.put(Constants.TAG_AUTHORIZATION, pref.getString(Constants.TAG_AUTHORIZATION, ""));
+//                return map;
+//            }
 
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> map = new HashMap<String, String>();
-                map.put(Constants.TAG_USERID, GetSet.getUserId());
-                map.put(Constants.TAG_UNFRIEND_USER_ID, strFriendID);
+                map.put(Constants.TAG_USERID, GetSet.getUseridLikeToken());
+                map.put(Constants.TAG_UNFRIEND_USER_ID, strVisitingIdLikeToken);
                 Log.v(TAG, "unfriendUserParams=" + map);
                 return map;
             }
@@ -1374,6 +1548,7 @@ public class  MainViewProfileDetailActivity extends AppCompatActivity implements
                                 haspMapProfileDetails.put(Constants.TAG_CHAT_ID, DefensiveClass.optString(json, Constants.TAG_CHAT_ID));
                                 haspMapProfileDetails.put(Constants.TAG_BLOCKED_BY_ME, DefensiveClass.optInt(json, Constants.TAG_BLOCKED_BY_ME));
                                 haspMapProfileDetails.put(Constants.TAG_BLOCK, DefensiveClass.optInt(json, Constants.TAG_BLOCK));
+                                haspMapProfileDetails.put(Constants.TAG_USERID, strVisitingIdLikeToken);
                                 haspMapProfileDetails.put(Constants.TAG_USER_STATUS, DefensiveClass.optInt(json, Constants.TAG_USER_STATUS));
                                 haspMapProfileDetails.put(Constants.TAG_ONLINE, DefensiveClass.optInt(json, Constants.TAG_ONLINE));
                                 haspMapProfileDetails.put(Constants.TAG_LAST_ONLINE, DefensiveClass.optInt(json, Constants.TAG_LAST_ONLINE));
@@ -1456,15 +1631,15 @@ public class  MainViewProfileDetailActivity extends AppCompatActivity implements
                             gradientFrame.setVisibility(View.GONE);
                             if (json.getString(Constants.TAG_STATUS).equalsIgnoreCase("true")) {
                                 Toast.makeText(MainViewProfileDetailActivity.this, "Request declined", Toast.LENGTH_SHORT).show();
-                                if(from.equals("visitors")){
+                                if(strVisitingIdLikeToken.equals("visitors")){
                                     finish();
-                                } else if(from.equalsIgnoreCase("home")) {
+                                } else if(strVisitingIdLikeToken.equalsIgnoreCase("home")) {
                                     HomeFragment.decline();
                                 } else {
                                     finish();
                                 }
                                 /*Intent i = new Intent(MainViewProfileDetailActivity.this, EditPhoto.class);
-                                i.putExtra("from", "myprofile");
+                                i.putExtra("strVisitingIdLikeToken", "myprofile");
                                 i.putExtra("data", haspMapProfileDetails);
                                 i.putExtra("images", imagesAry);
                                 startActivity(i);*/
@@ -1529,14 +1704,14 @@ public class  MainViewProfileDetailActivity extends AppCompatActivity implements
                 break;
             case R.id.fab:
             case R.id.fab2:
-                if (from.equals("myprofile") || GetSet.getUserId().equals(strFriendID)) {
+                if (strVisitingIdLikeToken.equals("myprofile") || GetSet.getUseridLikeToken().equals(strFriendID)) {
                     Intent i = new Intent(MainViewProfileDetailActivity.this, EditPhoto.class);
                     i.putExtra("data", haspMapProfileDetails);
                     i.putExtra("images", imagesAry);
                     startActivity(i);
                 } else {
                     if (HowzuApplication.isNetworkAvailable(getApplicationContext())) {
-                        if (from.equalsIgnoreCase("chat")) {
+                        if (strVisitingIdLikeToken.equalsIgnoreCase("chat")) {
                             finish();
                         } else {
                             setFabClickable(false);

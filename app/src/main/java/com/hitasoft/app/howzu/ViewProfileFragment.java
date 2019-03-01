@@ -144,7 +144,7 @@ public class ViewProfileFragment extends Fragment {
     }
 
 //    private void checkUser() {
-//        if (from.equals("myprofile") || GetSet.getUserId().equals(strFriendID)) {
+//        if (strVisitingIdLikeToken.equals("myprofile") || GetSet.getUserId().equals(strFriendID)) {
 //            strFriendID = GetSet.getUserId();
 //            setting.setVisibility(View.VISIBLE);
 //            fab.setImageResource(R.drawable.pen);
@@ -203,11 +203,11 @@ public class ViewProfileFragment extends Fragment {
 ////            values = new String[]{getString(R.string.undo_report), getString(R.string.unfriend_user)};
 ////        } else
 //
-//        if (from.equals("other") || from.equals("home")) {
+//        if (strVisitingIdLikeToken.equals("other") || strVisitingIdLikeToken.equals("home")) {
 //            values = new String[]{getString(R.string.report_user)};
 //        } else if (sendMatch.equals("1")) {
 //            values = new String[]{getString(R.string.report_user), getString(R.string.unfriend_user)};
-//        } else if (from.equals("visitors")) {
+//        } else if (strVisitingIdLikeToken.equals("visitors")) {
 //            if (sendMatch.equals("1")) {
 //                values = new String[]{getString(R.string.report_user), getString(R.string.unfriend_user)};
 //            } else {

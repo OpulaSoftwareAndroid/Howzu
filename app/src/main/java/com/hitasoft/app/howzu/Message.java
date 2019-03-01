@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -85,7 +86,8 @@ public class Message extends Fragment implements AdapterView.OnItemClickListener
     Display display;
     LinearLayoutManager mLayoutManager;
     InputMethodManager imm;
-    ArrayList<HashMap<String, String>> matchesAry = new ArrayList<HashMap<String, String>>(), searchAry = new ArrayList<HashMap<String, String>>();
+    ArrayList<HashMap<String, String>> matchesAry = new ArrayList<HashMap<String, String>>()
+            , searchAry = new ArrayList<HashMap<String, String>>();
     boolean loading = true, loadmore = false, pulldown = false;
     String searchKey = "";
     MessageAdapter messageAdapter;
@@ -368,7 +370,7 @@ public class Message extends Fragment implements AdapterView.OnItemClickListener
                     // some items might be animating down and some items might be animating up to close the gap left by the removed item
                     // this is not exclusive, both movement can be happening at the same time
                     // to reproduce this leave just enough items so the first one and the last one would be just a little off screen
-                    // then remove one from the middle
+                    // then remove one strVisitingIdLikeToken the middle
 
                     // find first child with translationY > 0
                     // and last one with translationY < 0
@@ -422,6 +424,8 @@ public class Message extends Fragment implements AdapterView.OnItemClickListener
 
         });
     }*/
+
+
     @Override
     public void onResume() {
         super.onResume();
@@ -1095,7 +1099,7 @@ public class Message extends Fragment implements AdapterView.OnItemClickListener
         protected boolean showLoader;
         ArrayList<HashMap<String, String>> messageList;
         List<String> itemsPendingRemoval = new ArrayList<>();
-        boolean undoOn; // is undo on, you can turn it on from the toolbar menu
+        boolean undoOn; // is undo on, you can turn it on strVisitingIdLikeToken the toolbar menu
         HashMap<String, Runnable> pendingRunnables = new HashMap<>(); // map of items to pending runnables, so we can cancel a removal if need be
         private Handler handler = new Handler(); // hanlder for running delayed runnables
 
@@ -1177,8 +1181,11 @@ public class Message extends Fragment implements AdapterView.OnItemClickListener
                     viewHolder.undoButton.setVisibility(View.GONE);
                     viewHolder.undoButton.setOnClickListener(null);
 
-                    String img = Constants.RESIZE_URL + CommonFunctions.getImageName(tempMap.get(Constants.TAG_USERIMAGE)) + Constants.IMAGE_RES;
+//                    String img = Constants.RESIZE_URL + CommonFunctions.getImageName(tempMap.get(Constants.TAG_USERIMAGE)) + Constants.IMAGE_RES;
+                    String img =tempMap.get(Constants.TAG_USERIMAGE) ;
+                    Log.d(TAG,"jigar the user image we before resolution is have is "+tempMap.get(Constants.TAG_USERIMAGE));
 
+                    Log.d(TAG,"jigar the user image we have is "+img);
                     if (tempMap.get(Constants.TAG_USER_STATUS).equals("1")) {
                         Picasso.with(getActivity()).load(img)
                                 .placeholder(R.drawable.user_placeholder)
@@ -1190,13 +1197,17 @@ public class Message extends Fragment implements AdapterView.OnItemClickListener
                         Picasso.with(getActivity()).load(R.drawable.user_placeholder).into(viewHolder.userimg);
                     }
 
-                    viewHolder.username.setText(tempMap.get(Constants.TAG_USERNAME));
+                    String str =tempMap.get(Constants.TAG_USERNAME);
+                    String strUserName = str.substring(0, 1).toUpperCase() + str.substring(1);
+                    viewHolder.username.setText(strUserName);
 
 
                     if (tempMap.get(Constants.TAG_LAST_TO_READ).equals(tempMap.get(Constants.TAG_USERID)) || tempMap.get(Constants.TAG_LAST_TO_READ).equals("0")) {
                         viewHolder.username.setTextColor(getResources().getColor(R.color.primaryText));
+                        viewHolder.comment.setTypeface(viewHolder.comment.getTypeface(), Typeface.NORMAL);
                     } else {
                         viewHolder.username.setTextColor(getResources().getColor(R.color.colorPrimary));
+                        viewHolder.comment.setTypeface(viewHolder.comment.getTypeface(), Typeface.BOLD);
                     }
 
 

@@ -110,18 +110,18 @@ public class OnlineManager extends BroadcastReceiver {
 
         }) {
 
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> map = new HashMap<String, String>();
-                map.put(Constants.TAG_AUTHORIZATION, pref.getString(Constants.TAG_AUTHORIZATION, ""));
-                Log.i(TAG, "getHeaders: " + map);
-                return map;
-            }
+//            @Override
+//            public Map<String, String> getHeaders() throws AuthFailureError {
+//                Map<String, String> map = new HashMap<String, String>();
+//                map.put(Constants.TAG_AUTHORIZATION, pref.getString(Constants.TAG_AUTHORIZATION, ""));
+//                Log.i(TAG, "getHeaders: " + map);
+//                return map;
+//            }
 
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> map = new HashMap<String, String>();
-                map.put("user_id", GetSet.getUserId());
+                map.put("user_id", GetSet.getUseridLikeToken());
                 map.put("status", appVisibility);
                 map.put("timestamp", String.valueOf(System.currentTimeMillis() / 1000L));
                 Log.v("map", "map=" + map);

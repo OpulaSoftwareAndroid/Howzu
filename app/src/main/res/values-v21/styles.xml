@@ -6,6 +6,8 @@
         <item name="drawerArrowStyle">@style/MyDrawerArrowToggle</item>
         <item name="android:colorPrimary">@color/colorPrimary</item>
         <item name="android:colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="android:popupMenuStyle">@style/PopupMenu</item>
+
     </style>
 
     <style name="MyDrawerArrowToggle" parent="Widget.AppCompat.DrawerArrowToggle">
@@ -21,4 +23,9 @@
         <item name="windowNoTitle">true</item>
         <item name="android:windowBackground">@null</item>
     </style>
+
+    <style name="PopupMenu" parent="@android:style/Widget.PopupMenu">
+        <item name="android:popupBackground">@android:color/black</item>
+    </style>
+
 </resources>

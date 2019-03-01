@@ -39,6 +39,7 @@
             android:layout_centerHorizontal="true"
             android:layout_alignParentBottom="true">
         </com.google.android.gms.ads.AdView>
+
     </RelativeLayout>
 
     <LinearLayout
@@ -53,4 +54,5 @@
             android:layout_width="280dp"
             android:layout_height="match_parent" />
     </LinearLayout>
+
 </android.support.v4.widget.DrawerLayout>

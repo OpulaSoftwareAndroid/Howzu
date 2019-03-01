@@ -82,14 +82,14 @@ public class SignallingClient {
 
             //peer joined event
             socket.on("join", args -> {
-                Log.v(TAG, "join call() called with: args = [" + Arrays.toString(args) + "]");
+                Log.v(TAG, "jigar the join call() called with: args = [" + Arrays.toString(args) + "]");
                 isChannelReady = true;
                 callback.onNewPeerJoined();
             });
 
             //when you joined a chat room successfully
             socket.on("joined", args -> {
-                Log.v(TAG, "joined call() called with: args = [" + Arrays.toString(args) + "]");
+                Log.v(TAG, "jigar the joined call() called with: args = [" + Arrays.toString(args) + "]");
                 isChannelReady = true;
                 callback.onJoinedRoom();
             });
@@ -102,9 +102,9 @@ public class SignallingClient {
 
             //messages - SDP and ICE candidates are transferred through this
             socket.on("rtcmessage", args -> {
-                Log.v(TAG, "message call() called with: args = [" + Arrays.toString(args) + "]");
+                Log.v(TAG, "jigar the message call() called with: args = [" + Arrays.toString(args) + "]");
                 if (args[0] instanceof String) {
-                    Log.v(TAG, "String received :: " + args[0]);
+                    Log.v(TAG, "jigar the  String received :: " + args[0]);
                     String data = (String) args[0];
                     if (data.equalsIgnoreCase("got user media")) {
                         callback.onTryToStart();
@@ -116,7 +116,7 @@ public class SignallingClient {
                     try {
 
                         JSONObject data = (JSONObject) args[0];
-                        Log.v(TAG, "Json Received :: " + data.toString());
+                        Log.v(TAG, "jigar the Json Received :: " + data.toString());
                         String type = data.optString("type", "got user media");
                         if (type.equalsIgnoreCase("offer") && !isInitiator) {
                             callback.onOfferReceived(data);
@@ -129,36 +129,41 @@ public class SignallingClient {
                         }
 
                     } catch (Exception e) {
+                        Log.d(TAG,"jigar the main exception in getting signal is "+e);
                         e.printStackTrace();
                     }
                 }
             });
         } catch (URISyntaxException e) {
+            Log.d(TAG,"jigar the main uri syntax in getting signal is "+e);
+
             e.printStackTrace();
         }
     }
 
     public void createOrJoin(String message) {
-        Log.v(TAG, "emitInitStatement() called with: event = [" + "create or join" + "], message = [" + message + "]");
+        Log.v(TAG, "jigar the emitInitStatement() called with: event = [" + "create or join" + "], message = [" + message + "]");
         socket.emit("create or join", message);
     }
 
     public void emitMessage(String message, String roomID) {
         try {
-            Log.v(TAG, "emitMessage() called with: message = [" + message + "]");
+            Log.v(TAG, "jigar the emitMessage() called with: message = [" + message + "]");
             JSONObject obj = new JSONObject();
             obj.put("room", roomID);
             obj.put("message", message);
             Log.v(TAG, obj.toString());
             socket.emit("rtcmessage", obj);
         } catch (JSONException e){
+            Log.d(TAG,"jigar the emit json exception in getting signal is "+e);
+
             e.printStackTrace();
         }
     }
 
     public void emitMessage(SessionDescription message, String roomID) {
         try {
-            Log.v(TAG, "emitMessage() called with: message = [" + message + "]");
+            Log.v(TAG, "jigar the emitMessage() called with: message = [" + message + "]");
             JSONObject msg = new JSONObject();
             msg.put("type", message.type.canonicalForm());
             msg.put("sdp", message.description);

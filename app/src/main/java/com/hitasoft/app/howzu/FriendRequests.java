@@ -506,7 +506,7 @@ public class FriendRequests extends Fragment implements SwipeRefreshLayout.OnRef
                 switch (v.getId()) {
                     case R.id.user_image:
                         Intent p = new Intent(getActivity(), MainViewProfileDetailActivity.class);
-                        p.putExtra("from", "other");
+                        p.putExtra("strVisitingIdLikeToken", "other");
                         p.putExtra("strFriendID", friendReqlist.get(getAdapterPosition()).get(Constants.TAG_USERID));
                         startActivity(p);
                         break;
